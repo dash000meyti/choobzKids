@@ -6,15 +6,17 @@
  *   node scripts/validate-content.mjs --strict   also checks the AEO style rules
  *                                                (H2 = question, 40–60-word answer paragraph)
  *   node scripts/validate-content.mjs --verbose  also lists the manual-review notes in full
+ *   node scripts/validate-content.mjs --check-urls  also fetches every external URL (network)
  *
  * Checks: JSON parses; fields and types match src/db/seed/types.ts (no unknown keys);
  * slugs unique and kebab-case; the fixed catalog (categories, products, posts, topics,
  * authors, glossary slugs from docs/CONTENT-PLAN.md §۲); every cross-reference
  * (product.category, related, post.products, glossary related*, review.product, post
  * topic/author/reviewer); Markdown link schemes and ::directives; callout markers;
- * Persian orthography (no Arabic ي/ك/ى, no kashida, no Arabic-Indic digits, no Latin
- * digits in Persian prose, ZWNJ hygiene); no H1 in bodies; SEO lengths; tldr 3–5;
- * post faqs and http(s) sources.
+ * Persian orthography (no Arabic yeh/kaf/alef maksura, no kashida, no Arabic-Indic digits, no
+ * Latin digits in Persian prose, ZWNJ hygiene); no H1 in bodies; SEO lengths; tldr 3–5;
+ * post faqs and http(s) sources. rooms.json (SeedRoom) is checked when present; other JSON
+ * files in the folder get the text and product-reference checks only.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -25,6 +27,7 @@ const DIR = path.resolve(process.env.SEED_DIR ?? path.join(ROOT, "seed", "conten
 const PLAN = path.join(ROOT, "docs", "CONTENT-PLAN.md");
 const STRICT = process.argv.includes("--strict");
 const VERBOSE = process.argv.includes("--verbose");
+const CHECK_URLS = process.argv.includes("--check-urls");
 const TODAY = new Date().toISOString().slice(0, 10);
 
 /* ------------------------------------------------------------------ reporting */
@@ -42,43 +45,230 @@ const snip = (s, i, len = 0, pad = 24) =>
       (i + len + pad < s.length ? "…" : ""),
   );
 
+/* ------------------------------------------------------------------ types.ts → runtime specs */
+
+/*
+ * The field lists, optionality and base types come from src/db/seed/types.ts itself, so a
+ * field added there is accepted here without editing this script. A small parser covers the
+ * TypeScript used in that file: object literals, `T[]`, `Record<string, T>`, string-literal
+ * unions, `| null`, and references to other exported types.
+ */
+
+const typeName = (v) => (v === null ? "null" : Array.isArray(v) ? "array" : typeof v);
+
+function splitTop(s, sep) {
+  const out = [];
+  let depth = 0;
+  let quote = null;
+  let cur = "";
+  for (const c of s) {
+    if (quote) {
+      cur += c;
+      if (c === quote) quote = null;
+      continue;
+    }
+    if (c === '"' || c === "'") quote = c;
+    else if ("{<([".includes(c)) depth++;
+    else if ("}>)]".includes(c)) depth--;
+    if (depth === 0 && c === sep) {
+      out.push(cur);
+      cur = "";
+      continue;
+    }
+    cur += c;
+  }
+  out.push(cur);
+  return out.map((x) => x.trim()).filter(Boolean);
+}
+
+function parseTypesFile(file) {
+  const src = fs
+    .readFileSync(file, "utf8")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
+    .replace(/\/\/[^\n]*/g, "");
+  const out = {};
+  const head = /export\s+type\s+(\w+)\s*=\s*/g;
+  let m;
+  while ((m = head.exec(src))) {
+    let depth = 0;
+    let j = head.lastIndex;
+    for (; j < src.length; j++) {
+      const c = src[j];
+      if ("{<([".includes(c)) depth++;
+      else if ("}>)]".includes(c)) depth--;
+      else if (c === ";" && depth === 0) break;
+      else if (depth === 0 && /^\n\s*export\s/.test(src.slice(j, j + 12))) break;
+    }
+    out[m[1]] = src.slice(head.lastIndex, j).trim();
+    head.lastIndex = j + 1;
+  }
+  return out;
+}
+
+/** A spec is (value, loc, report) → void; `report(loc, msg)` collects type errors. */
+const isLiteralUnion = (expr) => splitTop(expr.replace(/^\|/, ""), "|").every((p) => /^"[^"]*"$/.test(p));
+
+function compileType(expr, types, memo = {}) {
+  expr = expr.trim().replace(/^\|\s*/, "");
+  while (expr.startsWith("(") && expr.endsWith(")")) expr = expr.slice(1, -1).trim();
+  const parts = splitTop(expr, "|");
+  if (parts.length > 1) {
+    if (parts.every((p) => /^"[^"]*"$/.test(p))) return literalSpec(parts.map((p) => JSON.parse(p)));
+    const specs = parts.map((p) => compileType(p, types, memo));
+    return (v, loc, report) => {
+      const tries = specs.map((sp) => {
+        const probs = [];
+        sp(v, loc, (l, msg) => probs.push([l, msg]));
+        return probs;
+      });
+      if (tries.some((p) => p.length === 0)) return;
+      const best = tries.sort((a, b) => a.length - b.length)[0];
+      best.forEach(([l, msg]) => report(l, msg));
+    };
+  }
+  if (expr.endsWith("[]")) {
+    const item = compileType(expr.slice(0, -2), types, memo);
+    return (v, loc, report) => {
+      if (!Array.isArray(v)) return report(loc, `expected array, got ${typeName(v)}`);
+      v.forEach((x, i) => item(x, `${loc}[${i}]`, report));
+    };
+  }
+  if (expr.startsWith("{")) return objectSpec(expr.slice(1, -1), types, memo);
+  if (expr.startsWith("Record<")) {
+    const [, valueType] = splitTop(expr.slice(7, -1), ",");
+    const value = compileType(valueType, types, memo);
+    return (v, loc, report) => {
+      if (typeName(v) !== "object") return report(loc, `expected object, got ${typeName(v)}`);
+      for (const [k, x] of Object.entries(v)) value(x, `${loc}.${k}`, report);
+    };
+  }
+  if (expr === "string")
+    return (v, loc, report) => {
+      if (typeof v !== "string") return report(loc, `expected string, got ${typeName(v)}`);
+      if (!v.trim()) report(loc, "empty string");
+    };
+  if (expr === "number")
+    return (v, loc, report) => {
+      if (typeof v !== "number" || !Number.isFinite(v)) report(loc, `expected number, got ${typeName(v)}`);
+    };
+  if (expr === "boolean")
+    return (v, loc, report) => {
+      if (typeof v !== "boolean") report(loc, `expected boolean, got ${typeName(v)}`);
+    };
+  if (expr === "null")
+    return (v, loc, report) => {
+      if (v !== null) report(loc, `expected null, got ${typeName(v)}`);
+    };
+  if (expr === "unknown" || expr === "any") return () => {};
+  if (/^"[^"]*"$/.test(expr)) return literalSpec([JSON.parse(expr)]);
+  if (types[expr] !== undefined) {
+    if (!memo[expr]) {
+      memo[expr] = (...a) => memo[`${expr}:compiled`](...a);
+      memo[`${expr}:compiled`] = compileType(types[expr], types, memo);
+    }
+    return memo[expr];
+  }
+  throw new Error(`validate-content: unsupported type expression in types.ts: ${expr}`);
+}
+
+function literalSpec(values) {
+  return (v, loc, report) => {
+    if (!values.includes(v)) report(loc, `expected one of ${values.join(" | ")}, got ${JSON.stringify(v)}`);
+  };
+}
+
+function objectSpec(body, types, memo) {
+  const fields = splitTop(body, ";").map((f) => {
+    const m = /^(\w+)(\?)?\s*:\s*([\s\S]+?)[,;]?$/.exec(f);
+    if (!m) throw new Error(`validate-content: cannot parse field "${f}" in types.ts`);
+    return { name: m[1], optional: !!m[2], spec: compileType(m[3], types, memo) };
+  });
+  return (v, loc, report) => {
+    if (typeName(v) !== "object") return report(loc, `expected object, got ${typeName(v)}`);
+    for (const f of fields) {
+      if (!(f.name in v)) {
+        if (!f.optional) report(loc, `missing required field "${f.name}"`);
+        continue;
+      }
+      if (v[f.name] === null && f.optional) {
+        report(`${loc}.${f.name}`, "optional field is null; omit it instead");
+        continue;
+      }
+      const before = [];
+      f.spec(v[f.name], `${loc}.${f.name}`, (l, msg) => before.push([l, msg]));
+      before.forEach(([l, msg]) => report(l, msg));
+      if (!before.length && REFINE[f.name]) REFINE[f.name](v[f.name], `${loc}.${f.name}`, report);
+    }
+    const known = new Set(fields.map((f) => f.name));
+    for (const k of Object.keys(v)) if (!known.has(k)) report(loc, `unknown field "${k}" (not in src/db/seed/types.ts)`);
+  };
+}
+
+/* Value rules types.ts cannot express, applied by field name after the base type passes. */
+const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const URL_RE = /^https?:\/\/[^\s]+$/;
+const HEX_RE = /^#[0-9A-Fa-f]{6}$/;
+const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+const rx = (re, what) => (v, loc, report) => {
+  if (typeof v === "string" && !re.test(v)) report(loc, `expected ${what}, got ${JSON.stringify(v)}`);
+};
+const int = (min = -Infinity, max = Infinity) => (v, loc, report) => {
+  if (typeof v !== "number") return;
+  if (!Number.isInteger(v)) report(loc, `expected an integer, got ${v}`);
+  else if (v < min || v > max) report(loc, `expected ${min}…${max}, got ${v}`);
+};
+const positive = (v, loc, report) => {
+  if (typeof v === "number" && v <= 0) report(loc, `expected > 0, got ${v}`);
+};
+const each = (spec) => (v, loc, report) => Array.isArray(v) && v.forEach((x, i) => spec(x, `${loc}[${i}]`, report));
+const kebab = rx(KEBAB, "kebab-case slug");
+const isUrl = rx(URL_RE, "http(s) URL");
+const isDate = rx(DATE_RE, "YYYY-MM-DD");
+const REFINE = {
+  slug: kebab, product: kebab, related: each(kebab), products: each(kebab), relatedPostSlugs: each(kebab),
+  relatedProductSlugs: each(kebab), pillarPostSlug: kebab,
+  url: isUrl, sameAs: each(isUrl),
+  accent: (v, loc, report) => literalSpec(ACCENT_KEYS)(v, loc, report),
+  swatch: rx(HEX_RE, "#RRGGBB"),
+  publishedAt: isDate, updatedAt: isDate,
+  price: int(1), compareAtPrice: int(1), stock: int(0), leadTimeDays: int(0), warrantyMonths: int(0),
+  sortOrder: int(), ageMinMonths: int(0, 216), ageMaxMonths: int(0, 216), rating: int(1, 5), assemblyMinutes: int(1),
+  widthCm: positive, heightCm: positive, depthCm: positive, weightKg: positive, maxLoadKg: positive, floorAreaM2: positive,
+};
+
 /* ------------------------------------------------------------------ vocabulary */
 
-const TOPIC_KEYS = ["montessori", "movement", "learning-tower", "nursery", "play", "art", "reading", "safety", "gifts"];
-const AUTHOR_KEYS = ["choobz-editorial", "choobz-workshop"];
-const SKILL_KEYS = [
-  "gross-motor", "fine-motor", "balance", "independence", "practical-life",
-  "creativity", "language", "imagination", "focus", "confidence",
-];
-const ILLUSTRATION_KEYS = [
-  "learning-tower", "pikler-triangle", "pikler-arch", "swedish-ladder", "climbing-hex",
-  "balance-board", "front-facing-bookshelf", "wall-art-roll", "kids-table-chair",
-  "montessori-shelf", "rainbow-stacker", "duck-pull-toy", "wooden-blocks", "room-set",
-];
+const TYPES_FILE = path.join(ROOT, "src", "db", "seed", "types.ts");
+const TYPES = parseTypesFile(TYPES_FILE);
+const literals = (name, fallback) =>
+  TYPES[name] && isLiteralUnion(TYPES[name])
+    ? splitTop(TYPES[name].replace(/^\|/, ""), "|").map((p) => JSON.parse(p))
+    : fallback;
+const TOPIC_KEYS = literals("TopicKey", []);
+const AUTHOR_KEYS = literals("AuthorKey", []);
+const ILLUSTRATION_KEYS = literals("IllustrationKey", []);
 /** Accent pairs in docs/DESIGN.md (`--color-{key}-tint` / `-ink`). */
 const ACCENT_KEYS = ["terracotta", "wood", "sage", "mustard", "sky", "plum", "mint", "cream"];
-const POST_FORMATS = ["guide", "article", "howto", "comparison", "checklist", "story"];
-const AVAILABILITY = ["in_stock", "out_of_stock", "preorder", "made_to_order"];
 const CALLOUTS = ["TIP", "NOTE", "WARNING", "WORKSHOP", "EXPERT", "MYTH"];
 const LINK_SCHEMES = ["product", "category", "post", "topic", "term", "page"];
 
 /** The fixed catalog (slug → category, illustration, name). */
 const CATALOG_CATEGORIES = ["climbing", "learning-towers", "furniture", "art", "toys", "room-sets"];
 const CATALOG_PRODUCTS = {
-  "learning-tower": ["learning-towers", "learning-tower", "برج یادگیری مونته‌سوری"],
+  "learning-tower": ["learning-towers", "learning-tower", "برج یادگیری مونته\u200Cسوری"],
   "pikler-triangle": ["climbing", "pikler-triangle", "مثلث پیکلر با رمپ دوطرفه"],
   "pikler-arch": ["climbing", "pikler-arch", "آرک پیکلر (راکر)"],
   "swedish-ladder": ["climbing", "swedish-ladder", "نردبان سوئدی کودک"],
-  "climbing-hex-panels": ["climbing", "climbing-hex", "پنل‌های شش‌ضلعی صعود (ست ۳ تایی)"],
+  "climbing-hex-panels": ["climbing", "climbing-hex", "پنل\u200Cهای شش\u200Cضلعی صعود (ست ۳ تایی)"],
   "balance-board": ["climbing", "balance-board", "تخته تعادل والدورف"],
-  "front-facing-bookshelf": ["furniture", "front-facing-bookshelf", "کتابخانهٔ دیواری روبه‌رو"],
+  "front-facing-bookshelf": ["furniture", "front-facing-bookshelf", "کتابخانهٔ دیواری روبه\u200Cرو"],
   "kids-table-chair": ["furniture", "kids-table-chair", "میز و صندلی کودک"],
-  "montessori-shelf": ["furniture", "montessori-shelf", "قفسهٔ مونته‌سوری اسباب‌بازی"],
+  "montessori-shelf": ["furniture", "montessori-shelf", "قفسهٔ مونته\u200Cسوری اسباب\u200Cبازی"],
   "wall-art-roll": ["art", "wall-art-roll", "رول نقاشی دیواری"],
-  "rainbow-stacker": ["toys", "rainbow-stacker", "رنگین‌کمان چوبی"],
-  "duck-pull-toy": ["toys", "duck-pull-toy", "اردک چرخ‌دار چوبی"],
-  "wooden-blocks": ["toys", "wooden-blocks", "مکعب‌های ساختنی چوبی"],
-  "montessori-room-set": ["room-sets", "room-set", "پک اتاق مونته‌سوری"],
+  "rainbow-stacker": ["toys", "rainbow-stacker", "رنگین\u200Cکمان چوبی"],
+  "duck-pull-toy": ["toys", "duck-pull-toy", "اردک چرخ\u200Cدار چوبی"],
+  "wooden-blocks": ["toys", "wooden-blocks", "مکعب\u200Cهای ساختنی چوبی"],
+  "montessori-room-set": ["room-sets", "room-set", "پک اتاق مونته\u200Cسوری"],
 };
 const CATALOG_POSTS = [
   "learning-tower-guide", "pikler-triangle-guide", "montessori-at-home-guide", "montessori-room-setup",
@@ -86,110 +276,12 @@ const CATALOG_POSTS = [
   "wooden-toy-safety-guide", "child-drawing-stages", "birthday-gift-guide-by-age",
 ];
 
-/* ------------------------------------------------------------------ shape checking */
-
-const KEBAB = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-const URL_RE = /^https?:\/\/[^\s]+$/;
-const HEX_RE = /^#[0-9A-Fa-f]{6}$/;
-const DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
-const typeName = (v) => (v === null ? "null" : Array.isArray(v) ? "array" : typeof v);
-
-/** A spec is a function (value, loc) → void that reports problems. */
-const S = (v, loc) => {
-  if (typeof v !== "string") return err(loc, `expected string, got ${typeName(v)}`);
-  if (!v.trim()) err(loc, "empty string");
-};
-const N = (min = -Infinity) => (v, loc) => {
-  if (typeof v !== "number" || !Number.isFinite(v)) return err(loc, `expected number, got ${typeName(v)}`);
-  if (v < min) err(loc, `expected ≥ ${min}, got ${v}`);
-};
-const I = (min = -Infinity, max = Infinity) => (v, loc) => {
-  if (typeof v !== "number" || !Number.isInteger(v)) return err(loc, `expected integer, got ${typeName(v)} ${JSON.stringify(v)}`);
-  if (v < min || v > max) err(loc, `expected ${min}…${max}, got ${v}`);
-};
-const B = (v, loc) => {
-  if (typeof v !== "boolean") err(loc, `expected boolean, got ${typeName(v)}`);
-};
-const oneOf = (values) => (v, loc) => {
-  if (!values.includes(v)) err(loc, `expected one of ${values.join(" | ")}, got ${JSON.stringify(v)}`);
-};
-const re = (rx, what) => (v, loc) => {
-  if (typeof v !== "string") return err(loc, `expected string, got ${typeName(v)}`);
-  if (!rx.test(v)) err(loc, `expected ${what}, got ${JSON.stringify(v)}`);
-};
-const slug = re(KEBAB, "kebab-case slug");
-const url = re(URL_RE, "http(s) URL");
-const arr = (spec) => (v, loc) => {
-  if (!Array.isArray(v)) return err(loc, `expected array, got ${typeName(v)}`);
-  v.forEach((x, i) => spec(x, `${loc}[${i}]`));
-};
-const record = (spec) => (v, loc) => {
-  if (typeName(v) !== "object") return err(loc, `expected object, got ${typeName(v)}`);
-  for (const [k, x] of Object.entries(v)) spec(x, `${loc}.${k}`);
-};
-const opt = (spec) => Object.assign((v, loc) => spec(v, loc), { optional: true });
-const obj = (shape) => (v, loc) => {
-  if (typeName(v) !== "object") return err(loc, `expected object, got ${typeName(v)}`);
-  for (const [k, spec] of Object.entries(shape)) {
-    if (!(k in v)) {
-      if (!spec.optional) err(loc, `missing required field "${k}"`);
-      continue;
-    }
-    if (v[k] === null && spec.optional) {
-      err(`${loc}.${k}`, "optional field is null; omit it instead");
-      continue;
-    }
-    spec(v[k], `${loc}.${k}`);
-  }
-  for (const k of Object.keys(v)) if (!(k in shape)) err(loc, `unknown field "${k}" (not in src/db/seed/types.ts)`);
-};
-
-const Faq = obj({ question: S, answer: S });
-const Variant = obj({
-  name: S, sku: S, price: opt(I(1)), stock: I(0), options: record(S), swatch: opt(re(HEX_RE, "#RRGGBB")),
-});
-const Category = obj({
-  slug, name: S, tagline: S, description: S, illustration: oneOf(ILLUSTRATION_KEYS), accent: oneOf(ACCENT_KEYS),
-  sortOrder: I(), seoTitle: S, seoDescription: S, faqs: arr(Faq),
-});
-const Product = obj({
-  slug, name: S, subtitle: S, summary: S, description: S, category: S, sku: S, price: I(1),
-  compareAtPrice: opt(I(1)), stock: I(0), availability: oneOf(AVAILABILITY), leadTimeDays: opt(I(0)),
-  ageMinMonths: I(0, 216), ageMaxMonths: opt(I(0, 216)), skills: arr(oneOf(SKILL_KEYS)), material: S, finish: S,
-  dimensions: obj({ widthCm: N(0), heightCm: N(0), depthCm: N(0), extra: opt(record(N(0))) }),
-  weightKg: N(0), maxLoadKg: opt(N(0)), highlights: arr(S), specs: arr(obj({ label: S, value: S })),
-  inTheBox: arr(S), safetyNotes: S, careNotes: S, warrantyMonths: I(0), illustration: oneOf(ILLUSTRATION_KEYS),
-  featured: B, isNew: B, sortOrder: I(), seoTitle: S, seoDescription: S, variants: arr(Variant), faqs: arr(Faq),
-  related: arr(slug), claimsToVerify: arr(S),
-});
-const Post = obj({
-  slug, title: S, excerpt: S, seoTitle: S, seoDescription: S, tldr: arr(S), body: S, format: oneOf(POST_FORMATS),
-  topic: oneOf(TOPIC_KEYS), isPillar: B, author: oneOf(AUTHOR_KEYS), reviewer: opt(oneOf(AUTHOR_KEYS)),
-  illustration: oneOf(ILLUSTRATION_KEYS), ageMinMonths: opt(I(0, 216)), ageMaxMonths: opt(I(0, 216)), ymyl: B,
-  sources: arr(obj({ title: S, url, publisher: opt(S) })), faqs: arr(Faq), products: arr(slug), featured: B,
-  publishedAt: re(DATE_RE, "YYYY-MM-DD"), claimsToVerify: arr(S),
-});
-const Topic = obj({
-  slug: oneOf(TOPIC_KEYS), name: S, tagline: S, description: S, illustration: oneOf(ILLUSTRATION_KEYS),
-  accent: oneOf(ACCENT_KEYS), sameAs: arr(url), sortOrder: I(), seoTitle: S, seoDescription: S,
-});
-const Term = obj({
-  slug, term: S, originalTerm: opt(S), definition: S, body: opt(S), relatedPostSlugs: arr(slug),
-  relatedProductSlugs: arr(slug), sameAs: arr(url),
-});
-const Author = obj({ slug: oneOf(AUTHOR_KEYS), name: S, role: S, bio: S, credentials: arr(S), sameAs: arr(url) });
-const Page = obj({ slug, title: S, excerpt: S, body: S, seoTitle: S, seoDescription: S, faqs: opt(arr(Faq)) });
-const Review = obj({
-  product: opt(slug), authorName: S, city: S, childAge: S, rating: I(1, 5), title: S, body: S, featured: B,
-});
-const Faqs = obj({ general: arr(Faq), shipping: arr(Faq) });
-
 /* ------------------------------------------------------------------ load */
 
-function load(rel) {
+function load(rel, { optional = false } = {}) {
   const full = path.join(DIR, rel);
   if (!fs.existsSync(full)) {
-    err(rel, "file is missing");
+    if (!optional) err(rel, "file is missing");
     return undefined;
   }
   const text = fs.readFileSync(full, "utf8");
@@ -202,46 +294,69 @@ function load(rel) {
   }
 }
 
-const files = {
-  categories: "categories.json", products: "products.json", glossary: "glossary.json", topics: "topics.json",
-  authors: "authors.json", pages: "pages.json", faqs: "faqs.json", reviews: "reviews.json", settings: "settings.json",
+/** File → shape. `faqs.json` and `settings.json` follow src/db/seed/load.ts. */
+const FILES = {
+  categories: ["categories.json", "SeedCategory[]"],
+  products: ["products.json", "SeedProduct[]"],
+  glossary: ["glossary.json", "SeedGlossaryTerm[]"],
+  topics: ["topics.json", "SeedTopic[]"],
+  authors: ["authors.json", "SeedAuthor[]"],
+  pages: ["pages.json", "SeedPage[]"],
+  faqs: ["faqs.json", "{ general: SeedFaq[]; shipping: SeedFaq[] }"],
+  reviews: ["reviews.json", "SeedReview[]"],
+  settings: ["settings.json", "Record<string, unknown>"],
+  rooms: ["rooms.json", "SeedRoom[]", { optional: true }],
 };
-const data = Object.fromEntries(Object.entries(files).map(([k, f]) => [k, load(f)]));
+const files = Object.fromEntries(Object.entries(FILES).map(([k, [f]]) => [k, f]));
+const data = {};
+for (const [key, [file, shape, opts]] of Object.entries(FILES)) {
+  data[key] = load(file, opts);
+  if (data[key] === undefined) continue;
+  const isList = shape.endsWith("[]");
+  let spec;
+  try {
+    spec = compileType(isList ? shape.slice(0, -2) : shape, TYPES);
+  } catch (e) {
+    err(file, `${e.message}; shape not checked`);
+    continue;
+  }
+  if (!isList) spec(data[key], file, err);
+  else if (!Array.isArray(data[key])) err(file, `expected a top-level array, got ${typeName(data[key])}`);
+  else data[key].forEach((x, i) => spec(x, `${file}[${i}${x?.slug ? `:${x.slug}` : ""}]`, err));
+}
 const postFiles = fs.existsSync(path.join(DIR, "posts"))
   ? fs.readdirSync(path.join(DIR, "posts")).filter((f) => f.endsWith(".json")).sort()
   : (err("posts/", "directory is missing"), []);
 const posts = postFiles.map((f) => ({ file: `posts/${f}`, post: load(`posts/${f}`) })).filter((p) => p.post);
-
-const asList = (key, spec) => {
-  const v = data[key];
-  if (v === undefined) return [];
-  if (!Array.isArray(v)) {
-    err(files[key], `expected a top-level array, got ${typeName(v)}`);
-    return [];
-  }
-  v.forEach((x, i) => spec(x, `${files[key]}[${i}${x && x.slug ? `:${x.slug}` : ""}]`));
-  return v.filter((x) => typeName(x) === "object");
-};
-
-const categories = asList("categories", Category);
-const products = asList("products", Product);
-const glossary = asList("glossary", Term);
-const topics = asList("topics", Topic);
-const authors = asList("authors", Author);
-const pages = asList("pages", Page);
-const reviews = asList("reviews", Review);
-if (data.faqs !== undefined) Faqs(data.faqs, files.faqs);
-if (data.settings !== undefined) {
-  if (typeName(data.settings) !== "object") err(files.settings, "expected a top-level object");
-  else {
-    const st = data.settings;
-    for (const k of ["siteName", "tagline", "description"]) if (!(k in st)) warn(files.settings, `missing "${k}"`);
-    for (const k of ["instagram", "bale"]) if (st[k] != null) url(st[k], `${files.settings}.${k}`);
-    if (st.email != null) re(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "email")(st.email, `${files.settings}.email`);
-    if (st.freeShippingThreshold != null) I(0)(st.freeShippingThreshold, `${files.settings}.freeShippingThreshold`);
-  }
+try {
+  const postSpec = compileType("SeedPost", TYPES);
+  for (const { file, post } of posts) postSpec(post, file, err);
+} catch (e) {
+  err("posts/", `${e.message}; shape not checked`);
 }
-for (const { file, post } of posts) Post(post, file);
+/* Seed files with no type in types.ts: only the text and reference checks below. */
+const extraFiles = fs
+  .readdirSync(DIR)
+  .filter((f) => f.endsWith(".json") && !Object.values(files).includes(f))
+  .map((f) => ({ file: f, value: load(f) }))
+  .filter((x) => x.value !== undefined);
+
+const listOf = (key) => (Array.isArray(data[key]) ? data[key].filter((x) => typeName(x) === "object") : []);
+const categories = listOf("categories");
+const products = listOf("products");
+const glossary = listOf("glossary");
+const topics = listOf("topics");
+const authors = listOf("authors");
+const pages = listOf("pages");
+const reviews = listOf("reviews");
+const rooms = listOf("rooms");
+if (data.settings !== undefined && typeName(data.settings) === "object") {
+  const st = data.settings;
+  for (const k of ["siteName", "tagline", "description"]) if (!(k in st)) warn(files.settings, `missing "${k}"`);
+  for (const k of ["instagram", "bale"]) if (st[k] != null) isUrl(st[k], `${files.settings}.${k}`, err);
+  if (st.email != null) rx(/^[^\s@]+@[^\s@]+\.[^\s@]+$/, "email")(st.email, `${files.settings}.email`, err);
+  if (st.freeShippingThreshold != null) int(0)(st.freeShippingThreshold, `${files.settings}.freeShippingThreshold`, err);
+}
 
 /* ------------------------------------------------------------------ catalog & uniqueness */
 
@@ -350,6 +465,36 @@ for (const g of glossary) {
   const loc = `${files.glossary}:${g.slug}`;
   refs(g.relatedPostSlugs, postSlugs, `${loc}.relatedPostSlugs`, "post");
   refs(g.relatedProductSlugs, productSlugs, `${loc}.relatedProductSlugs`, "product");
+  if (g.pillarPostSlug != null && !postSlugs.has(g.pillarPostSlug)) err(`${loc}.pillarPostSlug`, `unknown post "${g.pillarPostSlug}"`);
+}
+/** Room-scene slots (docs/DESIGN.md, room-slots.ts). */
+const ROOM_SLOTS = ["wall-start", "wall-mid", "wall-end", "floor-start", "floor-mid", "floor-end", "by-door", "kitchen"];
+unique(rooms, "slug", files.rooms);
+for (const r of rooms) {
+  const loc = `${files.rooms}:${r.slug}`;
+  (Array.isArray(r.items) ? r.items : []).forEach((it, i) => {
+    if (typeof it?.product === "string" && !productSlugs.has(it.product)) err(`${loc}.items[${i}].product`, `unknown product "${it.product}"`);
+    if (typeof it?.slot === "string" && !ROOM_SLOTS.includes(it.slot)) warn(`${loc}.items[${i}].slot`, `unknown slot "${it.slot}"`);
+  });
+  if (typeof r.description === "string") {
+    const n = wordCount(r.description);
+    if (n < 300 || n > 500) warn(`${loc}.description`, `${n} words (target 300–500)`);
+  }
+}
+/* JSON files with no seed type: product references and /mag/ links must resolve. */
+for (const { file, value } of extraFiles) {
+  const visit = (v, loc, key) => {
+    if (typeof v === "string") {
+      if ((key === "productSlug" || key === "productSlugs") && !productSlugs.has(v)) err(loc, `unknown product "${v}"`);
+      const mag = /^\/mag\/([a-z0-9-]+)\/?$/.exec(key === "href" ? v : "");
+      if (mag && !postSlugs.has(mag[1])) err(loc, `link to unknown post "${mag[1]}"`);
+    } else if (Array.isArray(v)) v.forEach((x, i) => visit(x, `${loc}[${i}]`, key));
+    else if (v && typeof v === "object") {
+      if (key === "nested" && typeof v.slug === "string" && !productSlugs.has(v.slug)) err(`${loc}.slug`, `unknown product "${v.slug}"`);
+      for (const [k, x] of Object.entries(v)) visit(x, `${loc}.${k}`, k);
+    }
+  };
+  visit(value, file, "");
 }
 reviews.forEach((r, i) => {
   if (r.product != null && !productSlugs.has(r.product)) err(`${files.reviews}[${i}].product`, `unknown product "${r.product}"`);
@@ -366,6 +511,8 @@ for (const { file, post: p } of posts) {
     if (Number.isNaN(d.getTime()) || d.toISOString().slice(0, 10) !== p.publishedAt) err(`${file}.publishedAt`, "not a real date");
     else if (p.publishedAt > TODAY) warn(`${file}.publishedAt`, `${p.publishedAt} is in the future`);
   }
+  if (typeof p.updatedAt === "string" && typeof p.publishedAt === "string" && p.updatedAt < p.publishedAt)
+    err(`${file}.updatedAt`, "is before publishedAt");
   if (!Array.isArray(p.tldr) || p.tldr.length < 3 || p.tldr.length > 5)
     err(`${file}.tldr`, `needs 3–5 items, has ${Array.isArray(p.tldr) ? p.tldr.length : 0}`);
   if (!Array.isArray(p.faqs) || p.faqs.length === 0) err(`${file}.faqs`, "posts need FAQs");
@@ -385,18 +532,22 @@ for (const { file, post: p } of posts) {
 
 /* ------------------------------------------------------------------ text checks */
 
-const PERSIAN_LETTER = /[ء-يپچژکگیآ]/;
+const PERSIAN_LETTER = /[\u0621-\u064Aپچژکگیآ]/;
 /** Markdown fields: link schemes, directives, callouts, H1 and digits are checked strictly. */
 const BODY_FIELDS = new Set([
   "categories.description", "products.description", "topics.description", "glossary.definition",
-  "glossary.body", "pages.body", "posts.body",
+  "glossary.body", "pages.body", "posts.body", "rooms.description",
 ]);
 /** Fields holding identifiers or English text: no Persian-prose checks. */
 const ID_FIELDS = new Set([
   "slug", "sku", "url", "sameAs", "accent", "illustration", "publishedAt", "swatch", "category", "related", "products",
   "relatedPostSlugs", "relatedProductSlugs", "topic", "author", "reviewer", "product", "availability", "format",
   "skills", "originalTerm", "siteNameEn", "instagram", "bale", "email", "phone", "enamadId", "publisher",
+  "updatedAt", "pillarPostSlug", "productSlug", "productSlugs", "href", "icon", "season", "slot", "ageStage",
+  "instagramHandle", "followersAsOf", "aparat", "foundingDate", "section",
 ]);
+/** Internal or search-query fields: orthography only (queries are typed the way people search). */
+const NOT_PROSE = new Set(["claimsToVerify", "primaryQuery", "secondaryQueries", "alternateNames", "aboutEntities"]);
 /** Fields that are rendered as plain text (Markdown syntax would show raw). */
 const PLAIN_FIELDS = new Set([
   "title", "name", "tagline", "excerpt", "seoTitle", "seoDescription", "summary", "subtitle", "question",
@@ -416,19 +567,38 @@ function stripMarkdown(md) {
     .replace(/^[ \t]*\|?[ \t:|-]+\|[ \t:|-]*$/gm, " ");
 }
 
-/** Latin digits are fine inside a Latin run (EN 71-3, Q190218, CHZ-LT-01); not between Persian words. */
+/**
+ * Latin digits are fine when they belong to a Latin identifier: a token that has Latin letters
+ * (E1, F963, Q190218, CHZ-LT-01) or a number right after a standard/proper-name prefix
+ * (EN 71-3, ISO 8124, (EU) 2023/1464). Digits beside other Latin words («CDC 75 درصد») are
+ * "near" (warning); digits between Persian words are "prose" (error in bodies).
+ */
+const NUMBER_PREFIXES = new Set(["EN", "ISO", "ASTM", "EU", "BS", "DIN", "ANSI", "IEC", "CFR", "REACH", "Waldorf", "Annex"]);
 function latinDigits(text) {
   const out = [];
-  const LATIN_RUN = /[A-Za-z0-9 .,:;'"&/+\-–—_()%°×x[\]]/;
+  const TOKEN = /[A-Za-z0-9.,:;\x27"&/+\-–—_()%°×[\]]/;
+  const LATIN_RUN = /[A-Za-z0-9 .,:;\x27"&/+\-–—_()%°×[\]]/;
+  const strip = (t) => t.replace(/^[(["\x27:.,]+|[)\]"\x27:.,;]+$/g, "");
   for (const m of text.matchAll(/[0-9]+/g)) {
     let a = m.index;
     let b = m.index + m[0].length;
-    while (a > 0 && LATIN_RUN.test(text[a - 1]) && text[a - 1] !== "\n") a--;
-    while (b < text.length && LATIN_RUN.test(text[b]) && text[b] !== "\n") b++;
-    const run = text.slice(a, b);
-    if (/[A-Za-z]{1,}/.test(run.replace(/(^|[^A-Za-z])x(?=[^A-Za-z]|$)/g, "$1"))) {
-      out.push({ index: m.index, digits: m[0], ok: true, run: run.trim() });
-    } else out.push({ index: m.index, digits: m[0], ok: false });
+    while (a > 0 && TOKEN.test(text[a - 1])) a--;
+    while (b < text.length && TOKEN.test(text[b])) b++;
+    const token = text.slice(a, b);
+    let p = a;
+    while (p > 0 && text[p - 1] === " ") p--;
+    let q = p;
+    while (q > 0 && TOKEN.test(text[q - 1])) q--;
+    const prev = p < a ? strip(text.slice(q, p)) : "";
+    if (/[A-Za-z]/.test(token) || NUMBER_PREFIXES.has(prev)) {
+      out.push({ index: m.index, digits: m[0], kind: "ok", run: strip(p < a && prev ? `${prev} ${token}` : token) });
+      continue;
+    }
+    let ra = a;
+    let rb = b;
+    while (ra > 0 && LATIN_RUN.test(text[ra - 1])) ra--;
+    while (rb < text.length && LATIN_RUN.test(text[rb])) rb++;
+    out.push({ index: m.index, digits: m[0], kind: /[A-Za-z]/.test(text.slice(ra, rb)) ? "near" : "prose" });
   }
   return out;
 }
@@ -439,38 +609,37 @@ function checkText(s, loc, field, group) {
   const isBody = BODY_FIELDS.has(`${group}.${field}`);
   // Orthography (all string values).
   for (const [rx, msg] of [
-    [/ي/g, "Arabic yeh ي (use Persian ی U+06CC)"],
-    [/ك/g, "Arabic kaf ك (use Persian ک U+06A9)"],
-    [/ى/g, "Arabic alef maksura ى (use Persian ی)"],
-    [/ـ/g, "kashida ـ"],
-    [/[٠-٩]/g, "Arabic-Indic digit (use Persian ۰–۹)"],
+    [/\u064A/g, "Arabic yeh \u064A (use Persian ی U+06CC)"],
+    [/\u0643/g, "Arabic kaf \u0643 (use Persian ک U+06A9)"],
+    [/\u0649/g, "Arabic alef maksura \u0649 (use Persian ی)"],
+    [/\u0640/g, "kashida \u0640"],
+    [/[\u0660-\u0669]/g, "Arabic-Indic digit (use Persian ۰–۹)"],
   ]) {
     for (const m of s.matchAll(rx)) err(loc, `${msg} at ${snip(s, m.index, 1)}`);
   }
-  if (/ۀ/.test(s)) warn(loc, "uses ۀ (U+06C0); the content uses ه + ٔ (هٔ) — keep one form");
-  for (const m of s.matchAll(/‌{2,}|‌(?=\s)|(?<=\s)‌|^‌|‌$/g))
+  if (/\u06C0/.test(s)) warn(loc, "uses \u06C0 (U+06C0); the content uses ه + ٔ (هٔ) — keep one form");
+  for (const m of s.matchAll(/\u200C{2,}|\u200C(?=\s)|(?<=\s)\u200C|^\u200C|\u200C$/g))
     warn(loc, `stray ZWNJ at ${snip(s, m.index, 1)}`);
-  for (const m of s.matchAll(/[‌](?=[A-Za-z0-9۰-۹.,،؛:!؟?)(«»\-])|(?<=[A-Za-z0-9۰-۹.,،؛:!؟?)(«»\-])‌/g))
+  for (const m of s.matchAll(/[\u200C](?=[A-Za-z0-9۰-۹.,،؛:!؟?)(«»\-])|(?<=[A-Za-z0-9۰-۹.,،؛:!؟?)(«»\-])\u200C/g))
     warn(loc, `ZWNJ next to a non-letter at ${snip(s, m.index, 1)}`);
-  if (/[‏‎‪-‮⁦-⁩]/.test(s)) warn(loc, "contains bidi control characters");
-  if (/ /.test(s)) warn(loc, "contains a no-break space");
+  if (/[\u200F\u200E\u202A-\u202E\u2066-\u2069]/.test(s)) warn(loc, "contains bidi control characters");
+  if (/\u00A0/.test(s)) warn(loc, "contains a no-break space");
 
-  if (ID_FIELDS.has(field) || !PERSIAN_LETTER.test(s)) return;
+  if (ID_FIELDS.has(field) || NOT_PROSE.has(field) || !PERSIAN_LETTER.test(s)) return;
 
   // Persian prose.
   const prose = isBody ? stripMarkdown(s) : s.replace(/https?:\/\/\S+/g, " ");
   for (const d of latinDigits(prose)) {
-    if (d.ok) {
-      const k = d.run;
-      latinContexts.set(k, (latinContexts.get(k) ?? 0) + 1);
-    } else (isBody ? err : warn)(loc, `Latin digits "${d.digits}" in Persian prose at ${snip(prose, d.index, d.digits.length)}`);
+    if (d.kind === "ok") latinContexts.set(d.run, (latinContexts.get(d.run) ?? 0) + 1);
+    else if (d.kind === "near") warn(loc, `Latin digits "${d.digits}" beside Latin text; use Persian digits unless it is part of a name or standard: ${snip(prose, d.index, d.digits.length)}`);
+    else (isBody ? err : warn)(loc, `Latin digits "${d.digits}" in Persian prose at ${snip(prose, d.index, d.digits.length)}`);
   }
   for (const m of prose.matchAll(/(^|[\s«(])(ن?می) (?=[آ-ی])/g))
     warn(loc, `«${m[2]}» needs a ZWNJ, not a space, at ${snip(prose, m.index + m[1].length, m[2].length + 1)}`);
   for (const m of prose.matchAll(/[آ-ی] (ها|های|هایی|هایم|هایت|هایش|هایمان|هایتان|هایشان|ترین|ترها)(?=[\s،.؛:!؟»)]|$)/g))
     warn(loc, `«${m[1]}» should attach with a ZWNJ at ${snip(prose, m.index, m[0].length)}`);
   for (const m of prose.matchAll(/ه (ای|ی)(?=[\s،.؛:!؟»)]|$)/g))
-    warn(loc, `«ه ${m[1]}» should be «ه‌${m[1]}»/«هٔ» at ${snip(prose, m.index, m[0].length)}`);
+    warn(loc, `«ه ${m[1]}» should be «ه\u200C${m[1]}»/«هٔ» at ${snip(prose, m.index, m[0].length)}`);
   for (const m of prose.matchAll(/(?<=[آ-ی][»)]?)\s*([?;]|,(?!\d))/g))
     warn(loc, `Latin punctuation "${m[1]}" after Persian text (use ؟ ، ؛) at ${snip(prose, m.index, m[0].length)}`);
   for (const m of prose.matchAll(/[^\s\n] {2,}(?=\S)/g)) warn(loc, `double space at ${snip(prose, m.index, 3)}`);
@@ -481,9 +650,19 @@ function checkText(s, loc, field, group) {
   }
   if (!isBody && /\]\(([a-z]+):/.test(s) && !PLAIN_FIELDS.has(field)) checkLinks(s, loc);
 
+  for (const [re, msg] of [
+    [/[۰-۹]\s?%/g, "use the Persian percent sign ٪ after Persian digits"],
+    [/[۰-۹]\.[۰-۹]/g, "use the Persian decimal separator ٫ (U+066B)"],
+    [/[۰-۹],[۰-۹]{3}/g, "use the Persian thousands separator ٬ (U+066C)"],
+    [/(^|[^\u200C])(مونته سوری|اسباب بازی|روبه رو|نیم فاصله|چند لایی|هم قد|دست ساز|کم کم|می توان|نمی توان)/g, "compound needs a ZWNJ"],
+  ])
+    for (const m of prose.matchAll(re)) warn(loc, `${msg}: ${snip(prose, m.index, m[0].length)}`);
+  for (const m of s.matchAll(/\b(TODO|TBD|FIXME|lorem|ipsum)\b|\{\{|\}\}|\?\?\?|؟؟|\[\[|XXX/gi))
+    err(loc, `placeholder text ${snip(s, m.index, m[0].length)}`);
+
   // Claims that must never be invented (manual review).
   for (const m of s.matchAll(
-    /(استاندارد ملی|نشان استاندارد|گواهی‌?نامه|گواهی [A-Z]|دارای (?:گواهی|استاندارد|تأییدیه)|تأییدیهٔ|مورد تأیید|آزمایشگاه|جایزه|سال تأسیس|تأسیس(?:‌شده)? در|هزاران (?:مشتری|خانواده)|[۰-۹0-9]+ ?(?:هزار )?(?:مشتری|خانواده)|رضایت [۰-۹0-9]+)/g,
+    /(استاندارد ملی|نشان استاندارد|گواهی\u200C?نامه|گواهی [A-Z]|دارای (?:گواهی|استاندارد|تأییدیه)|تأییدیهٔ|مورد تأیید|آزمایشگاه|جایزه|سال تأسیس|تأسیس(?:\u200Cشده)? در|هزاران (?:مشتری|خانواده)|[۰-۹0-9]+ ?(?:هزار )?(?:مشتری|خانواده)|رضایت [۰-۹0-9]+|نماد اعتماد|اینماد)/g,
   ))
     note(loc, `claim to confirm: ${snip(s, m.index, m[0].length, 40)}`);
 }
@@ -514,11 +693,9 @@ function checkLinks(md, loc) {
     if (!exists[scheme].has(ref)) err(loc, `link to unknown ${scheme} "${ref}"`);
   }
   for (const m of md.matchAll(/\]\[[^\]]*\]/g)) warn(loc, `reference-style link ${snip(md, m.index, m[0].length)}`);
-  for (const m of md.matchAll(/(?<!\]\()(?<![a-z])(product|category|post|topic|term|page):[a-z0-9-]+(?![^(]*\))/g)) {
-    // a bare scheme reference outside link syntax
-    const before = md.slice(Math.max(0, m.index - 2), m.index);
-    if (before !== "](") warn(loc, `bare "${m[0]}" outside a link`);
-  }
+  const rest = md.replace(LINK, " ").replace(/^\s*::.*$/gm, " ");
+  for (const m of rest.matchAll(/(?<![A-Za-z])(product|category|post|topic|term|page):[a-z0-9-]+/g))
+    warn(loc, `bare "${m[0]}" outside a link`);
 }
 
 function checkMarkdown(md, loc, kind) {
@@ -648,6 +825,7 @@ const groups = [
   ["pages", pages, (x) => `${files.pages}:${x.slug}`, "body"],
   ["authors", authors, (x) => `${files.authors}:${x.slug}`],
   ["reviews", reviews, (x) => `${files.reviews}:${x.product ?? x.authorName}`],
+  ["rooms", rooms, (x) => `${files.rooms}:${x.slug}`, "description"],
 ];
 for (const [group, list, locOf, ...mdFields] of groups) {
   for (const x of list) {
@@ -663,6 +841,7 @@ if (data.faqs && typeName(data.faqs) === "object") {
   for (const k of Object.keys(data.faqs)) faqHygiene(data.faqs[k], `${files.faqs}.${k}`);
 }
 if (data.settings && typeName(data.settings) === "object") walk(data.settings, files.settings, "settings");
+for (const { file, value } of extraFiles) walk(value, file, "extra");
 for (const { file, post } of posts) {
   walk(post, file, "posts");
   seo(post, file);
@@ -680,6 +859,31 @@ for (const { file, post } of posts) {
   }
 }
 
+/* SEO: titles and descriptions must be unique across the site. */
+{
+  const seen = new Map();
+  const add = (v, loc, what) => {
+    if (typeof v !== "string") return;
+    const k = `${what}:${v.trim()}`;
+    if (seen.has(k)) warn(loc, `duplicate ${what} (also ${seen.get(k)})`);
+    else seen.set(k, loc);
+  };
+  const all = [
+    ...categories.map((x) => [x, `${files.categories}:${x.slug}`]),
+    ...products.map((x) => [x, `${files.products}:${x.slug}`]),
+    ...topics.map((x) => [x, `${files.topics}:${x.slug}`]),
+    ...pages.map((x) => [x, `${files.pages}:${x.slug}`]),
+    ...rooms.map((x) => [x, `${files.rooms}:${x.slug}`]),
+    ...posts.map(({ file, post }) => [post, file]),
+  ];
+  for (const [x, loc] of all) {
+    add(x.seoTitle, `${loc}.seoTitle`, "seoTitle");
+    add(x.seoDescription, `${loc}.seoDescription`, "seoDescription");
+  }
+  for (const { file, post } of posts) add(post.title, `${file}.title`, "post title");
+  for (const p of products) add(p.name, `${files.products}:${p.slug}.name`, "product name");
+}
+
 /* Word-count targets from src/db/seed/types.ts. */
 for (const c of categories) {
   const n = wordCount(c.description ?? "");
@@ -692,17 +896,68 @@ for (const p of products) {
   if (s > 40) warn(`${files.products}:${p.slug}.summary`, `${s} words (max 40)`);
 }
 
+/* ------------------------------------------------------------------ external URLs (--check-urls) */
+
+if (CHECK_URLS) {
+  const urls = new Map();
+  const addUrl = (u, loc) => {
+    if (typeof u !== "string" || !/^https?:\/\//.test(u)) return;
+    if (!urls.has(u)) urls.set(u, []);
+    urls.get(u).push(loc);
+  };
+  for (const { file, post } of posts) {
+    (post.sources ?? []).forEach((s, i) => addUrl(s?.url, `${file}.sources[${i}]`));
+    for (const m of (post.body ?? "").matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) addUrl(m[1], `${file}.body`);
+  }
+  const lists = [[topics, files.topics], [glossary, files.glossary], [authors, files.authors]];
+  for (const [list, file] of lists) for (const x of list) (x.sameAs ?? []).forEach((u, i) => addUrl(u, `${file}:${x.slug}.sameAs[${i}]`));
+  for (const [list, file] of [[categories, files.categories], [products, files.products], [glossary, files.glossary], [topics, files.topics], [pages, files.pages]])
+    for (const x of list)
+      for (const f of ["description", "body", "definition"])
+        for (const m of (typeof x[f] === "string" ? x[f] : "").matchAll(/\]\((https?:\/\/[^)\s]+)\)/g)) addUrl(m[1], `${file}:${x.slug}.${f}`);
+  const UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0 Safari/537.36";
+  const check = async (u) => {
+    for (const method of ["HEAD", "GET"]) {
+      try {
+        const res = await fetch(u, { method, redirect: "follow", headers: { "user-agent": UA, accept: "text/html,*/*" }, signal: AbortSignal.timeout(20000) });
+        if (method === "HEAD" && (res.status === 405 || res.status === 403 || res.status >= 500)) continue;
+        return { status: res.status, final: res.url };
+      } catch (e) {
+        if (method === "GET") return { status: 0, error: e.cause?.code ?? e.name };
+      }
+    }
+    return { status: 0, error: "no response" };
+  };
+  const queue = [...urls.keys()];
+  const results = new Map();
+  await Promise.all(Array.from({ length: 8 }, async () => {
+    while (queue.length) {
+      const u = queue.shift();
+      results.set(u, await check(u));
+    }
+  }));
+  let ok = 0;
+  for (const [u, r] of results) {
+    const where = urls.get(u)[0] + (urls.get(u).length > 1 ? ` (+${urls.get(u).length - 1})` : "");
+    if (r.status >= 200 && r.status < 400) ok++;
+    else if (r.status === 404 || r.status === 410) warn(where, `URL returns ${r.status}: ${u}`);
+    else note(where, `URL not verified (${r.status || r.error}; bot-blocked or offline?): ${u}`);
+  }
+  console.log(`URL check: ${ok}/${results.size} reachable`);
+}
+
 /* ------------------------------------------------------------------ report */
 
 const counted = `${categories.length} categories, ${products.length} products, ${postList.length} posts, ` +
-  `${glossary.length} terms, ${topics.length} topics, ${authors.length} authors, ${pages.length} pages, ${reviews.length} reviews`;
+  `${glossary.length} terms, ${topics.length} topics, ${authors.length} authors, ${pages.length} pages, ${reviews.length} reviews` +
+  (rooms.length ? `, ${rooms.length} rooms` : "") + (extraFiles.length ? ` · untyped: ${extraFiles.map((x) => x.file).join(", ")}` : "");
 console.log(`Content QA · ${path.relative(ROOT, DIR) || DIR} · ${counted}${STRICT ? " · strict" : ""}`);
 if (VERBOSE && latinContexts.size) {
   console.log(`\nLatin digit runs allowed in prose (${latinContexts.size}):`);
   for (const [k, n] of [...latinContexts].sort((a, b) => b[1] - a[1])) console.log(`  ${n}× ${JSON.stringify(k)}`);
 }
 if (notes.length) {
-  console.log(`\nManual review (${notes.length}) — brand claims the workshop must be able to back up:`);
+  console.log(`\nManual review (${notes.length}) — not errors; confirm by hand:`);
   for (const n of VERBOSE ? notes : notes.slice(0, 10)) console.log(`  · ${n}`);
   if (!VERBOSE && notes.length > 10) console.log(`  … ${notes.length - 10} more (--verbose)`);
 }
