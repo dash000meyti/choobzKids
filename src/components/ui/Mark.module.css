@@ -1,0 +1,23 @@
+/*
+ * The mustard swash paints right-to-left once, as its line scrolls into view (DESIGN.md §3.5).
+ * The static frame is the full swash from the `mark-swash` utility; the "from" state exists only
+ * where scroll timelines are supported and motion is allowed.
+ */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .paint {
+      animation: swash-paint linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 35%;
+    }
+  }
+}
+
+@keyframes swash-paint {
+  from {
+    background-size: 0% 100%;
+  }
+  to {
+    background-size: 100% 100%;
+  }
+}

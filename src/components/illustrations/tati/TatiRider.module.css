@@ -1,0 +1,177 @@
+/*
+ * Tati on the thread — «تاتی راه افتاد» (DESIGN.md §1.3 G, §9.4). Zero JS.
+ *
+ * .thread  the header's bottom border: Tati's string, slack (55%) ahead, taut behind
+ * .rider   rides toward inline-end on the root scroll timeline (translate);
+ *          on home it also hops in as the cover leaves (transform + opacity)
+ * .body    fades out over the last 3% of the page: he has arrived (opacity)
+ * .wheel   the two near wheels, HTML spans from TatiPose (rotate)
+ * Each property is animated on its own element, so no two animations fight.
+ *
+ * Two deliberate corrections to the §9.4 listing:
+ * - the desktop rule moved the thread itself 34px up into the header; the
+ *   thread stays on the header's bottom edge and only the rider moves;
+ * - the rider's top is derived from its width so his wheels (artboard y 39
+ *   of 40) rest on the thread's centre line at both sizes, and --ride uses
+ *   the rider's actual width (48px on desktop, not 40px).
+ *
+ * --tati-start (optional, set by the header on any ancestor): where the ride
+ * begins, measured from the inline-start edge. Defaults to the page gutter;
+ * the header can push it past the wordmark so the two ducks never overlap.
+ */
+
+.thread {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-start: calc(var(--spacing-header) - 1.5px);
+  height: 1.5px;
+  z-index: var(--z-thread);
+  background: color-mix(in oklab, var(--thread) 55%, transparent);
+  pointer-events: none;
+}
+
+.taut {
+  position: absolute;
+  inset: 0;
+  background: var(--thread);
+  transform-origin: right;
+  scale: 0 1;
+}
+
+.rider {
+  --rider-w: 40px;
+  --rider-start: var(--tati-start, var(--spacing-gutter));
+  --ride: calc(-1 * (100vw - var(--rider-w) - var(--rider-start) - var(--spacing-gutter)));
+  --turns: 10;
+  position: fixed;
+  z-index: var(--z-thread);
+  inset-block-start: calc(var(--spacing-header) - 0.75px - var(--rider-w) * 39 / 48);
+  inset-inline-start: var(--rider-start);
+  width: var(--rider-w);
+  pointer-events: none;
+  /* view-transition-name: tati is set inline in TatiRider.tsx: CSS modules would hash the name */
+}
+
+.rider :global(.wheel) {
+  display: block;
+  position: absolute;
+  width: 25%;
+  aspect-ratio: 1;
+}
+
+@media (min-width: 64rem) {
+  .thread {
+    inset-block-start: calc(var(--spacing-header-lg) - 1.5px);
+  }
+  .rider {
+    --rider-w: 48px;
+    --turns: 36;
+    inset-block-start: calc(var(--spacing-header-lg) - 0.75px - var(--rider-w) * 39 / 48);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    :root:not([data-motion="reduce"]) .rider {
+      animation: tati-ride linear both;
+      animation-timeline: scroll(root block);
+    }
+    :root:not([data-motion="reduce"]) .body {
+      animation: tati-home linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 97% 100%;
+    }
+    :root:not([data-motion="reduce"]) .rider :global(.wheel) {
+      animation: tati-spin linear both;
+      animation-timeline: scroll(root block);
+    }
+    :root:not([data-motion="reduce"]) .taut {
+      animation: thread-pull linear both;
+      animation-timeline: scroll(root block);
+    }
+  }
+}
+
+/* RTL: toward inline-end (left) */
+@keyframes tati-ride {
+  to {
+    translate: var(--ride) 0;
+  }
+}
+/* rolling left = counter-clockwise */
+@keyframes tati-spin {
+  to {
+    rotate: calc(var(--turns) * -1turn);
+  }
+}
+@keyframes thread-pull {
+  to {
+    scale: 1 1;
+  }
+}
+/* he has arrived */
+@keyframes tati-home {
+  to {
+    opacity: 0;
+  }
+}
+
+/*
+ * Home: hidden until the cover leaves (outer element); fades as TheEnd
+ * arrives (inner element). The cover and TheEnd sections carry the global
+ * classes .cover and .the-end; the rider lives in the header, outside both,
+ * so their named view timelines are lifted to <body> with timeline-scope.
+ */
+:global(body):has(.rider):has(:global(.cover)) {
+  timeline-scope: --cover, --end;
+}
+:global(body):has(.rider) :global(.cover) {
+  view-timeline: --cover block;
+}
+:global(body):has(.rider) :global(.the-end) {
+  view-timeline: --end block;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :root:not([data-motion="reduce"]) :global(body:has(.cover)) .rider {
+      animation: tati-ride linear both, rider-hop linear both;
+      animation-timeline: scroll(root block), --cover;
+      animation-range: normal, exit 45% exit 70%;
+    }
+    :root:not([data-motion="reduce"]) :global(body:has(.cover)) .body {
+      animation: rider-leave linear both;
+      animation-timeline: --end;
+      animation-range: entry 0% entry 40%;
+    }
+  }
+}
+
+/* transform composes with translate */
+@keyframes rider-hop {
+  from {
+    opacity: 0;
+    transform: translateY(-16px);
+  }
+}
+@keyframes rider-leave {
+  to {
+    opacity: 0;
+  }
+}
+
+/* No scroll timelines or reduced motion: the rider stays at the thread's start; on home it is hidden */
+@supports not (animation-timeline: scroll()) {
+  :global(body:has(.cover)) .rider {
+    display: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :global(body:has(.cover)) .rider {
+    display: none;
+  }
+}
+:root[data-motion="reduce"] :global(body:has(.cover)) .rider,
+:global(body:has(.page-404)) .rider {
+  display: none;
+}

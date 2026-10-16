@@ -1,0 +1,31 @@
+/*
+ * Four cart wheels = four installments (DESIGN.md §4.13). The wheel lives in an HTML wrapper so
+ * its rotation composites (§9.1 rule 6). An island that recomputes totals (RoomTotals) sets
+ * `data-spin` on the wrapper and removes it on `animationend`: a quarter turn forward, then settle.
+ */
+.wheel {
+  display: inline-grid;
+  place-items: center;
+  inline-size: var(--wheel-size, 2rem);
+  block-size: var(--wheel-size, 2rem);
+}
+.wheel > svg {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .wheel[data-spin] {
+    animation: wheel-quarter var(--dur-scene) var(--ease-settle);
+  }
+}
+
+/* Rolling toward inline-end (left in RTL) turns the wheel counter-clockwise. */
+@keyframes wheel-quarter {
+  from {
+    rotate: calc(var(--dir, -1) * -90deg);
+  }
+  to {
+    rotate: 0deg;
+  }
+}

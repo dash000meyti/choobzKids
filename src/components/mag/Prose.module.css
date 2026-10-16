@@ -1,0 +1,243 @@
+/*
+ * Reading typography for Markdown bodies (DESIGN.md §2.4, §7.3; FONTS.md §7).
+ * Text sits flat on paper; blocks bring their own surfaces. The caller sets the measure
+ * (`max-w-prose` on articles); this file sets rhythm, headings, lists and inline marks.
+ */
+
+.prose {
+  color: var(--ink);
+  font-family: var(--font-body);
+  text-align: start;
+  overflow-wrap: break-word;
+}
+
+/* ---------- Variants ---------- */
+
+.article {
+  font-size: var(--text-lead);
+  line-height: 1.9;
+}
+
+.product,
+.page {
+  font-size: var(--text-base);
+  line-height: 1.85;
+}
+
+.compact {
+  font-size: var(--text-base);
+  line-height: 1.8;
+}
+
+/* ---------- Flow ---------- */
+
+.prose > *,
+.prose section > * {
+  margin-block: 0;
+}
+
+.prose > * + *,
+.prose section > * + * {
+  margin-block-start: 1em;
+}
+
+.compact > * + *,
+.compact section > * + * {
+  margin-block-start: 0.75em;
+}
+
+/* Each H2 opens a section; sections are the big breaths of the page. */
+.prose > section,
+.prose > * + section {
+  margin-block-start: 2.75em;
+}
+
+.compact > section,
+.compact > * + section {
+  margin-block-start: 1.75em;
+}
+
+.prose > section:first-child {
+  margin-block-start: 0;
+}
+
+/* Blocks (callouts, tables, embeds, steps…) mark themselves with data-block. */
+.prose [data-block] {
+  margin-block: 1.75em;
+}
+
+.prose [data-block]:first-child {
+  margin-block-start: 0;
+}
+
+/* ---------- Headings ---------- */
+
+.prose h2,
+.prose h3,
+.prose h4 {
+  font-family: var(--font-body);
+  color: var(--ink);
+  text-wrap: balance;
+}
+
+.prose h2 {
+  font-size: var(--text-xl);
+  font-weight: 800;
+  line-height: 1.4;
+}
+
+.prose h3 {
+  font-size: var(--text-lg);
+  font-weight: 700;
+  line-height: 1.5;
+  margin-block-start: 1.9em;
+}
+
+.prose h4 {
+  font-size: 1em;
+  font-weight: 700;
+  margin-block-start: 1.5em;
+}
+
+.compact h2 {
+  font-size: var(--text-lg);
+}
+
+.compact h3 {
+  font-size: 1.05em;
+}
+
+.prose :is(h2, h3, h4) + * {
+  margin-block-start: 0.55em;
+}
+
+/*
+ * The answer paragraph: the first paragraph after a question H2 is the 40–60-word direct
+ * answer (CONTENT-FORMAT «Structure rules», SEO.md §4.3), set a touch larger and firmer.
+ */
+.prose h2 + p {
+  font-size: 1.06em;
+  font-weight: 500;
+  line-height: 1.85;
+}
+
+.compact h2 + p {
+  font-size: 1em;
+}
+
+/* «#» deep link at the heading's end: visible on touch, revealed on hover/focus with a pointer. */
+.anchor {
+  display: inline-block;
+  margin-inline-start: 0.4em;
+  padding-inline: 0.15em;
+  border-radius: var(--radius-bit-xs);
+  color: var(--ink-muted);
+  font-weight: 600;
+  text-decoration: none;
+  opacity: 0.55;
+  transition: opacity var(--dur-quick) var(--ease-wood);
+}
+
+.anchor::before {
+  content: "#";
+  content: "#" / "";
+}
+
+@media (hover: hover) {
+  .anchor {
+    opacity: 0;
+  }
+
+  :is(h2, h3):hover > .anchor,
+  .anchor:focus-visible {
+    opacity: 1;
+  }
+}
+
+/* ---------- Inline ---------- */
+
+.prose strong {
+  font-weight: 700;
+}
+
+/* Persian is never set in italics: emphasis is weight (FONTS.md §7). */
+.prose em {
+  font-style: normal;
+  font-weight: 600;
+}
+
+.prose code {
+  direction: ltr;
+  unicode-bidi: isolate;
+  padding: 0.1em 0.35em;
+  border-radius: var(--radius-bit-xs);
+  background: var(--surface-sunken);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.85em;
+}
+
+.prose sup {
+  line-height: 0;
+}
+
+/* ---------- Lists ---------- */
+
+.prose ul,
+.prose ol {
+  padding-inline-start: 1.4em;
+}
+
+.prose ul {
+  list-style-type: disc;
+}
+
+/* Persian digits for list numbers (FONTS.md §7.7). */
+.prose ol {
+  list-style-type: persian;
+}
+
+.prose li + li,
+.prose li > ul,
+.prose li > ol {
+  margin-block-start: 0.45em;
+}
+
+.prose li::marker {
+  color: var(--ply-3);
+}
+
+/* ---------- Rules and media ---------- */
+
+.prose hr {
+  inline-size: 6rem;
+  block-size: 5px;
+  margin-inline: auto;
+  margin-block: 2.5em;
+  border: 0;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--ply-1) 0 1.5px,
+    var(--ply-2) 1.5px 2.5px,
+    var(--ply-1) 2.5px 4px,
+    var(--ply-3) 4px 5px
+  );
+}
+
+.prose img {
+  max-inline-size: 100%;
+  block-size: auto;
+}
+
+/* GFM footnotes: a quiet list at the end. */
+.prose :global(.footnotes) {
+  margin-block-start: 3em;
+  font-size: var(--text-sm);
+  color: var(--ink-muted);
+}
+
+@media print {
+  .anchor {
+    display: none;
+  }
+}

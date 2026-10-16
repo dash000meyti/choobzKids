@@ -7,6 +7,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { openDatabase } from "../src/db/open";
 import { isDatabaseEmpty, seedDatabase, wipeContent } from "../src/db/seed/load";
+import { rebuildSearchIndex } from "../src/db/seed/search-index";
 
 const force = process.argv.includes("--force");
 const db = openDatabase();
@@ -24,4 +25,5 @@ if (!isDatabaseEmpty(db) && !force) {
   if (force) wipeContent(db);
   seedDatabase(db, { log: (m) => console.log(`[seed] ${m}`) });
 }
+console.log(`[seed] search index: ${rebuildSearchIndex(db)} documents`);
 db.$client.close();

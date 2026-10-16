@@ -93,7 +93,7 @@ export const AGE_STAGES: AgeStage[] = [
     medianCm: 116,
     milestone: "انرژی‌ش تمومی نداره؛ دیوار صعود، میزِ خودش و رول نقاشیِ خودش.",
     hub: "3-6-years",
-    hubAnchor: "3-6-years",
+    hubAnchor: "3-4-years",
     roomPreset: "preschool-3-6",
   },
 ];

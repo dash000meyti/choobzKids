@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
   partialPrefetching: true,
   reactCompiler: true,
   poweredByHeader: false,
+  // src/proxy.ts strips trailing slashes together with the other URL fixes, in one 301 (SEO.md §7.4).
+  skipTrailingSlashRedirect: true,
 
   cacheLife: {
     // CMS-edited content: on-demand tags do the real work; time-based is a safety net.
@@ -48,7 +50,10 @@ const nextConfig: NextConfig = {
 
   turbopack: {
     rules: {
+      // Tailwind only processes plain stylesheets. CSS modules must keep Next's native
+      // module handling — renaming them to "*.css" would turn them into global CSS.
       "*.css": {
+        condition: { not: { path: /\.module\.css$/ } },
         loaders: ["@tailwindcss/turbopack"],
         as: "*.css",
       },
@@ -59,6 +64,17 @@ const nextConfig: NextConfig = {
     // Tailwind output is small; inlining removes the render-blocking CSS request on first visits.
     inlineCss: true,
     agentUpgrade: process.env.CI ? false : "security",
+  },
+
+  async rewrites() {
+    return {
+      beforeFiles: [
+        // Sitemap index lives in a route handler: a `sitemap.xml` folder would clash with Next's metadata route.
+        { source: "/sitemap.xml", destination: "/sitemap-index.xml" },
+        // Markdown alternates: /mag/x.md, /glossary/x.md, /product/x.md (SEO.md §5.6).
+        { source: "/:type(mag|glossary|product)/:slug([a-z0-9-]+).md", destination: "/md/:type/:slug" },
+      ],
+    };
   },
 
   async headers() {

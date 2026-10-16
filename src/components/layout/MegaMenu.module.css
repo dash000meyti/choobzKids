@@ -1,0 +1,85 @@
+/*
+ * Mega menu panels: fixed under the 72px desktop header, as wide as the page container, on
+ * fresh paper. The lid opening (rotateX −6° → 0 from the top edge, plus opacity, 240 ms) is
+ * layered on with @starting-style only where motion is allowed; the open panel is the frame.
+ */
+.panel {
+  position: fixed;
+  inset: var(--spacing-header-lg) 0 auto;
+  inline-size: min(var(--container-page), 100% - 2 * var(--spacing-gutter));
+  block-size: auto;
+  max-block-size: calc(100dvh - var(--spacing-header-lg) - 1.5rem);
+  margin: 0 auto;
+  padding: 1.75rem 2rem 2rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  border-end-start-radius: var(--radius-bit-lg);
+  border-end-end-radius: var(--radius-bit-lg);
+  color: var(--ink);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+.panel::backdrop {
+  background: transparent;
+}
+
+.chevron {
+  transition: rotate var(--dur-base) var(--ease-wood);
+}
+.trigger:has(+ .panel:popover-open) .chevron {
+  rotate: 180deg;
+}
+.trigger:has(+ .panel:popover-open) {
+  color: var(--accent);
+}
+
+/* Category cubby: a recessed kahgel box with the drawing on a ply shelf, and a raised name plate. */
+.cubby {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: var(--radius-bit-sm);
+}
+.cubbyBox {
+  position: relative;
+  display: grid;
+  place-items: end center;
+  inline-size: 100%;
+  block-size: 6rem;
+  padding-block-end: 5px;
+  border-radius: var(--radius-bit-sm);
+  background: var(--surface);
+  box-shadow: var(--inset-shadow-tray);
+  overflow: hidden;
+}
+.plate {
+  position: relative;
+  margin-block-start: -0.5rem;
+  min-inline-size: 70%;
+  padding: 0.35rem 0.75rem;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .panel {
+    transform-origin: top center;
+    transition:
+      transform var(--dur-base) var(--ease-wood),
+      opacity var(--dur-base) var(--ease-wood),
+      overlay var(--dur-base) allow-discrete,
+      display var(--dur-base) allow-discrete;
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .panel:not(:popover-open) {
+    transform: perspective(900px) rotateX(-6deg);
+    opacity: 0;
+    transition-duration: var(--dur-quick);
+    transition-timing-function: var(--ease-exit);
+  }
+  @starting-style {
+    :root:not([data-motion="reduce"]):not([data-lite]) .panel:popover-open {
+      transform: perspective(900px) rotateX(-6deg);
+      opacity: 0;
+    }
+  }
+}

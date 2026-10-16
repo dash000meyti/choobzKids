@@ -1,0 +1,104 @@
+/*
+ * RoomCard (DESIGN.md §4.11). Card face as the other cards: raised paper on a ply edge, lifts on
+ * hover, seats when its stretched title link is pressed, rings the whole card on focus.
+ * The mini room is a stage, not a subject: flat theme tokens only, so it dims with «لالایی».
+ * The scene is physical (not mirrored in RTL), like RoomKit: the door is on the right.
+ */
+
+.card {
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-quick) var(--ease-wood),
+    box-shadow var(--dur-quick) var(--ease-wood);
+}
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -2px;
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+.card:has(.link:active) {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.link:focus-visible {
+  outline: none;
+}
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* ---------- Mini room (physical coordinates, like RoomKit) ---------- */
+
+.scene {
+  background-color: var(--surface);
+}
+
+.floor,
+.skirting,
+.casing,
+.opening,
+.corner {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Floor strips: long boards with faint seams. */
+.floor {
+  left: 0;
+  right: 0;
+  top: var(--floor-top);
+  bottom: 0;
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0 calc(12.5% - 1px),
+      rgb(var(--shadow-rgb) / 0.08) calc(12.5% - 1px) 12.5%
+    ),
+    var(--wood-top);
+}
+
+.skirting {
+  left: 0;
+  right: 0;
+  top: var(--skirting-top);
+  bottom: calc(100% - var(--floor-top));
+  background-color: var(--surface-raised);
+  border-block: 1px solid rgb(var(--shadow-rgb) / 0.12);
+}
+
+/* Doorway on the back wall: a birch casing around a darker opening. */
+.casing {
+  left: var(--casing-left);
+  right: 0;
+  top: var(--casing-top);
+  bottom: calc(100% - var(--floor-top));
+  background-color: var(--wood-top);
+}
+.opening {
+  left: var(--opening-left);
+  right: var(--opening-right);
+  top: var(--opening-top);
+  bottom: calc(100% - var(--floor-top));
+  background-color: var(--surface-sunken);
+}
+
+/* The 9 m² room: the back wall turns a corner into a receding side wall. */
+.corner {
+  left: 79.7%;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: linear-gradient(to right, rgb(var(--shadow-rgb) / 0.07), rgb(var(--shadow-rgb) / 0.02));
+  border-left: 1px solid rgb(var(--shadow-rgb) / 0.14);
+}

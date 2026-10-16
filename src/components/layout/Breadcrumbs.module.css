@@ -1,0 +1,70 @@
+/* Trail on a string: a 1px ink-20% thread between items, a 6px honey bead with a ply ring on it. */
+.nav {
+  font-size: var(--text-xs);
+  line-height: 1.65;
+}
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  row-gap: 0.25rem;
+}
+
+.item {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 1.75rem;
+  white-space: nowrap;
+}
+.item + .item {
+  padding-inline-start: 1.75rem;
+}
+/* The string segment between two items… */
+.item + .item::before {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0.3rem;
+  inline-size: 1.15rem;
+  inset-block-start: 50%;
+  block-size: 1px;
+  background: color-mix(in oklab, var(--ink) 20%, transparent);
+}
+/* …and the wooden bead threaded on it. */
+.item + .item::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: calc(0.3rem + 1.15rem / 2 - 3px);
+  inset-block-start: calc(50% - 3px);
+  inline-size: 6px;
+  block-size: 6px;
+  border-radius: 999px;
+  background: var(--color-asal);
+  box-shadow: 0 0 0 1px var(--ply-1);
+}
+
+.current {
+  display: inline-block;
+  max-inline-size: 22ch;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--ink-muted);
+}
+
+/* Phones: one line that scrolls inside the nav, fading out at its end (inline-end = left). */
+@media (max-width: 39.999rem) {
+  .nav {
+    overflow-x: auto;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, transparent, #000 2rem);
+  }
+  .nav::-webkit-scrollbar {
+    display: none;
+  }
+  .list {
+    flex-wrap: nowrap;
+    inline-size: max-content;
+    padding-inline-end: 2rem;
+  }
+}

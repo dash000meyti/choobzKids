@@ -1,0 +1,104 @@
+/*
+ * Product embeds in articles (DESIGN.md §7.3): raised pieces on a laminated ply edge, so they
+ * read as tappable. Shared by ProductEmbed (one horizontal card) and ProductRow (a small row).
+ * The name link is stretched over the card; quick add is raised above it.
+ */
+
+.card {
+  position: relative;
+  border-radius: var(--radius-bit);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-quick) var(--ease-wood),
+    box-shadow var(--dur-quick) var(--ease-wood);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -2px;
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+
+.card:has(.link:active) {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+
+.link:focus-visible {
+  outline: none;
+}
+
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.above {
+  position: relative;
+  z-index: 1;
+}
+
+/* One product: stage at inline-start, details beside it. */
+.embed {
+  display: grid;
+  grid-template-columns: 7rem minmax(0, 1fr);
+  gap: 1rem;
+  align-items: start;
+  padding-block: 0.75rem;
+  padding-inline: 0.75rem 1rem;
+}
+
+@media (min-width: 40rem) {
+  .embed {
+    grid-template-columns: 9rem minmax(0, 1fr);
+    gap: 1.25rem;
+    padding-block: 1rem;
+    padding-inline: 1rem 1.25rem;
+  }
+}
+
+.stage {
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 4 / 5;
+}
+
+/* A row of 2–4 smaller pieces (::products). */
+.row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .row[data-count="3"] {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .row[data-count="4"] {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* `.row` keeps the prose list spacing off the cards. */
+.row .item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.5rem 0.5rem 0.35rem;
+}

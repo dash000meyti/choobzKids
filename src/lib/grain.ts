@@ -6,7 +6,7 @@ import { fnv1a } from "./utils";
  */
 export function grainFor(slug: string) {
   const h = fnv1a(slug);
-  return { index: h % 12, flip: (h >> 4) & 1 ? -1 : 1, offset: ((h >> 5) % 4) * 25 };
+  return { index: h % 12, flip: (h >>> 4) & 1 ? -1 : 1, offset: ((h >>> 5) % 4) * 25 };
 }
 
 /** CSS custom properties consumed by the `.grain` pseudo-element. */

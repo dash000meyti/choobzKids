@@ -1,0 +1,118 @@
+/* Myth / fact: two leaves joined by a hinge (DESIGN.md §7.3). Static: both leaves always shown. */
+
+.myth {
+  container-type: inline-size;
+}
+
+.title {
+  margin-block-end: 0.75rem;
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.leaves {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.leaf {
+  position: relative;
+  padding: 1rem 1.25rem 1.25rem;
+}
+
+.belief {
+  border-start-start-radius: var(--radius-bit);
+  border-start-end-radius: var(--radius-bit);
+  background: var(--surface);
+}
+
+.fact {
+  border-end-start-radius: var(--radius-bit);
+  border-end-end-radius: var(--radius-bit);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+
+/* The hinge: a stitched seam with a pin at each end, where the two leaves meet. */
+.fact::before,
+.fact::after {
+  content: "";
+  position: absolute;
+  pointer-events: none;
+}
+
+.fact::before {
+  inset-inline: 1.25rem;
+  inset-block-start: 0;
+  border-block-start: 2px dashed color-mix(in oklab, var(--ink) 28%, transparent);
+}
+
+.fact::after {
+  inset-inline: 0.75rem;
+  inset-block-start: -4px;
+  block-size: 8px;
+  background:
+    radial-gradient(circle closest-side, var(--ply-2) 92%, transparent) left / 8px 8px no-repeat,
+    radial-gradient(circle closest-side, var(--ply-2) 92%, transparent) right / 8px 8px no-repeat;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-block-end: 0.35rem;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.6;
+}
+
+.belief .label {
+  color: var(--ink-muted);
+}
+
+.fact .label {
+  color: var(--success);
+}
+
+.body {
+  font-size: var(--text-base);
+  line-height: 1.85;
+}
+
+.body > * + * {
+  margin-block-start: 0.75rem;
+}
+
+@container (min-width: 34rem) {
+  .leaves {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .belief {
+    border-start-end-radius: 0;
+    border-end-start-radius: var(--radius-bit);
+  }
+
+  .fact {
+    border-start-end-radius: var(--radius-bit);
+    border-end-start-radius: 0;
+  }
+
+  .fact::before {
+    inset-inline: 0 auto;
+    inset-block: 1.25rem;
+    border-block-start: 0;
+    border-inline-start: 2px dashed color-mix(in oklab, var(--ink) 28%, transparent);
+  }
+
+  .fact::after {
+    inset-inline: -4px auto;
+    inset-block: 0.75rem;
+    inline-size: 8px;
+    block-size: auto;
+    background:
+      radial-gradient(circle closest-side, var(--ply-2) 92%, transparent) top / 8px 8px no-repeat,
+      radial-gradient(circle closest-side, var(--ply-2) 92%, transparent) bottom / 8px 8px no-repeat;
+  }
+}

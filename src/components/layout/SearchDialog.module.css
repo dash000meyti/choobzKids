@@ -1,0 +1,62 @@
+/*
+ * Search sheet: drops from the top edge, full width, as tall as its content (the suggestion list
+ * scrolls inside the page area below the header row). Slide + fade only where motion is allowed.
+ */
+.dialog {
+  position: fixed;
+  inset: 0 0 auto;
+  inline-size: 100%;
+  max-inline-size: 100%;
+  max-block-size: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  color: var(--ink);
+  background: var(--surface-raised);
+  border-end-start-radius: var(--radius-bit-lg);
+  border-end-end-radius: var(--radius-bit-lg);
+  box-shadow: var(--shadow-paper);
+}
+.dialog::backdrop {
+  background: rgb(51 37 27 / 0.4);
+}
+
+:global(html):has(.dialog[open]) {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .dialog {
+    transition:
+      translate var(--dur-base) var(--ease-wood),
+      opacity var(--dur-base) var(--ease-wood),
+      overlay var(--dur-base) allow-discrete,
+      display var(--dur-base) allow-discrete;
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .dialog:not([open]) {
+    translate: 0 -1.5rem;
+    opacity: 0;
+    transition-duration: var(--dur-quick);
+    transition-timing-function: var(--ease-exit);
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .dialog::backdrop {
+    transition:
+      opacity var(--dur-base) var(--ease-wood),
+      overlay var(--dur-base) allow-discrete,
+      display var(--dur-base) allow-discrete;
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .dialog:not([open])::backdrop {
+    opacity: 0;
+  }
+  @starting-style {
+    :root:not([data-motion="reduce"]):not([data-lite]) .dialog[open] {
+      translate: 0 -1.5rem;
+      opacity: 0;
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .dialog[open]::backdrop {
+      opacity: 0;
+    }
+  }
+}

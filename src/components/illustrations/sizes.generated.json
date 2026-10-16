@@ -1,0 +1,1030 @@
+{
+  "learning-tower": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [
+      "white"
+    ],
+    "views": {
+      "assembled": {
+        "width": 769,
+        "height": 1104,
+        "originX": 256.9,
+        "originY": 1041.9
+      },
+      "exploded": {
+        "width": 1105.5,
+        "height": 1113.4,
+        "originX": 425.2,
+        "originY": 1042.1
+      },
+      "ortho": {
+        "width": 1333,
+        "height": 1093.5,
+        "originX": 738.5,
+        "originY": 963
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 45,
+          "x": 72.3,
+          "y": 94.2
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 90,
+          "x": 95.3,
+          "y": 46.9
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 45,
+          "x": 26.7,
+          "y": 94.2
+        },
+        {
+          "key": "extra.ارتفاع سکو (وسط)",
+          "axis": "h",
+          "valueCm": 38,
+          "x": 4.7,
+          "y": 70.7
+        }
+      ],
+      "frame": {
+        "floorY": 88.1,
+        "front": [
+          54.4,
+          90.2
+        ],
+        "side": [
+          9.8,
+          43.5
+        ]
+      }
+    }
+  },
+  "pikler-triangle": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [
+      "white"
+    ],
+    "views": {
+      "assembled": {
+        "width": 1975.5,
+        "height": 1107.1,
+        "originX": 985.3,
+        "originY": 984.8
+      },
+      "exploded": {
+        "width": 2019.5,
+        "height": 1095.4,
+        "originX": 986.4,
+        "originY": 986
+      },
+      "ortho": {
+        "width": 2430.4,
+        "height": 932.9,
+        "originX": 1459.8,
+        "originY": 809.6
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "depthCm",
+          "axis": "w",
+          "valueCm": 85,
+          "x": 77.6,
+          "y": 93.6
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 75,
+          "x": 97.5,
+          "y": 46.6
+        },
+        {
+          "key": "widthCm",
+          "axis": "d",
+          "valueCm": 70,
+          "x": 17.4,
+          "y": 93.6
+        }
+      ],
+      "frame": {
+        "floorY": 86.8,
+        "front": [
+          37.9,
+          94.9
+        ],
+        "side": [
+          2.4,
+          32.3
+        ]
+      }
+    }
+  },
+  "pikler-arch": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 1363.1,
+        "height": 703.8,
+        "originX": 314.8,
+        "originY": 618
+      },
+      "exploded": {
+        "width": 1519.1,
+        "height": 807.9,
+        "originX": 392.8,
+        "originY": 664.9
+      },
+      "ortho": {
+        "width": 1832.4,
+        "height": 654.9,
+        "originX": 745.6,
+        "originY": 517.1
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {
+      "rocker": {
+        "assembled": {
+          "width": 1242.5,
+          "height": 683,
+          "originX": 254.5,
+          "originY": 614
+        }
+      }
+    },
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 95,
+          "x": 66.6,
+          "y": 89.8
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 45,
+          "x": 96.4,
+          "y": 44.6
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 50,
+          "x": 18,
+          "y": 89.8
+        }
+      ],
+      "frame": {
+        "floorY": 79,
+        "front": [
+          40.7,
+          92.5
+        ],
+        "side": [
+          3.6,
+          32.4
+        ]
+      }
+    }
+  },
+  "swedish-ladder": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 1371.3,
+        "height": 2184.9,
+        "originX": 350.6,
+        "originY": 2090
+      },
+      "exploded": {
+        "width": 1542.5,
+        "height": 2205.8,
+        "originX": 436.2,
+        "originY": 2090.6
+      },
+      "ortho": {
+        "width": 1790,
+        "height": 2430,
+        "originX": 655,
+        "originY": 2140
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 517.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 80,
+          "x": 58.9,
+          "y": 94.2
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 200,
+          "x": 92.2,
+          "y": 46.9
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 15,
+          "x": 12,
+          "y": 94.2
+        }
+      ],
+      "frame": {
+        "floorY": 88.1,
+        "front": [
+          34.1,
+          83.8
+        ],
+        "side": [
+          7.8,
+          16.2
+        ]
+      }
+    }
+  },
+  "climbing-hex": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 1338.8,
+        "height": 1357.4,
+        "originX": 68.2,
+        "originY": 1308.5
+      },
+      "exploded": {
+        "width": 1363.1,
+        "height": 1357.7,
+        "originX": 68.4,
+        "originY": 1308.6
+      },
+      "ortho": {
+        "width": 1815.7,
+        "height": 1519,
+        "originX": 385.6,
+        "originY": 1337.6
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 69,
+          "x": 40.2,
+          "y": 94.2
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 60,
+          "x": 95.2,
+          "y": 46.9
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 8,
+          "x": 8.1,
+          "y": 94.2
+        }
+      ],
+      "frame": {
+        "floorY": 88.1,
+        "front": [
+          21.4,
+          90
+        ],
+        "side": [
+          4.8,
+          10.3
+        ]
+      }
+    }
+  },
+  "balance-board": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 993.5,
+        "height": 336.7,
+        "originX": 161.7,
+        "originY": 286.8
+      },
+      "exploded": {
+        "width": 993.5,
+        "height": 336.7,
+        "originX": 161.7,
+        "originY": 286.8
+      },
+      "ortho": {
+        "width": 1399.8,
+        "height": 350.9,
+        "originX": 483.9,
+        "originY": 235.9
+      },
+      "flat": {
+        "width": 1944.8,
+        "height": 1754.8,
+        "originX": 37.4,
+        "originY": 37.4
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 80,
+          "x": 63.1,
+          "y": 84
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 18,
+          "x": 96,
+          "y": 41.6
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 30,
+          "x": 14.7,
+          "y": 84
+        }
+      ],
+      "frame": {
+        "floorY": 67.2,
+        "front": [
+          34.6,
+          91.7
+        ],
+        "side": [
+          4,
+          25.4
+        ]
+      }
+    }
+  },
+  "front-facing-bookshelf": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 786.3,
+        "height": 966.7,
+        "originX": 119.1,
+        "originY": 913.9
+      },
+      "exploded": {
+        "width": 1162.2,
+        "height": 1080.4,
+        "originX": 343.9,
+        "originY": 1009.2
+      },
+      "ortho": {
+        "width": 1020,
+        "height": 1080,
+        "originX": 304,
+        "originY": 896
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 60,
+          "x": 59.2,
+          "y": 88.5
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 80,
+          "x": 94.5,
+          "y": 45.9
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 12,
+          "x": 11.4,
+          "y": 88.5
+        },
+        {
+          "key": "extra.عمق هر طبقه",
+          "axis": "d",
+          "valueCm": 8,
+          "x": 10.9,
+          "y": 94.8
+        }
+      ],
+      "frame": {
+        "floorY": 83,
+        "front": [
+          29.8,
+          88.6
+        ],
+        "side": [
+          5.5,
+          17.3
+        ]
+      }
+    }
+  },
+  "wall-art-roll": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 766.2,
+        "height": 949.4,
+        "originX": 119.8,
+        "originY": 910.7
+      },
+      "exploded": {
+        "width": 923.8,
+        "height": 1149.2,
+        "originX": 129.8,
+        "originY": 1104.9
+      },
+      "ortho": {
+        "width": 1058.8,
+        "height": 1105,
+        "originX": 315.5,
+        "originY": 909.5
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 62,
+          "x": 59.1,
+          "y": 88.1
+        },
+        {
+          "key": "extra.عرض رول کاغذ",
+          "axis": "w",
+          "valueCm": 45,
+          "x": 59.1,
+          "y": 94.6
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 85,
+          "x": 94.4,
+          "y": 43.8
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 12,
+          "x": 11.3,
+          "y": 88.1
+        },
+        {
+          "key": "extra.عمق طاقچهٔ ابزار",
+          "axis": "d",
+          "valueCm": 8,
+          "x": 10.8,
+          "y": 94.6
+        }
+      ],
+      "frame": {
+        "floorY": 82.3,
+        "front": [
+          29.8,
+          88.4
+        ],
+        "side": [
+          5.6,
+          17
+        ]
+      }
+    }
+  },
+  "kids-table-chair": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 946.5,
+        "height": 740.3,
+        "originX": 233.4,
+        "originY": 615.6
+      },
+      "exploded": {
+        "width": 1662.6,
+        "height": 1022.8,
+        "originX": 393.3,
+        "originY": 805.9
+      },
+      "ortho": {
+        "width": 2279.7,
+        "height": 733,
+        "originX": 1116.6,
+        "originY": 569.7
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 60,
+          "x": 62.1,
+          "y": 85
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 50,
+          "x": 15.5,
+          "y": 85
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 46,
+          "x": 2.2,
+          "y": 46.3
+        },
+        {
+          "key": "extra.عرض صندلی",
+          "axis": "d",
+          "valueCm": 30,
+          "x": 37.4,
+          "y": 93.2
+        },
+        {
+          "key": "extra.ارتفاع نشیمن صندلی",
+          "axis": "h",
+          "valueCm": 26,
+          "x": 95.2,
+          "y": 60
+        },
+        {
+          "key": "extra.ارتفاع کل صندلی",
+          "axis": "h",
+          "valueCm": 52,
+          "x": 97.8,
+          "y": 42.3
+        }
+      ],
+      "frame": {
+        "floorY": 77.7,
+        "front": [
+          49,
+          92.8
+        ],
+        "side": [
+          4.5,
+          44
+        ]
+      }
+    }
+  },
+  "montessori-shelf": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 1214.3,
+        "height": 852.4,
+        "originX": 222.1,
+        "originY": 778.2
+      },
+      "exploded": {
+        "width": 1596.4,
+        "height": 871.6,
+        "originX": 447.8,
+        "originY": 774
+      },
+      "ortho": {
+        "width": 1614,
+        "height": 693.5,
+        "originX": 507,
+        "originY": 563
+      },
+      "flat": {
+        "width": 2537.8,
+        "height": 1317.7,
+        "originX": 48.9,
+        "originY": 48.9
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 90,
+          "x": 59.3,
+          "y": 90.9
+        },
+        {
+          "key": "extra.ارتفاع فضای هر طبقه",
+          "axis": "h",
+          "valueCm": 22,
+          "x": 91.4,
+          "y": 61.9
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 50,
+          "x": 96.1,
+          "y": 45.1
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 30,
+          "x": 13.2,
+          "y": 90.9
+        }
+      ],
+      "frame": {
+        "floorY": 81.2,
+        "front": [
+          31.4,
+          87.2
+        ],
+        "side": [
+          3.9,
+          22.5
+        ]
+      }
+    }
+  },
+  "rainbow-stacker": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 467.7,
+        "height": 244.6,
+        "originX": 69,
+        "originY": 214.6
+      },
+      "exploded": {
+        "width": 550.2,
+        "height": 299.6,
+        "originX": 71.3,
+        "originY": 216.9
+      },
+      "ortho": {
+        "width": 565,
+        "height": 257.4,
+        "originX": 152.8,
+        "originY": 205.2
+      },
+      "flat": {
+        "width": 416,
+        "height": 246,
+        "originX": 8,
+        "originY": 8
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 36,
+          "x": 58.9,
+          "y": 90.2
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 18,
+          "x": 95.5,
+          "y": 44.8
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 7,
+          "x": 10.7,
+          "y": 90.2
+        }
+      ],
+      "frame": {
+        "floorY": 79.7,
+        "front": [
+          27,
+          90.8
+        ],
+        "side": [
+          4.5,
+          16.8
+        ]
+      }
+    }
+  },
+  "duck-pull-toy": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 336.4,
+        "height": 214.6,
+        "originX": 135.2,
+        "originY": 193.8
+      },
+      "exploded": {
+        "width": 358.6,
+        "height": 293.3,
+        "originX": 135.8,
+        "originY": 250.5
+      },
+      "ortho": {
+        "width": 467,
+        "height": 203,
+        "originX": 238,
+        "originY": 174
+      },
+      "flat": {
+        "width": 665.6,
+        "height": 365.6,
+        "originX": 12.8,
+        "originY": 12.8
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 20,
+          "x": 72.4,
+          "y": 93.1
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 16,
+          "x": 97,
+          "y": 46.3
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 11,
+          "x": 14.8,
+          "y": 93.1
+        }
+      ],
+      "frame": {
+        "floorY": 85.7,
+        "front": [
+          33.4,
+          93.8
+        ],
+        "side": [
+          3,
+          26.6
+        ]
+      }
+    }
+  },
+  "wooden-blocks": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 662.7,
+        "height": 320,
+        "originX": 156,
+        "originY": 252.1
+      },
+      "exploded": {
+        "width": 734,
+        "height": 455.8,
+        "originX": 161.6,
+        "originY": 384.1
+      },
+      "ortho": {
+        "width": 917.5,
+        "height": 226,
+        "originX": 468.1,
+        "originY": 129.4
+      },
+      "flat": {
+        "width": 1268.9,
+        "height": 658.9,
+        "originX": 24.5,
+        "originY": 24.5
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 33,
+          "x": 69,
+          "y": 71.2
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 25,
+          "x": 20.3,
+          "y": 71.2
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 10,
+          "x": 3.2,
+          "y": 35.1
+        },
+        {
+          "key": "extra.واحد پایه",
+          "axis": "w",
+          "valueCm": 4,
+          "x": 94.6,
+          "y": 87
+        }
+      ],
+      "frame": {
+        "floorY": 57.3,
+        "front": [
+          51,
+          96.8
+        ],
+        "side": [
+          6.6,
+          43.7
+        ]
+      }
+    }
+  },
+  "room-set": {
+    "source": "measured",
+    "stub": false,
+    "finishes": [],
+    "views": {
+      "assembled": {
+        "width": 4475.9,
+        "height": 1649.2,
+        "originX": 622.7,
+        "originY": 1389.2
+      },
+      "exploded": {
+        "width": 5233.2,
+        "height": 1948.5,
+        "originX": 875.3,
+        "originY": 1570.7
+      },
+      "ortho": {
+        "width": 6507.8,
+        "height": 1859,
+        "originX": 1311.9,
+        "originY": 1347.1
+      },
+      "flat": {
+        "width": 2586.4,
+        "height": 3806.4,
+        "originX": 73.2,
+        "originY": 73.2
+      }
+    },
+    "poses": {},
+    "ortho": {
+      "labels": [
+        {
+          "key": "widthCm",
+          "axis": "w",
+          "valueCm": 100,
+          "x": 59.8,
+          "y": 86.7
+        },
+        {
+          "key": "heightCm",
+          "axis": "h",
+          "valueCm": 90,
+          "x": 96.2,
+          "y": 48.3
+        },
+        {
+          "key": "depthCm",
+          "axis": "d",
+          "valueCm": 50,
+          "x": 7.6,
+          "y": 86.7
+        }
+      ],
+      "frame": {
+        "floorY": 72.5,
+        "front": [
+          20.2,
+          92.1
+        ],
+        "side": [
+          3.8,
+          11.5
+        ]
+      }
+    }
+  }
+}

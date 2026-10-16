@@ -1,0 +1,92 @@
+/*
+ * Bottom dock (DESIGN.md §4.2): 64px + the safe area, fixed to the bottom below 1024px.
+ * Unlayered module rules, so `position: fixed` wins over the grain utility's `relative`.
+ */
+.dock {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--z-dock);
+  padding-block-end: env(safe-area-inset-bottom);
+  box-shadow: 0 -8px 20px -14px rgb(var(--shadow-rgb) / 0.45);
+}
+@media (min-width: 64rem) {
+  .dock {
+    display: none;
+  }
+}
+
+.tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  block-size: var(--spacing-dock);
+}
+
+.tab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.125rem;
+  block-size: 100%;
+  color: var(--ink);
+  font-size: var(--text-2xs);
+  line-height: 1.4;
+  font-weight: 600;
+  -webkit-tap-highlight-color: transparent;
+}
+/* The current tab: an anar bead above the icon, plus a bolder label (never colour alone). */
+.tab[aria-current="page"] {
+  font-weight: 700;
+}
+.tab[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.3rem;
+  inset-inline-start: 50%;
+  translate: 50% 0;
+  inline-size: 0.5rem;
+  block-size: 0.5rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 1px 0 var(--accent-press);
+}
+.tab:active {
+  translate: 0 1px;
+}
+
+/*
+ * Product pages: the buy bar ([data-buybar], rendered by the page in this same spot) replaces
+ * the dock. Fallback: the dock is simply hidden there. With scroll timelines and motion allowed,
+ * the dock is shown until the price block ([data-price-timeline]) scrolls away, then turns away
+ * on its bottom hinge while the buy bar turns in on the same timeline.
+ */
+:global(body:has([data-buybar])) .dock {
+  visibility: hidden;
+}
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :global(:root:not([data-motion="reduce"]) body:has([data-buybar])) {
+      timeline-scope: --price;
+    }
+    :global(:root:not([data-motion="reduce"]) [data-price-timeline]) {
+      view-timeline: --price block;
+    }
+    :global(:root:not([data-motion="reduce"]) body:has([data-buybar])) .dock {
+      visibility: visible;
+      transform-origin: bottom center;
+      backface-visibility: hidden;
+      animation: dock-turn-away linear both;
+      animation-timeline: --price;
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+@keyframes dock-turn-away {
+  to {
+    transform: perspective(600px) rotateX(90deg);
+    opacity: 0;
+    visibility: hidden;
+  }
+}

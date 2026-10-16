@@ -1,0 +1,98 @@
+/*
+ * ProductCard (DESIGN.md §4.11, §9.2). A raised paper face on a laminated ply edge.
+ * Pointer devices: the card lifts to shadow-ply-lifted. Pressing the card (its stretched title
+ * link) seats it 2px; pressing the quick-add presses only the quick-add.
+ * Toys play instead of exploding: the duck rolls 8px forward, the balance board and the arch
+ * rock ±4° about their floor point. Only the <img> (an HTML element) moves, never SVG children.
+ */
+
+.card {
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-quick) var(--ease-wood),
+    box-shadow var(--dur-quick) var(--ease-wood);
+}
+
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -2px;
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+
+.card:has(.link:active) {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+
+/* The whole card is the title's link: it covers the card, and the focus ring rings the card. */
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.link:focus-visible {
+  outline: none;
+}
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* Quick-add sits above the stretched link. */
+.above {
+  position: relative;
+  z-index: 1;
+}
+
+/* Wood-chip swatch: the finish colour on a tiny chip with its own ply edge. */
+.chip {
+  display: inline-block;
+  flex: none;
+  inline-size: 1rem;
+  block-size: 1rem;
+  border-radius: 999px;
+  background-color: var(--chip);
+  box-shadow:
+    inset 0 0 0 1px rgb(var(--shadow-rgb) / 0.2),
+    0 1px 0 var(--ply-2),
+    0 2px 0 var(--ply-3);
+}
+
+/* ---------- Toys play (hover-capable devices, motion allowed) ---------- */
+
+.roll img,
+.roll :global(.contact-shadow) {
+  transition: translate var(--dur-gentle) var(--ease-hop);
+}
+.rock img {
+  transform-origin: 50% 100%;
+}
+
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .card:hover .roll img,
+  :root:not([data-motion="reduce"]):not([data-lite]) .card:hover .roll :global(.contact-shadow) {
+    /* Forward = toward inline-end (left in RTL). */
+    translate: calc(var(--dir, -1) * 8px) 0;
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .card:hover .rock img {
+    animation: rock var(--dur-toy) ease-in-out both;
+  }
+}
+
+@keyframes rock {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -4deg;
+  }
+  75% {
+    rotate: 4deg;
+  }
+}

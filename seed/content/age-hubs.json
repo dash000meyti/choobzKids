@@ -1,0 +1,207 @@
+[
+  {
+    "slug": "0-12-months",
+    "intro": "سال اول، سال حرکت روی زمین است: نوزاد از نگه داشتن سر شروع می‌کند، غلت می‌زند، می‌نشیند و جابه‌جا می‌شود و تا یک‌سالگی بیشتر نوزادان خودشان را بالا می‌کشند و با گرفتن مبل قدم برمی‌دارند. بهترین وسیلهٔ این سال، زمین امن و آزاد و بزرگسالی است که کنار نوزاد بازی کند؛ چند اسباب‌بازی ساده، کتاب مقوایی و قفسه‌ای کوتاه بقیهٔ کار را می‌کنند.\n\nدر این صفحه [نقاط عطف رشد](term:developmental-milestones) هر نیمه از سال اول را بر پایهٔ چک‌لیست‌های CDC آورده‌ایم، همراه با پیشنهادهایی برای بازی در خانه، وسایلی که برای همین ماه‌ها ساخته شده‌اند و راهنماهای مرتبط مجله. سن‌ها را سخت نگیرید: طبق CDC، هر نقطهٔ عطف کاری است که دست‌کم ۷۵ درصد کودکان تا آن سن انجامش می‌دهند، و پژوهش حرکتی WHO برای مهارت‌های پایه پنجره‌های چندماهه یافته است؛ مثلاً راه رفتن بدون کمک از ۸٫۲ تا ۱۷٫۶ ماهگی.\n\nبرای جزئیات حرکت، [رشد حرکتی کودک ماه به ماه](post:gross-motor-milestones-by-age) و برای چیدن اتاق، [چیدمان اتاق کودک مونته‌سوری](post:montessori-room-setup) را بخوانید. اگر دربارهٔ رشد نوزادتان نگرانید، منتظر رسیدن به سن خاصی نمانید و با پزشک کودک صحبت کنید.",
+    "sections": [
+      {
+        "anchor": "0-6-months",
+        "milestone": "در شش ماه اول، کار اصلی نوزاد کنترل سر و تنه و آشنا شدن با چهره‌هاست. طبق CDC، بیشتر نوزادان تا ۲ ماهگی روی شکم سرشان را بالا نگه می‌دارند و وقتی با آن‌ها حرف می‌زنید لبخند می‌زنند؛ تا ۴ ماهگی در آغوش سرشان را بدون کمک ثابت نگه می‌دارند، اسباب‌بازی‌ای را که در دستشان بگذارید نگه می‌دارند و به طرف صدای شما سر می‌چرخانند؛ و تا ۶ ماهگی از شکم به پشت غلت می‌زنند، روی شکم با دست‌های صاف بالا می‌آیند، برای گرفتن اسباب‌بازی دست دراز می‌کنند و می‌خندند.",
+        "tips": [
+          "از روزهای اول، روزی چند نوبت کوتاه زمان شکم را در بیداری و زیر نظر خودتان انجام دهید؛ WHO برای نوزادی که هنوز جابه‌جا نمی‌شود، دست‌کم ۳۰ دقیقه در روز را توصیه می‌کند.",
+          "اسباب‌بازی را کمی دورتر از دسترس بگذارید تا نوزاد برای رسیدن به آن تلاش کند و غلت بزند.",
+          "با نوزاد نوبتی «حرف» بزنید: صداهایش را تکرار کنید و منتظر جوابش بمانید.",
+          "هر روز کتاب مقوایی با تصویرهای رنگی نشانش بدهید و دربارهٔ تصویرها حرف بزنید.",
+          "نوزاد را هر بار بیش از یک ساعت در کالسکه، کریر یا صندلی نگه ندارید."
+        ]
+      },
+      {
+        "anchor": "6-12-months",
+        "milestone": "در نیمهٔ دوم سال اول، نوزاد می‌نشیند، جابه‌جا می‌شود و کم‌کم می‌ایستد. طبق CDC، بیشتر کودکان تا ۹ ماهگی خودشان به حالت نشسته درمی‌آیند و بی‌تکیه‌گاه می‌نشینند، دنبال چیزی که از جلوی چشمشان افتاده می‌گردند و پیش غریبه‌ها خجالتی یا نگران می‌شوند؛ تا یک‌سالگی خودشان را بالا می‌کشند و می‌ایستند، با گرفتن مبل قدم برمی‌دارند، چیزی را در ظرف می‌گذارند و دست تکان می‌دهند. چهاردست‌وپا رفتن در فهرست CDC نیامده و در پژوهش WHO، برخی کودکان سالم هیچ‌وقت چهاردست‌وپا نرفتند.",
+        "tips": [
+          "کف اتاق را آزاد و امن نگه دارید و اسباب‌بازی را کمی دورتر بگذارید تا کودک با هر روشی، چهاردست‌وپا، سینه‌خیز یا غلت، به آن برسد.",
+          "دالی‌موشه بازی کنید یا اسباب‌بازی را زیر پارچه پنهان کنید تا کودک پیدایش کند.",
+          "قفسه و کتابخانه را پیش از آنکه کودک خودش را بالا بکشد، به دیوار مهار کنید.",
+          "در رویکرد حرکت آزاد پیکلر، کودک را در وضعیتی که هنوز خودش به آن نرسیده، مثل نشستن یا ایستادن، قرار نمی‌دهند؛ بگذارید خودش برسد.",
+          "روروئک نخرید؛ CDC و AAP استفاده از آن را توصیه نمی‌کنند."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "title": "Key Points about CDC's Developmental Milestone Checklists",
+        "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 2 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/2-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 4 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/4-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 6 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/6-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 9 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/9-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 1 Year",
+        "url": "https://www.cdc.gov/act-early/milestones/1-year.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "WHO Motor Development Study: Windows of achievement for six gross motor development milestones (Acta Paediatrica, 2006)",
+        "url": "https://cdn.who.int/media/docs/default-source/child-growth/child-growth-standards/indicators/motor-development-milestones/who-motor-development-study-windows-of-achievement-for-six-gross-motor-development-milestones.pdf",
+        "publisher": "World Health Organization (WHO) Multicentre Growth Reference Study Group"
+      },
+      {
+        "title": "To grow up healthy, children need to sit less and play more",
+        "url": "https://www.who.int/news/item/24-04-2019-to-grow-up-healthy-children-need-to-sit-less-and-play-more",
+        "publisher": "World Health Organization (WHO)"
+      },
+      {
+        "title": "Baby Walkers: A Dangerous Choice",
+        "url": "https://www.healthychildren.org/English/safety-prevention/at-home/Pages/Baby-Walkers-A-Dangerous-Choice.aspx",
+        "publisher": "American Academy of Pediatrics (HealthyChildren.org)"
+      }
+    ]
+  },
+  {
+    "slug": "1-3-years",
+    "intro": "کودک ۱ تا ۳ ساله، یا نوپا، در دو سال از قدم‌های اول به دویدن، پریدن و جمله گفتن می‌رسد. بازی و وسایل مناسب این سن به سه میل بزرگ او جواب می‌دهند: بالا رفتن و حرکت، «خودم انجام بدم» و تقلید کارهای بزرگ‌ترها، و کشف دنیا با دست. چند [اسباب‌بازی باز](term:open-ended-toy)، جایی امن برای صعود و فرصت شرکت در کارهای واقعی خانه، از اسباب‌بازی‌های زیاد و پرصدا مفیدترند.\n\nدر این صفحه نقاط عطف ۱ تا ۲ و ۲ تا ۳ سالگی را بر پایهٔ چک‌لیست‌های CDC آورده‌ایم؛ هر کدام کاری است که دست‌کم ۷۵ درصد کودکان تا آن سن انجامش می‌دهند، نه میانگین. کنار هر بازهٔ سنی، بازی‌های خانگی، وسایل مناسب و چیدمان پیشنهادی اتاق را می‌بینید.\n\nاز حدود ۱۸ ماهگی، [برج یادگیری](product:learning-tower) کودک را تا ارتفاع کانتر بالا می‌آورد تا در کار واقعی آشپزخانه شریک شود و [رول نقاشی دیواری](product:wall-art-roll) جای خط‌خطی‌های بزرگ اوست. برای انتخاب و ایمنی، [راهنمای برج یادگیری](post:learning-tower-guide) و برای فهم خط‌خطی‌ها، [مراحل نقاشی کودک](post:child-drawing-stages) را بخوانید. اگر دربارهٔ حرکت، زبان یا رفتار کودکتان نگرانید، منتظر نمانید و با پزشک کودک صحبت کنید.",
+    "sections": [
+      {
+        "anchor": "1-2-years",
+        "milestone": "در سال دوم، کودک راه می‌افتد و دنیا را با دست و پا امتحان می‌کند. طبق CDC، بیشتر کودکان تا ۱۵ ماهگی چند قدم خودشان برمی‌دارند، دو چیز کوچک را روی هم می‌گذارند و یکی دو کلمه غیر از «ماما» و «بابا» می‌گویند؛ تا ۱۸ ماهگی بدون کمک راه می‌روند، خط‌خطی می‌کنند، از مبل بالا و پایین می‌روند و کارهای خانه را تقلید می‌کنند؛ و تا ۲ سالگی می‌دوند، به توپ ضربه می‌زنند و دو کلمه را کنار هم می‌گذارند. پنجرهٔ طبیعی WHO برای راه رفتن مستقل تا ۱۷٫۶ ماهگی است.",
+        "tips": [
+          "اسباب‌بازی هل‌دادنی یا کشیدنی بدهید که کودک بتواند با خیال راحت هل بدهد یا بکشد.",
+          "بازی نقش ساده را تشویق کنید؛ مثلاً یک قاشق بدهید تا به عروسکش غذا بدهد.",
+          "انتخاب‌های ساده بدهید، مثل انتخاب بین دو لباس.",
+          "توپ را برای شوت، قل دادن و پرتاب در دسترس بگذارید.",
+          "WHO برای کودکان ۱ تا ۲ ساله دست‌کم ۱۸۰ دقیقه فعالیت بدنی در روز با هر شدتی توصیه می‌کند و صفحه‌نمایش را برای یک‌ساله‌ها توصیه نمی‌کند."
+        ]
+      },
+      {
+        "anchor": "2-3-years",
+        "milestone": "در سال سوم، بدن و زبان با هم جهش می‌کنند. طبق CDC، بیشتر کودکان تا ۳۰ ماهگی با هر دو پا از زمین می‌پرند، دستگیرهٔ در یا درِ ظرف را می‌چرخانند، حدود ۵۰ کلمه می‌گویند، کنار بچه‌های دیگر بازی می‌کنند و با چیزها نقش‌بازی می‌کنند؛ و تا ۳ سالگی سؤال‌های «کی؟»، «چی؟»، «کجا؟» و «چرا؟» می‌پرسند، اگر نشانشان بدهید دایره می‌کشند، مهره‌های درشت را به نخ می‌کشند و با چنگال غذا می‌خورند.",
+        "tips": [
+          "زمان بازی آزاد و بی‌برنامه بدهید تا کودک دنبال علاقهٔ خودش برود و چیزها را به شکل تازه به کار ببرد.",
+          "موقع کتاب خواندن بپرسید «کی بود؟ چی شد؟ کجا رفت؟».",
+          "کارهای ساده در آشپزخانه به او بدهید، مثل شستن میوه یا هم زدن.",
+          "احساس‌ها را با هم نام‌گذاری کنید و راه‌های آرام شدن، مثل نفس آرام، را تمرین کنید.",
+          "برای دوساله‌ها، WHO زمان نشستن جلوی صفحه‌نمایش را حداکثر یک ساعت در روز می‌داند و کمتر را بهتر."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "title": "Key Points about CDC's Developmental Milestone Checklists",
+        "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 15 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/15-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 18 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/18-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 2 Years",
+        "url": "https://www.cdc.gov/act-early/milestones/2-years.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 30 Months",
+        "url": "https://www.cdc.gov/act-early/milestones/30-months.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 3 Years",
+        "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "WHO Motor Development Study: Windows of achievement for six gross motor development milestones (Acta Paediatrica, 2006)",
+        "url": "https://cdn.who.int/media/docs/default-source/child-growth/child-growth-standards/indicators/motor-development-milestones/who-motor-development-study-windows-of-achievement-for-six-gross-motor-development-milestones.pdf",
+        "publisher": "World Health Organization (WHO) Multicentre Growth Reference Study Group"
+      },
+      {
+        "title": "To grow up healthy, children need to sit less and play more",
+        "url": "https://www.who.int/news/item/24-04-2019-to-grow-up-healthy-children-need-to-sit-less-and-play-more",
+        "publisher": "World Health Organization (WHO)"
+      }
+    ]
+  },
+  {
+    "slug": "3-6-years",
+    "intro": "کودک ۳ تا ۶ ساله قوی‌تر، دقیق‌تر و اجتماعی‌تر می‌شود: بازی تخیلی و بازی با بچه‌های دیگر پررنگ می‌شود، تعادل و صعود جدی‌تر می‌شود و دست کم‌کم برای نوشتن آماده می‌شود. بازی مناسب این سن هم انرژی بدن را جواب می‌دهد و هم تمرکز رو به رشد او را: وسیلهٔ صعود و تعادل در کنار میزی هم‌قد برای نقاشی و کاردستی.\n\nWHO برای کودکان ۳ و ۴ ساله دست‌کم ۱۸۰ دقیقه فعالیت بدنی در روز توصیه می‌کند که دست‌کم ۶۰ دقیقه‌اش با شدت متوسط تا زیاد باشد. در آپارتمان، [نردبان سوئدی](product:swedish-ladder) و [پنل‌های شش‌ضلعی صعود](product:climbing-hex-panels) بخشی از این سهم را در روزهای سرد و آلوده پر می‌کنند و [تخته تعادل](product:balance-board) هم تاب است و هم پل بازی‌های تخیلی.\n\nنقاط عطف این صفحه از چک‌لیست‌های CDC است که تا ۵ سالگی ادامه دارند؛ هر کدام کاری است که دست‌کم ۷۵ درصد کودکان تا آن سن انجامش می‌دهند. برای ایده‌های خانگی، [مونته‌سوری در خانه](post:montessori-at-home-guide) و برای حرکت، [رشد حرکتی کودک ماه به ماه](post:gross-motor-milestones-by-age) را بخوانید. اگر نگرانی‌ای دارید، با پزشک کودک صحبت کنید.",
+    "sections": [
+      {
+        "anchor": "3-4-years",
+        "milestone": "بین ۳ تا ۴ سالگی، بازی تخیلی و بازی با بچه‌های دیگر پررنگ می‌شود. طبق CDC، بیشتر کودکان تا ۴ سالگی در بازی نقش چیز دیگری را بازی می‌کنند، مثل معلم یا قهرمان، جمله‌های چهارکلمه‌ای یا بلندتر می‌گویند، دربارهٔ دست‌کم یک اتفاق روزشان حرف می‌زنند، می‌گویند در قصهٔ آشنا بعدش چه می‌شود، آدمکی با سه عضو یا بیشتر می‌کشند، توپ بزرگ را بیشتر وقت‌ها می‌گیرند و مداد را بین انگشتان و شست می‌گیرند، نه با مشت.",
+        "tips": [
+          "لباس‌های قدیمی، قابلمه و مکعب برای بازی نقش در دسترس بگذارید.",
+          "بازی‌های نوبتی ساده مثل دوز و جورکردنی را با هم بازی کنید.",
+          "هنگام قصه بپرسید «فکر می‌کنی بعدش چی می‌شه؟».",
+          "بگذارید «کمک‌دست» شما باشد؛ مثلاً میز را برای غذا بچیند.",
+          "WHO برای کودکان ۳ و ۴ ساله دست‌کم ۱۸۰ دقیقه فعالیت در روز توصیه می‌کند که دست‌کم ۶۰ دقیقه‌اش با شدت متوسط تا زیاد باشد."
+        ]
+      },
+      {
+        "anchor": "4-6-years",
+        "milestone": "بین ۴ تا ۶ سالگی، کودک اهل قاعده، قصه و کارهای طولانی‌تر می‌شود. طبق CDC، بیشتر کودکان تا ۵ سالگی روی یک پا لی‌لی می‌کنند، چند دکمه را می‌بندند، تا ۱۰ می‌شمارند، چند حرف اسمشان را می‌نویسند، قصه‌ای با دست‌کم دو اتفاق تعریف می‌کنند، در بازی با بچه‌ها نوبت و قانون را رعایت می‌کنند و ۵ تا ۱۰ دقیقه روی یک فعالیت تمرکز می‌کنند. چک‌لیست‌های CDC تا ۵ سالگی است و پس از آن هم رشد کودک در مراقبت‌های دوره‌ای پیگیری می‌شود.",
+        "tips": [
+          "بگذارید کارهایی مثل دکمه بستن یا ریختن آب را خودش انجام دهد، حتی ناقص، و برای تلاشش تشویقش کنید.",
+          "بازی قافیه کنید؛ بپرسید چه کلمه‌ای با «موش» هم‌قافیه است.",
+          "کارهای ساده‌ای مثل جفت کردن جوراب یا جمع کردن میز بعد از غذا را به او بسپارید.",
+          "یک تا دو ساعت پیش از خواب صفحه‌نمایش را خاموش کنید و روال آرامی برای خواب داشته باشید.",
+          "برای کودکان ۵ ساله و بزرگ‌تر، راهنمای WHO میانگین دست‌کم ۶۰ دقیقه فعالیت متوسط تا شدید در روز است."
+        ]
+      }
+    ],
+    "sources": [
+      {
+        "title": "Key Points about CDC's Developmental Milestone Checklists",
+        "url": "https://www.cdc.gov/act-early/milestones/key-points.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 3 Years",
+        "url": "https://www.cdc.gov/act-early/milestones/3-years.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 4 Years",
+        "url": "https://www.cdc.gov/act-early/milestones/4-years.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "Milestones by 5 Years",
+        "url": "https://www.cdc.gov/act-early/milestones/5-years.html",
+        "publisher": "Centers for Disease Control and Prevention (CDC)"
+      },
+      {
+        "title": "To grow up healthy, children need to sit less and play more",
+        "url": "https://www.who.int/news/item/24-04-2019-to-grow-up-healthy-children-need-to-sit-less-and-play-more",
+        "publisher": "World Health Organization (WHO)"
+      },
+      {
+        "title": "WHO guidelines on physical activity and sedentary behaviour (2020)",
+        "url": "https://www.who.int/publications/i/item/9789240015128",
+        "publisher": "World Health Organization (WHO)"
+      }
+    ]
+  }
+]

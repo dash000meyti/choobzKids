@@ -1,0 +1,68 @@
+/* Glossary mention: shape (a dotted rule), not colour, marks the link (WCAG 1.4.1). */
+.term {
+  text-decoration-line: underline;
+  text-decoration-style: dotted;
+  text-decoration-thickness: 0.09em;
+  text-underline-offset: 0.45em;
+  text-decoration-color: color-mix(in oklab, currentColor 55%, transparent);
+  transition: text-decoration-color var(--dur-quick) var(--ease-wood);
+}
+
+.term:hover {
+  text-decoration-color: currentColor;
+}
+
+/*
+ * Hover card: only where it can be placed safely next to the term (anchor positioning keeps it
+ * inside the viewport, and `position: fixed` never adds page scroll). Elsewhere the term is
+ * just a link. `anchor-scope` gives every term its own anchor name.
+ */
+@media (hover: hover) and (pointer: fine) {
+  @supports (position-area: block-start) and (anchor-scope: all) {
+    .term[data-definition] {
+      anchor-name: --cz-term;
+      anchor-scope: --cz-term;
+    }
+
+    .term[data-definition]::after {
+      content: attr(data-definition);
+      /* Empty alternative text: the card is never part of the link's accessible name. */
+      content: attr(data-definition) / "";
+      position: fixed;
+      position-anchor: --cz-term;
+      position-area: block-start span-inline-end;
+      position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+      z-index: var(--z-toast);
+      margin-block: 0.5rem;
+      inline-size: max-content;
+      max-inline-size: min(20rem, calc(100vw - 2rem));
+      padding: 0.75rem 1rem;
+      border-radius: var(--radius-bit-sm);
+      background: var(--surface-raised);
+      box-shadow: var(--shadow-paper), 0 0 0 1px var(--line);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: var(--text-sm);
+      font-weight: 400;
+      line-height: 1.7;
+      text-align: start;
+      text-wrap: pretty;
+      white-space: normal;
+      pointer-events: none;
+      opacity: 0;
+      visibility: hidden;
+      transition:
+        opacity var(--dur-base) var(--ease-exit),
+        visibility 0s linear var(--dur-base);
+    }
+
+    /* A short hover intent (120 ms) so the card does not flash while the pointer crosses text. */
+    .term[data-definition]:is(:hover, :focus-visible)::after {
+      opacity: 1;
+      visibility: visible;
+      transition:
+        opacity var(--dur-base) var(--ease-wood) 120ms,
+        visibility 0s linear 120ms;
+    }
+  }
+}

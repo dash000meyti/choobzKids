@@ -1,0 +1,51 @@
+/* Wood-block press (DESIGN.md §4.8, §9.2): 90 ms linear going down, 330 ms press spring on release. */
+.button {
+  transition:
+    translate 330ms var(--ease-press),
+    box-shadow 330ms var(--ease-press),
+    background-color var(--dur-quick) var(--ease-wood),
+    border-color var(--dur-quick) var(--ease-wood),
+    color var(--dur-quick) var(--ease-wood);
+}
+.button:active {
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+
+/* Loading: the label stays, three beads follow it. Static beads read as «…» without motion. */
+.beads {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+}
+.beads > span {
+  inline-size: 5px;
+  block-size: 5px;
+  border-radius: 999px;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .beads > span {
+    animation: bead-pulse 1.05s var(--ease-wood) infinite;
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .beads > span:nth-child(2) {
+    animation-delay: 150ms;
+  }
+  :root:not([data-motion="reduce"]):not([data-lite]) .beads > span:nth-child(3) {
+    animation-delay: 300ms;
+  }
+}
+
+@keyframes bead-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    scale: 0.8;
+  }
+  40% {
+    opacity: 1;
+    scale: 1;
+  }
+}

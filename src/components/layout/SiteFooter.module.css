@@ -1,0 +1,40 @@
+/*
+ * The night footer is a fixed scene (DESIGN.md §2.2, §4.6): it re-points the semantic tokens at
+ * the night palette for everything inside it, so shared components (toggles, links, the eNamad
+ * box) read correctly on shab in both themes. Links on night: mahtab text on a mustard band at
+ * 30% (6.59:1).
+ */
+.footer {
+  color-scheme: dark;
+  --bg: var(--color-shab);
+  --surface: var(--color-shab-raised);
+  --surface-raised: var(--color-shab-raised);
+  --surface-sunken: #141833;
+  --wood: #4a3a2a;
+  --wood-top: #5a4733;
+  --wood-side: #3a2d20;
+  --ply-1: #5a4733;
+  --ply-2: #7a5b40;
+  --ply-3: #2a2018;
+  --ink: var(--color-mahtab);
+  --ink-muted: var(--color-mahtab-narm);
+  --line: rgb(245 232 198 / 0.16);
+  --line-strong: #8e7c68;
+  --accent: var(--color-ember);
+  --accent-press: #d2644e;
+  --on-accent: #1c1612;
+  --success: #8fc7a0;
+  --focus: #7cc6cd;
+  --info: #7cc6cd;
+  --link-mark: rgb(242 185 59 / 0.3);
+  --highlight: rgb(227 181 74 / 0.35);
+  --shadow-rgb: 0 0 0;
+  color: var(--ink);
+}
+
+.body {
+  background: var(--color-shab);
+  /* Below the fold on every page: let the browser skip its layout until it is near. */
+  content-visibility: auto;
+  contain-intrinsic-size: auto 900px;
+}

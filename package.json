@@ -16,7 +16,7 @@
     "db:studio": "drizzle-kit studio",
     "content:validate": "node scripts/validate-content.mjs",
     "fonts:build": "bash scripts/fonts/build.sh",
-    "assets:build": "tsx scripts/textures/grain.ts && tsx scripts/textures/paper.ts && tsx scripts/illustrations/build.ts",
+    "assets:build": "tsx scripts/textures/grain.ts && tsx scripts/textures/paper.ts && tsx scripts/textures/orosi.ts && tsx scripts/illustrations/build.ts && tsx scripts/brand/icons.ts",
     "build:scripts": "esbuild scripts/migrate.ts scripts/seed.ts scripts/postdeploy.ts scripts/backup.ts --bundle --platform=node --format=esm --target=node22 --outdir=.scripts --out-extension:.js=.mjs --external:better-sqlite3 --external:sharp --banner:js=\"import{createRequire}from'node:module';const require=createRequire(import.meta.url);\""
   },
   "dependencies": {

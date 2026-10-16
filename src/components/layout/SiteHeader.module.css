@@ -1,0 +1,87 @@
+/*
+ * Header (DESIGN.md §4.1, §9.5). Sticky; its height never animates. The paper backing is a
+ * pseudo-element that is simply on (the static frame); where scroll timelines and motion are
+ * allowed it fades in over the first 80px instead, so the page's own paper shows at the top.
+ *
+ * --tati-start (read by TatiRider) puts Tati's resting place just past the wordmark, in the seat
+ * the header leaves for him, so the logo's duck and Tati never overlap.
+ */
+.header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  isolation: isolate;
+  /* 128px keeps a 360px phone header in one row: logo, Tati's seat, search, «فهرست». */
+  --wordmark-w: 128px;
+  --seat-gap: 0.5rem;
+  --tati-start: calc(
+    max(0px, (100vw - var(--container-wide)) / 2) + var(--spacing-gutter) + var(--wordmark-w) + var(--seat-gap)
+  );
+}
+.header::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--paper-tile) 0 0 / 160px repeat, var(--bg);
+  box-shadow: 0 10px 20px -18px rgb(var(--shadow-rgb) / 0.55);
+  pointer-events: none;
+}
+
+.wordmark {
+  display: block;
+  /* The wordmark's viewBox is 5:1. */
+  block-size: calc(var(--wordmark-w) / 5);
+  inline-size: var(--wordmark-w);
+}
+
+/* May give up a few pixels on the narrowest phones; Tati then just touches the search bead. */
+.seat {
+  flex: 0 1 3rem;
+  min-inline-size: 0;
+}
+
+/* Desktop search: a fixed slot whose field widens over the nav while it has focus. */
+.search {
+  position: relative;
+  inline-size: 15rem;
+  block-size: 3rem;
+}
+.searchForm {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+  inline-size: 100%;
+  z-index: 2;
+}
+.searchForm:focus-within {
+  inline-size: min(26rem, 36vw);
+}
+.searchForm:focus-within input {
+  box-shadow: var(--shadow-paper);
+}
+
+@media (min-width: 64rem) {
+  .header {
+    --wordmark-w: 180px;
+    --seat-gap: 0.75rem;
+  }
+  .seat {
+    flex-basis: 3.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .header::before {
+      animation: header-backing linear both;
+      animation-timeline: scroll(root block);
+      animation-range: 0 80px;
+    }
+  }
+}
+@keyframes header-backing {
+  from {
+    opacity: 0;
+  }
+}

@@ -1,0 +1,45 @@
+/*
+ * CategoryCubby (DESIGN.md §4.11, §5.2, §9.5). The cubby is recessed (a container); only the
+ * label plate below it is raised, and it presses 2px when the cubby link is pressed.
+ * Static frame: every drawing stands in place. Where scroll timelines exist and motion is
+ * allowed, each drawing drops 12px into its cubby with the settle spring and a 1° wobble.
+ */
+
+.plate {
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate 330ms var(--ease-press),
+    box-shadow 330ms var(--ease-press);
+}
+
+.cubby:active .plate {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+
+@media (hover: hover) {
+  .cubby:hover .plate {
+    background-color: color-mix(in oklab, var(--surface-raised), white 6%);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .drops .toy {
+      animation: cubby-drop var(--ease-settle) both;
+      animation-timeline: view();
+      animation-range: entry 10% cover 30%;
+    }
+  }
+}
+
+@keyframes cubby-drop {
+  from {
+    translate: 0 -12px;
+    rotate: 1deg;
+    opacity: 0.001;
+  }
+}

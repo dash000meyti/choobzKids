@@ -17,6 +17,12 @@
  * Latin digits in Persian prose, ZWNJ hygiene); no H1 in bodies; SEO lengths; tldr 3–5;
  * post faqs and http(s) sources. rooms.json (SeedRoom) is checked when present; other JSON
  * files in the folder get the text and product-reference checks only.
+ *
+ * Also: stable heading anchors (`## سؤال؟ {#ascii-id}` on every H2/H3, unique per body, and
+ * every `post:slug#id` deep link must hit one, SEO.md §4.4); one primaryQuery per URL across
+ * rooms, posts and products (SEO.md §1.10); aboutEntities are glossary slugs; faqs.json sections
+ * (/faq anchors + `age:<hub>` keys, src/db/seed/load.ts); age-hubs.json against AGE_HUBS in
+ * src/lib/ages.ts; the trust/brand pages SEO.md §1.6 requires; one Q&A per URL.
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -226,7 +232,7 @@ const isUrl = rx(URL_RE, "http(s) URL");
 const isDate = rx(DATE_RE, "YYYY-MM-DD");
 const REFINE = {
   slug: kebab, product: kebab, related: each(kebab), products: each(kebab), relatedPostSlugs: each(kebab),
-  relatedProductSlugs: each(kebab), pillarPostSlug: kebab,
+  relatedProductSlugs: each(kebab), pillarPostSlug: kebab, aboutEntities: each(kebab), anchor: kebab,
   url: isUrl, sameAs: each(isUrl),
   accent: (v, loc, report) => literalSpec(ACCENT_KEYS)(v, loc, report),
   swatch: rx(HEX_RE, "#RRGGBB"),
@@ -273,8 +279,31 @@ const CATALOG_PRODUCTS = {
 const CATALOG_POSTS = [
   "learning-tower-guide", "pikler-triangle-guide", "montessori-at-home-guide", "montessori-room-setup",
   "montessori-vs-waldorf-vs-pikler", "gross-motor-milestones-by-age", "wooden-sismooni-checklist",
-  "wooden-toy-safety-guide", "child-drawing-stages", "birthday-gift-guide-by-age",
+  "wooden-toy-safety-guide", "child-drawing-stages", "birthday-gift-guide-by-age", "yalda-gift-guide",
 ];
+/** Brand and trust pages every footer and trust strip links to (SEO.md §1.6). */
+const REQUIRED_PAGES = [
+  "about", "workshop", "editorial-policy", "shipping", "returns", "warranty", "safety", "trust", "installments",
+  "contact", "privacy", "terms",
+];
+/** /faq sections and their #anchors (SEO.md §1.6); "age:<hub>" keys feed the age hubs. */
+const FAQ_SECTIONS = ["buying", "shipping", "installments", "returns", "safety"];
+
+/** Age hubs and their in-page anchors, read from src/lib/ages.ts (AGE_HUBS). */
+const AGES_FILE = path.join(ROOT, "src", "lib", "ages.ts");
+const AGE_HUBS = (() => {
+  if (!fs.existsSync(AGES_FILE)) return null;
+  const src = fs.readFileSync(AGES_FILE, "utf8");
+  const start = src.indexOf("export const AGE_HUBS");
+  if (start < 0) return null;
+  const block = src.slice(start, src.indexOf("];", start));
+  const hubs = new Map();
+  for (const hub of block.split(/\n {2}\{\n/).slice(1)) {
+    const slug = /slug:\s*"([^"]+)"/.exec(hub)?.[1];
+    if (slug) hubs.set(slug, [...hub.matchAll(/anchor:\s*"([^"]+)"/g)].map((m) => m[1]));
+  }
+  return hubs.size ? hubs : null;
+})();
 
 /* ------------------------------------------------------------------ load */
 
@@ -294,7 +323,15 @@ function load(rel, { optional = false } = {}) {
   }
 }
 
-/** File → shape. `faqs.json` and `settings.json` follow src/db/seed/load.ts. */
+/**
+ * age-hubs.json has no type in types.ts (load.ts stores it in settings.age_hubs as unknown[]);
+ * this is the contract the age-hub pages read.
+ */
+const AGE_HUB_SHAPE =
+  "{ slug: string; intro: string; sections: { anchor: string; milestone: string; tips: string[] }[]; " +
+  "sources: { title: string; url: string; publisher: string }[] }[]";
+
+/** File → shape. `faqs.json`, `settings.json` and `age-hubs.json` follow src/db/seed/load.ts. */
 const FILES = {
   categories: ["categories.json", "SeedCategory[]"],
   products: ["products.json", "SeedProduct[]"],
@@ -302,10 +339,11 @@ const FILES = {
   topics: ["topics.json", "SeedTopic[]"],
   authors: ["authors.json", "SeedAuthor[]"],
   pages: ["pages.json", "SeedPage[]"],
-  faqs: ["faqs.json", "{ general: SeedFaq[]; shipping: SeedFaq[] }"],
+  faqs: ["faqs.json", "Record<string, SeedFaq[]>"],
   reviews: ["reviews.json", "SeedReview[]"],
   settings: ["settings.json", "Record<string, unknown>"],
   rooms: ["rooms.json", "SeedRoom[]", { optional: true }],
+  ageHubs: ["age-hubs.json", AGE_HUB_SHAPE, { optional: true }],
 };
 const files = Object.fromEntries(Object.entries(FILES).map(([k, [f]]) => [k, f]));
 const data = {};
@@ -350,6 +388,7 @@ const authors = listOf("authors");
 const pages = listOf("pages");
 const reviews = listOf("reviews");
 const rooms = listOf("rooms");
+const ageHubs = listOf("ageHubs");
 if (data.settings !== undefined && typeName(data.settings) === "object") {
   const st = data.settings;
   for (const k of ["siteName", "tagline", "description"]) if (!(k in st)) warn(files.settings, `missing "${k}"`);
@@ -389,6 +428,7 @@ sameSet(productSlugs, Object.keys(CATALOG_PRODUCTS), files.products, "product");
 sameSet(postSlugs, CATALOG_POSTS, "posts/", "post");
 sameSet(topicSlugs, TOPIC_KEYS, files.topics, "topic");
 sameSet(authorSlugs, AUTHOR_KEYS, files.authors, "author");
+for (const s of REQUIRED_PAGES) if (!pageSlugs.has(s)) err(files.pages, `required page "${s}" is missing (SEO.md §1.6)`);
 
 if (fs.existsSync(PLAN)) {
   const plan = fs.readFileSync(PLAN, "utf8");
@@ -428,6 +468,26 @@ for (const p of products) {
 /* ------------------------------------------------------------------ cross-references */
 
 const exists = { product: productSlugs, category: catSlugs, post: postSlugs, topic: topicSlugs, term: termSlugs, page: pageSlugs };
+
+/* Heading anchors: `## سؤال؟ {#ascii-id}` (SEO.md §4.4). Collected up front so deep links resolve. */
+const ANCHOR_RE = /\s*\{#([^}\n]*)\}\s*$/;
+/** Ids the article template already uses for its own sections (SEO.md §4.3). */
+const RESERVED_ANCHORS = new Set(["tldr", "tldr-h", "faq", "sources"]);
+const headingAnchors = (md) =>
+  new Set(
+    (typeof md === "string" ? md : "")
+      .split("\n")
+      .map((l) => /^ {0,3}#{2,6}\s.*?\{#([a-z0-9-]+)\}\s*$/.exec(l)?.[1])
+      .filter(Boolean),
+  );
+const ANCHORS = {
+  post: new Map(postList.map((p) => [p.slug, headingAnchors(p.body)])),
+  page: new Map(pages.map((p) => [p.slug, headingAnchors(p.body)])),
+  product: new Map(products.map((p) => [p.slug, headingAnchors(p.description)])),
+  category: new Map(categories.map((c) => [c.slug, headingAnchors(c.description)])),
+  topic: new Map(topics.map((t) => [t.slug, headingAnchors(t.description)])),
+  term: new Map(glossary.map((g) => [g.slug, headingAnchors(g.body)])),
+};
 
 function refs(list, set, loc, what) {
   if (!Array.isArray(list)) return;
@@ -479,7 +539,103 @@ for (const r of rooms) {
   if (typeof r.description === "string") {
     const n = wordCount(r.description);
     if (n < 300 || n > 500) warn(`${loc}.description`, `${n} words (target 300–500)`);
+  } else warn(`${loc}.description`, "no editorial (300–500 words for /rooms/{slug})");
+  for (const k of ["seoTitle", "seoDescription"]) if (r[k] == null) warn(`${loc}.${k}`, "missing");
+  if (!Array.isArray(r.faqs) || r.faqs.length < 3) warn(`${loc}.faqs`, `${r.faqs?.length ?? 0} FAQs (target 3)`);
+}
+
+/* age-hubs.json: one entry per AGE_HUBS slug, sections in the same anchor order. */
+if (data.ageHubs !== undefined) {
+  const loc = files.ageHubs;
+  unique(ageHubs, "slug", loc);
+  if (!AGE_HUBS) warn("src/lib/ages.ts", "could not read AGE_HUBS; age-hubs.json anchors not checked");
+  for (const slug of AGE_HUBS?.keys() ?? []) if (!ageHubs.some((h) => h.slug === slug)) err(loc, `hub "${slug}" is missing`);
+  for (const h of ageHubs) {
+    const at = `${loc}:${h.slug}`;
+    const anchors = AGE_HUBS?.get(h.slug);
+    if (AGE_HUBS && !anchors) err(`${at}.slug`, `"${h.slug}" is not in AGE_HUBS (${[...AGE_HUBS.keys()].join(", ")})`);
+    const got = (Array.isArray(h.sections) ? h.sections : []).map((s) => s?.anchor);
+    if (anchors && JSON.stringify(got) !== JSON.stringify(anchors))
+      err(`${at}.sections`, `anchors ${JSON.stringify(got)} must equal AGE_HUBS ${JSON.stringify(anchors)}`);
+    if (typeof h.intro === "string") {
+      const n = wordCount(h.intro);
+      if (n < 150 || n > 250) warn(`${at}.intro`, `${n} words (target 150–250)`);
+    }
+    (Array.isArray(h.sections) ? h.sections : []).forEach((s, i) => {
+      const n = typeof s?.milestone === "string" ? wordCount(s.milestone) : 0;
+      if (n < 60 || n > 120) warn(`${at}.sections[${i}].milestone`, `${n} words (target 60–120)`);
+      if (!/CDC|WHO|AAP/.test(s?.milestone ?? "")) warn(`${at}.sections[${i}].milestone`, "YMYL milestone text names no source (CDC/WHO/AAP)");
+      if (Array.isArray(s?.tips) && (s.tips.length < 2 || s.tips.length > 6)) warn(`${at}.sections[${i}].tips`, `${s.tips.length} tips (2–6)`);
+    });
+    if (!Array.isArray(h.sources) || h.sources.length === 0) err(`${at}.sources`, "YMYL hub needs sources");
   }
+}
+
+/* faqs.json: /faq sections (#buying …) and age-hub keys (age:<hub slug>), see src/db/seed/load.ts. */
+if (data.faqs && typeName(data.faqs) === "object") {
+  for (const [key, list] of Object.entries(data.faqs)) {
+    const at = `${files.faqs}.${key}`;
+    const n = Array.isArray(list) ? list.length : 0;
+    if (key === "general") warn(at, 'legacy section; load.ts maps it to "buying", rename it');
+    else if (key.startsWith("age:")) {
+      const hub = key.slice(4);
+      if (AGE_HUBS && !AGE_HUBS.has(hub)) err(at, `unknown age hub "${hub}" (${[...AGE_HUBS.keys()].join(", ")})`);
+      if (n < 3 || n > 6) warn(at, `${n} questions (target 4)`);
+    } else if (!FAQ_SECTIONS.includes(key)) err(at, `unknown section (use ${FAQ_SECTIONS.join(", ")} or age:<hub>)`);
+    else if (n < 5 || n > 8) warn(at, `${n} questions (target 5–8)`);
+    (Array.isArray(list) ? list : []).forEach((f, i) => {
+      if (f?.section != null) warn(`${at}[${i}].section`, "the key already sets the section; drop it");
+      const w = typeof f?.answer === "string" ? wordCount(f.answer) : 0;
+      if (w > 60) warn(`${at}[${i}].answer`, `${w} words (max 60)`);
+    });
+  }
+  for (const s of FAQ_SECTIONS) if (!(s in data.faqs) && !(s === "buying" && "general" in data.faqs)) warn(files.faqs, `no "${s}" section (/faq#${s})`);
+}
+
+/* Keyword ownership (SEO.md §1.10): every room, post and product owns one primaryQuery. */
+{
+  const normQuery = (q) =>
+    q.replace(/ي/g, "ی").replace(/ك/g, "ک").replace(/[‌‏‎]/g, " ").replace(/[؟?!.،,]/g, "").replace(/\s+/g, " ").trim();
+  const owners = new Map();
+  const urls = [
+    ...rooms.map((x) => [x, `${files.rooms}:${x.slug}`]),
+    ...posts.map(({ file, post }) => [post, file]),
+    ...products.map((x) => [x, `${files.products}:${x.slug}`]),
+  ];
+  for (const [x, loc] of urls) {
+    if (typeof x.primaryQuery !== "string") {
+      warn(`${loc}.primaryQuery`, "missing (SEO.md §1.10)");
+      continue;
+    }
+    const k = normQuery(x.primaryQuery);
+    if (owners.has(k)) err(`${loc}.primaryQuery`, `«${x.primaryQuery}» is already owned by ${owners.get(k)}`);
+    else owners.set(k, loc);
+  }
+  for (const [x, loc] of urls)
+    (Array.isArray(x.secondaryQueries) ? x.secondaryQueries : []).forEach((q, i) => {
+      const owner = typeof q === "string" ? owners.get(normQuery(q)) : undefined;
+      if (owner && owner !== loc) warn(`${loc}.secondaryQueries[${i}]`, `«${q}» is the primaryQuery of ${owner}`);
+    });
+  for (const p of products)
+    if (!Array.isArray(p.alternateNames) || !p.alternateNames.length) warn(`${files.products}:${p.slug}.alternateNames`, "no spelling variants (SEO.md §4.5)");
+  for (const { file, post } of posts) refs(post.aboutEntities, termSlugs, `${file}.aboutEntities`, "glossary term");
+}
+
+/* One Q&A per URL (SEO.md §1.6): the same question must not be answered on two pages. */
+{
+  const normQ = (q) => q.replace(/[‌\s]+/g, " ").replace(/[؟?]\s*$/, "").trim();
+  const seen = new Map();
+  const add = (list, loc) =>
+    (Array.isArray(list) ? list : []).forEach((f, i) => {
+      if (typeof f?.question !== "string") return;
+      const k = normQ(f.question);
+      if (seen.has(k) && !seen.get(k).startsWith(`${loc}[`)) warn(`${loc}[${i}].question`, `same question as ${seen.get(k)}`);
+      else if (!seen.has(k)) seen.set(k, `${loc}[${i}]`);
+    });
+  for (const [key, list] of Object.entries(typeName(data.faqs) === "object" ? data.faqs : {})) add(list, `${files.faqs}.${key}`);
+  for (const [list, file] of [[pages, files.pages], [categories, files.categories], [products, files.products], [rooms, files.rooms]])
+    for (const x of list) add(x.faqs, `${file}:${x.slug}.faqs`);
+  for (const { file, post } of posts) add(post.faqs, `${file}.faqs`);
 }
 /* JSON files with no seed type: product references and /mag/ links must resolve. */
 for (const { file, value } of extraFiles) {
@@ -536,7 +692,7 @@ const PERSIAN_LETTER = /[\u0621-\u064Aپچژکگیآ]/;
 /** Markdown fields: link schemes, directives, callouts, H1 and digits are checked strictly. */
 const BODY_FIELDS = new Set([
   "categories.description", "products.description", "topics.description", "glossary.definition",
-  "glossary.body", "pages.body", "posts.body", "rooms.description",
+  "glossary.body", "pages.body", "posts.body", "rooms.description", "ageHubs.intro",
 ]);
 /** Fields holding identifiers or English text: no Persian-prose checks. */
 const ID_FIELDS = new Set([
@@ -544,7 +700,7 @@ const ID_FIELDS = new Set([
   "relatedPostSlugs", "relatedProductSlugs", "topic", "author", "reviewer", "product", "availability", "format",
   "skills", "originalTerm", "siteNameEn", "instagram", "bale", "email", "phone", "enamadId", "publisher",
   "updatedAt", "pillarPostSlug", "productSlug", "productSlugs", "href", "icon", "season", "slot", "ageStage",
-  "instagramHandle", "followersAsOf", "aparat", "foundingDate", "section",
+  "instagramHandle", "followersAsOf", "aparat", "foundingDate", "section", "anchor",
 ]);
 /** Internal or search-query fields: orthography only (queries are typed the way people search). */
 const NOT_PROSE = new Set(["claimsToVerify", "primaryQuery", "secondaryQueries", "alternateNames", "aboutEntities"]);
@@ -559,6 +715,7 @@ function stripMarkdown(md) {
   return md
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/`[^`\n]*`/g, " ")
+    .replace(/\s*\{#[^}\n]*\}/g, " ")
     .replace(/^[ \t]*:{2,3}[a-zA-Z-]*(\{[^}\n]*\})?[ \t]*$/gm, " ")
     .replace(/\]\(\s*[^)\s]+(?:\s+"[^"]*")?\s*\)/g, "]")
     .replace(/https?:\/\/[^\s)»\]]+/g, " ")
@@ -660,11 +817,16 @@ function checkText(s, loc, field, group) {
   for (const m of s.matchAll(/\b(TODO|TBD|FIXME|lorem|ipsum)\b|\{\{|\}\}|\?\?\?|؟؟|\[\[|XXX/gi))
     err(loc, `placeholder text ${snip(s, m.index, m[0].length)}`);
 
-  // Claims that must never be invented (manual review).
-  for (const m of s.matchAll(
+  // Claims that must never be invented (manual review); one note per string, the rest counted.
+  const claims = [...s.matchAll(
     /(استاندارد ملی|نشان استاندارد|گواهی\u200C?نامه|گواهی [A-Z]|دارای (?:گواهی|استاندارد|تأییدیه)|تأییدیهٔ|مورد تأیید|آزمایشگاه|جایزه|سال تأسیس|تأسیس(?:\u200Cشده)? در|هزاران (?:مشتری|خانواده)|[۰-۹0-9]+ ?(?:هزار )?(?:مشتری|خانواده)|رضایت [۰-۹0-9]+|نماد اعتماد|اینماد)/g,
-  ))
-    note(loc, `claim to confirm: ${snip(s, m.index, m[0].length, 40)}`);
+  )];
+  if (claims.length)
+    note(
+      loc,
+      `claim to confirm: ${snip(s, claims[0].index, claims[0][0].length, 40)}` +
+        (claims.length > 1 ? ` (+${claims.length - 1} more in this field)` : ""),
+    );
 }
 
 function checkLinks(md, loc) {
@@ -689,8 +851,10 @@ function checkLinks(md, loc) {
       err(loc, `unsupported link target "${target}" (use product:/category:/post:/topic:/term:/page:/https:)`);
       continue;
     }
-    const [ref] = target.slice(scheme.length + 1).split("#");
+    const [ref, fragment] = target.slice(scheme.length + 1).split("#");
     if (!exists[scheme].has(ref)) err(loc, `link to unknown ${scheme} "${ref}"`);
+    else if (fragment !== undefined && !ANCHORS[scheme].get(ref)?.has(fragment))
+      err(loc, `deep link to unknown anchor "#${fragment}" in ${scheme}:${ref}: ${at}`);
   }
   for (const m of md.matchAll(/\]\[[^\]]*\]/g)) warn(loc, `reference-style link ${snip(md, m.index, m[0].length)}`);
   const rest = md.replace(LINK, " ").replace(/^\s*::.*$/gm, " ");
@@ -705,6 +869,7 @@ function checkMarkdown(md, loc, kind) {
   let prevLevel = 1;
   let productCards = 0;
   const headings = new Map();
+  const anchors = new Set();
   const embedded = new Set();
   lines.forEach((line, i) => {
     const at = `${loc} (line ${i + 1})`;
@@ -714,10 +879,20 @@ function checkMarkdown(md, loc, kind) {
       const level = h[1].length;
       if (level > prevLevel + 1) warn(at, `heading jumps from H${prevLevel} to H${level}`);
       prevLevel = level;
-      const key = h[2].replace(/[*_`]/g, "").trim();
-      if (headings.has(key)) warn(at, `duplicate heading «${key}» (anchor collision)`);
+      const a = ANCHOR_RE.exec(h[2]);
+      const key = (a ? h[2].slice(0, a.index) : h[2]).replace(/[*_`]/g, "").trim();
+      if (headings.has(key)) warn(at, `duplicate heading «${key}»`);
       headings.set(key, i);
       if (!key) err(at, "empty heading");
+      if (!a) {
+        if (level <= 3) warn(at, `H${level} has no stable anchor; append {#english-id} (SEO.md §4.4): «${key}»`);
+      } else if (!KEBAB.test(a[1])) err(at, `anchor {#${a[1]}} must be ASCII kebab-case`);
+      else if (anchors.has(a[1])) err(at, `duplicate anchor #${a[1]} in this body`);
+      else {
+        anchors.add(a[1]);
+        if (RESERVED_ANCHORS.has(a[1])) err(at, `anchor #${a[1]} is reserved by the page template`);
+        if (a[1].length > 40) warn(at, `anchor #${a[1]} is long (keep ids short)`);
+      }
     }
     const callout = /^\s*>\s*\[!([A-Za-z]+)\]/.exec(line);
     if (callout && !CALLOUTS.includes(callout[1])) err(at, `unknown callout [!${callout[1]}] (use ${CALLOUTS.join(", ")})`);
@@ -767,7 +942,8 @@ function checkMarkdown(md, loc, kind) {
     for (let i = 0; i < lines.length; i++) {
       const h2 = /^##\s+(.*)$/.exec(lines[i]);
       if (!h2) continue;
-      if (!/؟\s*$/.test(h2[1])) warn(`${loc} (line ${i + 1})`, `[strict] H2 is not a question: «${h2[1]}»`);
+      const text = h2[1].replace(ANCHOR_RE, "");
+      if (!/؟\s*$/.test(text)) warn(`${loc} (line ${i + 1})`, `[strict] H2 is not a question: «${text}»`);
       let j = i + 1;
       while (j < lines.length && !lines[j].trim()) j++;
       const para = [];
@@ -784,6 +960,7 @@ function wordCount(md) {
     .replace(/```[\s\S]*?```/g, " ")
     .replace(/\]\([^)]*\)/g, "]")
     .replace(/^\s*::.*$/gm, " ")
+    .replace(/\{#[^}\n]*\}/g, " ")
     .replace(/[#>*_`|[\]()!:-]/g, " ")
     .split(/\s+/)
     .filter(Boolean).length;
@@ -826,6 +1003,7 @@ const groups = [
   ["authors", authors, (x) => `${files.authors}:${x.slug}`],
   ["reviews", reviews, (x) => `${files.reviews}:${x.product ?? x.authorName}`],
   ["rooms", rooms, (x) => `${files.rooms}:${x.slug}`, "description"],
+  ["ageHubs", ageHubs, (x) => `${files.ageHubs}:${x.slug}`, "intro"],
 ];
 for (const [group, list, locOf, ...mdFields] of groups) {
   for (const x of list) {

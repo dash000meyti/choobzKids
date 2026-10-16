@@ -1,0 +1,36 @@
+/* Night sky strip above the footer columns: fixed scene colours, never theme-switched. */
+.sky {
+  position: relative;
+  block-size: 6rem;
+  background: linear-gradient(to bottom, color-mix(in oklab, var(--color-shab) 82%, var(--color-lapis)), var(--color-shab));
+  overflow: hidden;
+}
+
+.star {
+  position: absolute;
+  border-radius: 999px;
+  background: var(--color-mahtab);
+  opacity: 0.85;
+}
+
+.house {
+  position: absolute;
+  inset-inline-end: var(--spacing-gutter);
+  inset-block-end: 0;
+  inline-size: 4.5rem;
+  block-size: 4rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .star {
+    animation: twinkle var(--twinkle, 6.5s) ease-in-out var(--twinkle-delay, 0s) infinite alternate;
+  }
+}
+@keyframes twinkle {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 0.95;
+  }
+}

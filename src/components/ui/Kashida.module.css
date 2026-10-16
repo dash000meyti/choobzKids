@@ -1,0 +1,27 @@
+/*
+ * Kashida pull (DESIGN.md §1.3, §9.1 exception): Mikhak's KSHD axis stretches 120 → 200 → 120.
+ * Animates the registered `--kshd` property (globals.css) on a `contain: layout` box, so the
+ * stretch never reflows the line. The static frame is the resting width (KSHD 120).
+ * No-ops silently until Mikhak loads (it is not preloaded).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  /* `hover`: when the nearest `.group` ancestor (or the word itself) is hovered or focused. */
+  :root:not([data-motion="reduce"]):not([data-lite]) :global(.group):is(:hover, :focus-visible) .hover,
+  :root:not([data-motion="reduce"]):not([data-lite]) .hover:hover,
+  /* `manual`: a client island sets data-pulling on the word or an ancestor to replay it. */
+  :root:not([data-motion="reduce"]):not([data-lite]) [data-pulling] .manual,
+  :root:not([data-motion="reduce"]):not([data-lite]) .manual[data-pulling],
+  /* `checked`: the word sits in a label/chip whose radio or checkbox is checked. */
+  :root:not([data-motion="reduce"]):not([data-lite]) :global(label):has(:checked) .checked {
+    animation: kashida-pull var(--dur-scene) var(--ease-wood);
+  }
+
+  @supports (animation-timeline: view()) {
+    /* `view`: pulls once as the line lands in the viewport, scrubbed by scroll. */
+    :root:not([data-motion="reduce"]):not([data-lite]) .view {
+      animation: kashida-pull linear both;
+      animation-timeline: view();
+      animation-range: entry 50% cover 45%;
+    }
+  }
+}

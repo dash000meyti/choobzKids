@@ -1,0 +1,91 @@
+/*
+ * Dev kit only. The theme tokens are defined on :root, so a nested [data-theme] container does
+ * not switch them by itself. These blocks re-declare the light and «لالایی» values (copied from
+ * globals.css §2.1) on the two showcase panels so a reviewer sees both themes side by side.
+ * `dark:` utilities still follow the root theme in the light panel.
+ */
+.panel {
+  background: var(--paper-tile) 0 0 / 160px repeat, var(--bg);
+  color: var(--ink);
+  border-radius: var(--radius-bit-xl);
+  padding: clamp(1rem, 3vw, 2.5rem);
+}
+
+.light {
+  color-scheme: light;
+  --bg: var(--color-shir);
+  --surface: var(--color-kahgel);
+  --surface-raised: var(--color-shir-raised);
+  --surface-sunken: var(--color-kahgel-sunken);
+  --wood: var(--color-takhte);
+  --wood-top: var(--color-takhte-light);
+  --wood-side: var(--color-takhte-shade);
+  --ply-1: var(--color-takhte-light);
+  --ply-2: var(--color-asal);
+  --ply-3: var(--color-ply-dark);
+  --ink: var(--color-gerdu);
+  --ink-muted: var(--color-gerdu-narm);
+  --line: rgb(51 37 27 / 0.14);
+  --line-strong: var(--color-khat);
+  --accent: var(--color-anar);
+  --accent-press: var(--color-anar-deep);
+  --on-accent: var(--color-shir-raised);
+  --bubble: var(--color-nana);
+  --success: var(--color-pesteh);
+  --focus: var(--color-firuzeh);
+  --info: var(--color-firuzeh);
+  --danger: var(--color-anar);
+  --highlight: rgb(242 185 59 / 0.55);
+  --link-mark: rgb(242 185 59 / 0.38);
+  --tag: var(--color-kraft);
+  --thread: var(--color-anar);
+  --shadow-rgb: 51 37 27;
+  --paper-tile: url("/textures/paper.webp");
+}
+
+.dark {
+  color-scheme: dark;
+  --bg: #1c1612;
+  --surface: #261e18;
+  --surface-raised: #30261e;
+  --surface-sunken: #17120e;
+  --wood: #4a3a2a;
+  --wood-top: #5a4733;
+  --wood-side: #3a2d20;
+  --ply-1: #5a4733;
+  --ply-2: #7a5b40;
+  --ply-3: #2a2018;
+  --ink: #f5e8c6;
+  --ink-muted: #c9b79c;
+  --line: rgb(245 232 198 / 0.14);
+  --line-strong: #8e7c68;
+  --accent: #e5715a;
+  --accent-press: #d2644e;
+  --on-accent: #1c1612;
+  --bubble: #22342a;
+  --success: #8fc7a0;
+  --focus: #7cc6cd;
+  --info: #7cc6cd;
+  --danger: #e5715a;
+  --highlight: rgb(227 181 74 / 0.35);
+  --link-mark: rgb(227 181 74 / 0.3);
+  --tag: #3a2d20;
+  --thread: #e5715a;
+  --shadow-rgb: 0 0 0;
+  --paper-tile: url("/textures/paper-night.webp");
+}
+.dark :global(.grain)::before {
+  opacity: 0.6;
+}
+
+.swatch {
+  display: grid;
+  place-items: center;
+  gap: 0.35rem;
+  min-block-size: 5.5rem;
+  border-radius: var(--radius-bit);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+  padding: 0.75rem 0.5rem;
+  text-align: center;
+}
