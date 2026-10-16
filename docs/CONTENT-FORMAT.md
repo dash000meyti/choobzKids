@@ -10,7 +10,11 @@ used by the phase-2 CMS editor, so seed content and editor content render identi
 - `##` (H2) headings are **questions** the reader would ask («برج یادگیری از چند سالگی مناسب است؟»).
 - The **first paragraph after every H2 is the direct answer** in 40–60 words, self-contained and quotable.
   The renderer styles `h2 + p` as an "answer" paragraph.
-- `###` (H3) for sub-points. Headings get stable `id` anchors automatically (TOC + deep links).
+- `###` (H3) for sub-points.
+- **Every `##`/`###` ends with a stable ASCII anchor** (SEO.md §4.4): `## برج یادگیری از چند سالگی مناسب است؟ {#from-what-age}`.
+  Short meaningful English kebab-case, unique within the body, never changed after publishing (the TOC, deep links
+  and the Markdown alternates use it). Ids may start with a digit (`{#0-6-months}`). Reserved on article pages:
+  `tldr`, `faq`, `sources`. A missing anchor falls back to `s-{n}` and the validator warns.
 - Keep paragraphs short (2–4 sentences). Prefer lists and tables for facts.
 - Every number (age, cm, minutes, %) that is not a Choobz product spec carries a source:
   name the source in the sentence («طبق راهنمای WHO…») and list it in the post's `sources`.
@@ -34,6 +38,9 @@ so links keep working if routes change:
 | `[متن](term:pikler-triangle)` | glossary term |
 | `[متن](page:shipping)` | static page |
 | `[متن](https://…)` | external link (opens with rel="noopener") |
+
+Any internal scheme may carry a section anchor: `[هدیهٔ گروهی](post:birthday-gift-guide-by-age#group-gift)`.
+The validator checks that the anchor exists in the target body.
 
 ## Callouts
 
@@ -65,9 +72,9 @@ A plain blockquote (no marker) renders as a **pull quote**.
 ## Blocks (directives)
 
 ```md
-::product{slug="pikler-triangle"}
+::product{slug="pikler-triangle" why="رمپ دوطرفه‌اش هم سرسره است هم سطح صعود."}
 ```
-Embeds a product card (image, name, price, age, link). Use 1–3 per article, each after the
+Embeds a product card (the optional `why` renders as «چرا اینجا؟») (image, name, price, age, link). Use 1–3 per article, each after the
 section where the product naturally answers the reader's need.
 
 ```md
@@ -91,6 +98,13 @@ Inline brand illustration (keys in `src/db/seed/types.ts` → `IllustrationKey`)
 ## Tables and checklists
 
 GFM tables for comparisons (first column = the thing compared; keep cells short).
+A paragraph that starts with «جدول:» directly above a table becomes the table's `<caption>`:
+
+```md
+جدول: مقایسهٔ برج یادگیری ثابت و تاشو
+| ویژگی | ثابت | تاشو |
+|---|---|---|
+```
 GFM task lists render as a printable checklist:
 
 ```md

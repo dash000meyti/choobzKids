@@ -64,9 +64,6 @@ function wordCount(markdown: string): number {
     .filter(Boolean).length;
 }
 
-/** Seed page slugs that changed after the content was written (DESIGN.md §0.3 #9). */
-const PAGE_SLUG_RENAMES: Record<string, string> = { "safety-materials": "safety" };
-
 /** Tehran noon on a YYYY-MM-DD date. */
 const day = (iso: string) => new Date(`${iso}T12:00:00+03:30`);
 
@@ -393,7 +390,7 @@ export function seedDatabase(db: DB, { log = console.log } = {}) {
 
     /* Static pages */
     for (const pg of pages) {
-      const slug = PAGE_SLUG_RENAMES[pg.slug] ?? pg.slug;
+      const slug = pg.slug;
       const [row] = tx
         .insert(s.pages)
         .values({
