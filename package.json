@@ -1,0 +1,62 @@
+{
+  "name": "choobz-kids",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "next typegen && tsc --noEmit",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "tsx scripts/migrate.ts",
+    "db:seed": "tsx scripts/seed.ts",
+    "db:setup": "tsx scripts/migrate.ts && tsx scripts/seed.ts",
+    "db:reset": "rm -f data/choobz.db data/choobz.db-wal data/choobz.db-shm && npm run db:setup",
+    "db:studio": "drizzle-kit studio",
+    "content:validate": "node scripts/validate-content.mjs",
+    "fonts:build": "bash scripts/fonts/build.sh",
+    "assets:build": "tsx scripts/textures/grain.ts && tsx scripts/textures/paper.ts && tsx scripts/illustrations/build.ts",
+    "build:scripts": "esbuild scripts/migrate.ts scripts/seed.ts scripts/postdeploy.ts scripts/backup.ts --bundle --platform=node --format=esm --target=node22 --outdir=.scripts --out-extension:.js=.mjs --external:better-sqlite3 --external:sharp --banner:js=\"import{createRequire}from'node:module';const require=createRequire(import.meta.url);\""
+  },
+  "dependencies": {
+    "better-sqlite3": "13.0.3",
+    "clsx": "2.1.1",
+    "drizzle-orm": "0.45.4",
+    "next": "16.4.2",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "server-only": "0.0.1",
+    "sharp": "0.35.5",
+    "unified": "11.0.5",
+    "remark-parse": "11.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-directive": "4.0.0",
+    "remark-rehype": "11.1.2",
+    "hast-util-to-jsx-runtime": "2.3.6",
+    "unist-util-visit": "5.1.0",
+    "hast-util-to-string": "3.0.1",
+    "mdast-util-to-string": "4.0.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/better-sqlite3": "9.6.0",
+    "@types/node": "22.20.5",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@types/mdast": "4.0.4",
+    "@types/hast": "3.0.5",
+    "babel-plugin-react-compiler": "1.0.0",
+    "drizzle-kit": "0.31.11",
+    "esbuild": "0.28.2",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.4.2",
+    "schema-dts": "2.1.0",
+    "tailwindcss": "4.3.3",
+    "tsx": "4.23.15",
+    "typescript": "6.0.3"
+  },
+  "engines": {
+    "node": "22.x"
+  }
+}

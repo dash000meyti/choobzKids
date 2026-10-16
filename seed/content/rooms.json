@@ -1,0 +1,68 @@
+[
+  {
+    "slug": "first-months", "name": "اتاقِ ۰ تا ۶ ماهگی", "ageStage": "0-6m", "floorAreaM2": 12, "illustration": "room-set", "sortOrder": 1,
+    "tagline": "دنیا از پایین: قفسهٔ کوتاه و کتاب‌های روبه‌رو",
+    "primaryQuery": "چیدمان اتاق نوزاد مونته سوری",
+    "items": [
+      { "product": "montessori-shelf", "slot": "floor-mid" },
+      { "product": "front-facing-bookshelf", "slot": "wall-start" }
+    ]
+  },
+  {
+    "slug": "crawl-and-climb", "name": "اتاقِ ۶ تا ۱۲ ماهگی", "ageStage": "6-12m", "floorAreaM2": 12, "illustration": "room-set", "sortOrder": 2,
+    "tagline": "وقت چهاردست‌وپا، بالا کشیدن و ایستادن",
+    "primaryQuery": "وسایل اتاق کودک ۶ تا ۱۲ ماه",
+    "items": [
+      { "product": "pikler-triangle", "slot": "floor-end" },
+      { "product": "montessori-shelf", "slot": "floor-mid" },
+      { "product": "front-facing-bookshelf", "slot": "wall-start" }
+    ]
+  },
+  {
+    "slug": "toddler-1-2", "name": "اتاقِ ۱ تا ۲ سالگی", "ageStage": "1-2y", "floorAreaM2": 12, "illustration": "room-set", "sortOrder": 3,
+    "tagline": "اولین قدم‌ها، اولین کمک در آشپزخانه",
+    "primaryQuery": "چیدمان اتاق کودک ۱ تا ۲ سال",
+    "items": [
+      { "product": "learning-tower", "slot": "kitchen" },
+      { "product": "pikler-triangle", "slot": "floor-end" },
+      { "product": "front-facing-bookshelf", "slot": "wall-start" },
+      { "product": "duck-pull-toy", "slot": "floor-start" },
+      { "product": "rainbow-stacker", "slot": "floor-mid" }
+    ]
+  },
+  {
+    "slug": "toddler-2-3", "name": "اتاقِ ۲ تا ۳ سالگی", "ageStage": "2-3y", "floorAreaM2": 12, "illustration": "room-set", "sortOrder": 4,
+    "tagline": "میز خودش، کتاب خودش، نقاشی خودش",
+    "primaryQuery": "چیدمان اتاق مونته سوری ۲ تا ۳ سال",
+    "items": [
+      { "product": "learning-tower", "slot": "kitchen" },
+      { "product": "pikler-arch", "slot": "floor-end" },
+      { "product": "kids-table-chair", "slot": "floor-mid" },
+      { "product": "front-facing-bookshelf", "slot": "wall-start" },
+      { "product": "wall-art-roll", "slot": "wall-end" }
+    ]
+  },
+  {
+    "slug": "preschool-3-6", "name": "اتاقِ ۳ تا ۶ سالگی", "ageStage": "3-6y", "floorAreaM2": 12, "illustration": "room-set", "sortOrder": 5,
+    "tagline": "دیوار صعود، تعادل و میزِ کار خودش",
+    "primaryQuery": "وسایل اتاق کودک ۳ تا ۶ سال",
+    "items": [
+      { "product": "swedish-ladder", "slot": "wall-mid" },
+      { "product": "climbing-hex-panels", "slot": "wall-start" },
+      { "product": "kids-table-chair", "slot": "floor-mid" },
+      { "product": "wall-art-roll", "slot": "wall-end" },
+      { "product": "balance-board", "slot": "floor-start" }
+    ]
+  },
+  {
+    "slug": "small-room-9m", "name": "اتاق کوچک ۹ متری", "ageStage": null, "floorAreaM2": 9, "illustration": "room-set", "sortOrder": 6,
+    "tagline": "همه‌چیز لازم، در یک اتاق کوچک آپارتمانی",
+    "primaryQuery": "چیدمان اتاق کودک کوچک",
+    "items": [
+      { "product": "pikler-triangle", "slot": "floor-end" },
+      { "product": "front-facing-bookshelf", "slot": "wall-start" },
+      { "product": "wall-art-roll", "slot": "wall-end" },
+      { "product": "montessori-shelf", "slot": "floor-mid" }
+    ]
+  }
+]

@@ -1,0 +1,58 @@
+{
+  "hero": {
+    "productSlug": "learning-tower",
+    "nested": [
+      { "slug": "pikler-arch", "tag": "این برش، آرک پیکلره!" },
+      { "slug": "pikler-triangle", "tag": "اینم مثلث پیکلر!" },
+      { "slug": "duck-pull-toy", "tag": "اردک چرخ‌دار هم از همین ورقه" },
+      { "slug": "front-facing-bookshelf", "tag": "کتابخانهٔ روبه‌رو اینجاست" }
+    ],
+    "ctaPrimary": { "label": "بریم فروشگاه", "href": "/shop" },
+    "ctaSecondary": { "label": "برای سنِ بچه‌م چی خوبه؟", "href": "#height-door" }
+  },
+  "season": "yalda",
+  "trust": [
+    { "label": "۴ قسط با اسنپ‌پی", "href": "/installments", "icon": "wheels" },
+    { "label": "ارسال به سراسر ایران", "href": "/shipping", "icon": "parcel" },
+    { "label": "نماد اعتماد الکترونیکی", "href": "/trust", "icon": "shield" }
+  ],
+  "tati_captions": ["سلام! من تاتی‌ام. هرجا قدم برداری، دنبالت میام."],
+  "engraving": { "enabled": false, "priceToman": 290000, "maxChars": 14, "productSlugs": ["learning-tower"] },
+  "safety_points": [
+    { "title": "لبه‌های گرد؛ بدون هیچ گوشهٔ تیز", "body": "همهٔ لبه‌ها با فرز گرد و سنباده نرم می‌شوند.", "href": "/safety" },
+    { "title": "روکش پایه‌آبِ مناسب کودک", "body": "روکش نهایی پایه‌آب است و بوی تند ندارد.", "href": "/safety" },
+    { "title": "بدون قطعهٔ ریزِ جداشدنی", "body": "در وسایل بزرگ هیچ قطعهٔ کوچکی که در دهان جا شود نیست.", "href": "/mag/wooden-toy-safety-guide" },
+    { "title": "محکم؛ ساخته‌شده برای بالا رفتن", "body": "اتصال‌ها برای وزن کودک و بازی پرتحرک طراحی شده‌اند.", "href": "/safety" },
+    { "title": "ساخت ایران؛ قابل تعمیر و ماندگار", "body": "اگر قطعه‌ای آسیب ببیند، کارگاه همان قطعه را دوباره می‌سازد.", "href": "/warranty" }
+  ],
+  "workshopSteps": [
+    { "title": "انتخاب تختهٔ چندلایی توس", "body": "فقط ورق‌های یکدست، بی‌ترک و بی‌گره." },
+    { "title": "برش دقیق با CNC", "body": "مسیر برش از روی نقشهٔ هر قطعه، تا دهم میلی‌متر." },
+    { "title": "سنباده، تا نرمیِ دستِ بچه", "body": "هیچ لبه‌ای تیز نمی‌مونه." },
+    { "title": "روکش ایمنِ پایه‌آب", "body": "مناسب وسایل کودک؛ بدون بوی تند." },
+    { "title": "مُهر کارگاه و بسته‌بندی با حوصله", "body": "هر محصول با مُهر کارگاه از کارگاه بیرون می‌ره." }
+  ],
+  "shopIntro": "همهٔ وسایل چوبز از تختهٔ چندلایی توس و در کارگاه خود چوبز ساخته می‌شوند: برج یادگیری برای کمک در آشپزخانه، مثلث و آرک پیکلر برای بالا رفتن و تعادل، کتابخانهٔ روبه‌رو و قفسهٔ مونته‌سوری برای انتخاب مستقل، و اسباب‌بازی‌های چوبی ساده برای بازی آزاد. هر محصول بازهٔ سنی مشخص دارد؛ از ۶ ماهگی تا ۶ سالگی و بیشتر. می‌توانید هزینه را با اسنپ‌پی در ۴ قسط بپردازید.",
+  "org": {
+    "legalName": null,
+    "foundingDate": null,
+    "city": null,
+    "address": null,
+    "phone": null,
+    "email": null,
+    "nationalId": null,
+    "description": "چوبز کیدز سازندهٔ اسباب‌بازی و سیسمونی چوبی کودک با الهام از مونته‌سوری و والدورف است؛ همهٔ محصولات در کارگاه خود چوبز از تخته چندلایی توس ساخته می‌شوند."
+  },
+  "socials": {
+    "instagram": "https://www.instagram.com/choobz.kids/",
+    "instagramHandle": "choobz.kids",
+    "bale": null,
+    "aparat": null,
+    "followers": 50100,
+    "followersAsOf": "2026-10-16"
+  },
+  "enamad": null,
+  "snapppay": { "enabled": true, "count": 4, "minToman": null, "maxToman": null },
+  "shippingPolicy": { "freeOverToman": null, "rateToman": null, "handlingDays": [1, 3], "transitDays": [2, 5] },
+  "returnPolicy": { "days": 7, "excludedTypes": ["محصولات سفارشی و حک‌شده"] }
+}

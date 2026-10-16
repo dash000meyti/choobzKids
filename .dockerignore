@@ -1,0 +1,15 @@
+node_modules
+.next
+.scripts
+.git
+.claude
+data
+*.db
+*.db-*
+docs
+.env*
+!.env.example
+npm-debug.log*
+.DS_Store
+Dockerfile*
+docker-compose*

@@ -1,0 +1,10 @@
+choobz.kids {
+  encode zstd gzip
+  reverse_proxy web:3000 {
+    flush_interval -1
+  }
+}
+
+www.choobz.kids {
+  redir https://choobz.kids{uri} permanent
+}
