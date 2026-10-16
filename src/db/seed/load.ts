@@ -114,10 +114,13 @@ export function seedDatabase(db: DB, { log = console.log } = {}) {
   const rooms = read<SeedRoom[]>("rooms.json", []);
   const faqs = read<Record<string, SeedFaq[]>>("faqs.json", {});
   const reviews = read<SeedReview[]>("reviews.json", []);
-  const settings = {
+  const settings: Record<string, unknown> = {
     ...read<Record<string, unknown>>("settings.json", {}),
     ...read<Record<string, unknown>>("site-settings.json", {}),
   };
+  // Age hub editorial (intro, milestone paragraphs, sources) lives in settings.age_hubs.
+  const ageHubs = read<unknown[]>("age-hubs.json", []);
+  if (ageHubs.length) settings.age_hubs = ageHubs;
   const posts = readPosts();
 
   db.transaction((tx) => {
@@ -450,14 +453,20 @@ export function seedDatabase(db: DB, { log = console.log } = {}) {
       if (rows.length) tx.insert(s.faqs).values(rows).run();
     }
 
-    /* General / shipping / installments … FAQ sections (faqs.json keys) */
-    const sectionRows = Object.entries(faqs).flatMap(([section, list]) =>
-      faqRows(section === "general" ? "general" : "shipping", null, list, section),
-    );
-    // Feature the first three of each of general + shipping on the home page if none are flagged.
+    /*
+     * faqs.json: { "<section>": SeedFaq[] }. Sections buying · shipping · installments · returns ·
+     * safety feed /faq (#anchors); legacy "general" maps to buying. "age:<hub-slug>" keys feed age hubs.
+     */
+    const sectionRows = Object.entries(faqs).flatMap(([key, list]) => {
+      if (key.startsWith("age:")) return faqRows("age", null, list, key.slice(4));
+      const section = key === "general" ? "buying" : key;
+      return faqRows(section === "buying" ? "general" : "shipping", null, list, section);
+    });
+    // Feature six questions on the home page if none are flagged.
     if (!sectionRows.some((r) => r.featured)) {
-      for (const scope of ["general", "shipping"] as const) {
-        sectionRows.filter((r) => r.scope === scope).slice(0, 3).forEach((r) => (r.featured = true));
+      const pool = sectionRows.filter((r) => r.scope !== "age");
+      for (const section of ["buying", "shipping", "installments", "returns", "safety"]) {
+        pool.filter((r) => r.scopeKey === section).slice(0, 2).forEach((r) => (r.featured = true));
       }
     }
     if (sectionRows.length) tx.insert(s.faqs).values(sectionRows).run();
