@@ -1,0 +1,94 @@
+/*
+ * ScaleCompare (DESIGN.md §6.3 block 11). The age radios set --child-cm with :has(); the peg doll
+ * (drawn 100 cm tall) scales from its feet to that height. The values below are the WHO medians
+ * of AGE_PRESETS in scale-advice.ts ⚑ — keep the two lists in step. A height typed into
+ * HeightInputs is set inline on the section (it wins) and the radios are cleared.
+ */
+
+.scale:has(input[name="scale-age"][value="75"]:checked) {
+  --child-cm: 75;
+}
+.scale:has(input[name="scale-age"][value="82"]:checked) {
+  --child-cm: 82;
+}
+.scale:has(input[name="scale-age"][value="87"]:checked) {
+  --child-cm: 87;
+}
+.scale:has(input[name="scale-age"][value="96"]:checked) {
+  --child-cm: 96;
+}
+.scale:has(input[name="scale-age"][value="103"]:checked) {
+  --child-cm: 103;
+}
+
+/* The platform recommendation for the checked preset (server-rendered, one per preset). */
+.advice [data-advice] {
+  display: none;
+}
+.scale:has(input[name="scale-age"][value="75"]:checked) .advice [data-advice="75"],
+.scale:has(input[name="scale-age"][value="82"]:checked) .advice [data-advice="82"],
+.scale:has(input[name="scale-age"][value="87"]:checked) .advice [data-advice="87"],
+.scale:has(input[name="scale-age"][value="96"]:checked) .advice [data-advice="96"],
+.scale:has(input[name="scale-age"][value="103"]:checked) .advice [data-advice="103"] {
+  display: block;
+}
+/* HeightInputs speaks for itself once the visitor has typed a value. */
+.scale[data-custom] .advice {
+  display: none;
+}
+
+/* ---------- The stage: blueprint paper, a shared floor line, the doll and the elevation ---------- */
+.paper {
+  padding: 1.25rem 1rem 0.75rem;
+  border-radius: var(--radius-bit-xl);
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--info) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--info) 14%, transparent) 1px, transparent 1px);
+  background-size: 1.5rem 1.5rem;
+  background-position: center;
+}
+/* Never taller than most of the viewport: the width gives way, so the box keeps its true ratio. */
+.stage {
+  position: relative;
+  inline-size: min(100%, calc(62svh * var(--ratio)));
+  margin-inline: auto;
+}
+.floor {
+  position: absolute;
+  left: 0;
+  right: 0;
+  block-size: 1.5px;
+  background-color: rgb(var(--shadow-rgb) / 0.35);
+}
+.crop {
+  position: absolute;
+  overflow: hidden;
+}
+.dim {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 0.0625rem 0.4375rem;
+  border-radius: var(--radius-bit-xs);
+  background-color: var(--surface-raised);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--info) 45%, transparent);
+  color: var(--ink);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.doll {
+  translate: -50% 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(:root:not([data-motion="reduce"]):not([data-lite])) .doll {
+    transition: scale var(--dur-scene) var(--ease-settle);
+  }
+}
+
+.advice {
+  padding: 0.875rem 1rem;
+  border-radius: var(--radius-bit);
+  background-color: var(--bubble);
+}

@@ -1,0 +1,197 @@
+/*
+ * ProductGallery (DESIGN.md §6.3 block 2). A scroll-snap track of 4:5 arch slides with anchor
+ * tabs below. On desktop the gallery is sticky beside the info column and never taller than the
+ * viewport. The drawings' own coordinates are physical (they are never mirrored).
+ */
+
+.gallery {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+@media (min-width: 64rem) {
+  .gallery {
+    /* 4:5 slides that fit under the 72px header with the tabs below them. */
+    inline-size: min(100%, calc((100svh - var(--spacing-header-lg) - 6.5rem) * 0.8));
+    margin-inline: auto;
+  }
+}
+
+.track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 100%;
+  gap: 1rem;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.track::-webkit-scrollbar {
+  display: none;
+}
+.slide {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  min-inline-size: 0;
+}
+
+/* ---------- Tabs: a tray of small blocks; the current one is seated ---------- */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 0.375rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  padding: 0.25rem;
+  margin-inline: auto;
+  max-inline-size: 100%;
+  border-radius: var(--radius-bead);
+  background-color: var(--surface-sunken);
+  box-shadow: var(--inset-shadow-tray);
+}
+.tabs::-webkit-scrollbar {
+  display: none;
+}
+.tab {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  min-block-size: 2.5rem;
+  padding-inline: 0.875rem;
+  border-radius: var(--radius-bead);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  -webkit-tap-highlight-color: transparent;
+}
+.tab[aria-current="true"] {
+  background-color: var(--wood);
+  box-shadow: var(--shadow-ply-pressed);
+  translate: 0 2px;
+  font-weight: 700;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(:root:not([data-motion="reduce"]):not([data-lite])) .tab {
+    transition:
+      translate var(--dur-press) var(--ease-press),
+      box-shadow var(--dur-press) linear,
+      background-color var(--dur-quick) var(--ease-wood);
+  }
+}
+
+/* ---------- Photo slides: the whole photo opens the zoom viewer ---------- */
+.zoom {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-end;
+  padding: 0.875rem;
+  border-radius: inherit;
+  cursor: zoom-in;
+}
+.zoomBadge {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--radius-bead);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  color: var(--ink);
+}
+
+/* ---------- «ابعاد»: blueprint paper (turquoise grid on kahgel) ---------- */
+.blueprint {
+  background-color: var(--surface);
+  background-image:
+    linear-gradient(color-mix(in srgb, var(--info) 22%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--info) 22%, transparent) 1px, transparent 1px),
+    linear-gradient(color-mix(in srgb, var(--info) 9%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in srgb, var(--info) 9%, transparent) 1px, transparent 1px);
+  background-size:
+    3rem 3rem,
+    3rem 3rem,
+    0.75rem 0.75rem,
+    0.75rem 0.75rem;
+  background-position: center;
+}
+.orthoArea {
+  position: absolute;
+  inset-inline: 6%;
+  inset-block: 22% 24%;
+  display: grid;
+  place-items: center;
+}
+.dim {
+  position: absolute;
+  translate: -50% -50%;
+  padding: 0.0625rem 0.4375rem;
+  border-radius: var(--radius-bit-xs);
+  background-color: var(--surface-raised);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--info) 45%, transparent);
+  color: var(--ink);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  line-height: 1.5;
+  white-space: nowrap;
+}
+.orthoLegend {
+  position: absolute;
+  inset-inline: 8%;
+  inset-block-end: 5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.125rem;
+  font-size: var(--text-xs);
+  text-align: center;
+}
+
+/* ---------- «در خانه»: a corner of a room drawn in CSS ---------- */
+.room {
+  background-color: var(--surface);
+}
+.skirting,
+.floor {
+  position: absolute;
+  inset-inline: 0;
+  pointer-events: none;
+}
+.skirting {
+  inset-block-start: calc(var(--wall-y) - 2.4%);
+  block-size: 2.4%;
+  background-color: var(--surface-raised);
+  border-block: 1px solid rgb(var(--shadow-rgb) / 0.12);
+}
+.floor {
+  inset-block: var(--wall-y) 0;
+  background:
+    repeating-linear-gradient(
+      to right,
+      transparent 0 calc(16.66% - 1px),
+      rgb(var(--shadow-rgb) / 0.08) calc(16.66% - 1px) 16.66%
+    ),
+    linear-gradient(to bottom, rgb(var(--shadow-rgb) / 0.06), transparent 40%),
+    var(--wood-top);
+}
+.roomCaption {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 4.5%;
+  margin-inline: auto;
+  inline-size: fit-content;
+  max-inline-size: 86%;
+  padding: 0.25rem 0.75rem;
+  border-radius: var(--radius-bead);
+  background-color: color-mix(in srgb, var(--surface-raised) 88%, transparent);
+  color: var(--ink-muted);
+  font-size: var(--text-2xs);
+  font-weight: 600;
+  text-align: center;
+}

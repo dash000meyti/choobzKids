@@ -1,0 +1,117 @@
+/*
+ * Installment calculator (DESIGN.md §8 /installments). Chips are wooden beads (raised, pressable);
+ * the checked one is seated and turns pistachio. Panels pair with chips through `data-option`:
+ * with :has() only the chosen panel shows; without it every panel shows, divided by a hairline.
+ */
+
+/* ---------- Chips: a radio inside a bead (44px hit area around a 40px face) ---------- */
+
+.chip {
+  position: relative;
+  display: inline-flex;
+  padding-block: 2px;
+  cursor: pointer;
+}
+
+.face {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  min-block-size: 2.5rem;
+  padding-inline: 1rem;
+  border-radius: 999px;
+  background-color: var(--wood);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  line-height: 1.4;
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate 330ms var(--ease-press),
+    box-shadow 330ms var(--ease-press),
+    background-color var(--dur-quick) var(--ease-wood),
+    color var(--dur-quick) var(--ease-wood);
+}
+
+@media (hover: hover) {
+  .chip:hover input:not(:checked) + .face {
+    background-color: color-mix(in oklab, var(--wood), white 6%);
+  }
+}
+
+.chip:active .face {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+
+.chip input:checked + .face {
+  translate: 0 2px;
+  background-color: var(--success);
+  color: var(--on-accent);
+  box-shadow: var(--shadow-ply-pressed);
+}
+
+.chip input:focus-visible + .face {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.check {
+  display: none;
+}
+
+.chip input:checked + .face .check {
+  display: inline;
+}
+
+.chip input:checked + .face .uncheck {
+  display: none;
+}
+
+/* ---------- Panels ---------- */
+
+.panel + .panel {
+  margin-block-start: 1.5rem;
+  padding-block-start: 1.5rem;
+  border-block-start: 1px dashed var(--line-strong);
+}
+
+@supports selector(:has(*)) {
+  .panel,
+  .panel + .panel {
+    display: none;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .calc:has(input[data-option="1"]:checked) .panel[data-option="1"],
+  .calc:has(input[data-option="2"]:checked) .panel[data-option="2"],
+  .calc:has(input[data-option="3"]:checked) .panel[data-option="3"],
+  .calc:has(input[data-option="4"]:checked) .panel[data-option="4"],
+  .calc:has(input[data-option="5"]:checked) .panel[data-option="5"],
+  .calc:has(input[data-option="6"]:checked) .panel[data-option="6"],
+  .calc:has(input[data-option="7"]:checked) .panel[data-option="7"],
+  .calc:has(input[data-option="8"]:checked) .panel[data-option="8"],
+  .calc:has(input[data-option="custom"]:checked) .panel[data-option="custom"] {
+    display: block;
+  }
+}
+
+/*
+ * A panel coming into view rolls its wheels a quarter turn and settles (§4.13). The animation is
+ * on each wheel's outer <svg> box, so it never fights the island's `data-spin` on the wrapper.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  :root:not([data-motion="reduce"]):not([data-lite]) .panel [data-wheel] > svg {
+    animation: wheel-settle var(--dur-scene) var(--ease-settle);
+  }
+}
+
+@keyframes wheel-settle {
+  from {
+    rotate: 90deg;
+  }
+}

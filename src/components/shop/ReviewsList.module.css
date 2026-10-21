@@ -1,0 +1,30 @@
+/* ReviewsList: polaroids on the page, and the permanent empty frame (DESIGN.md §0.2 Gallery). */
+.polaroid {
+  padding: 0.5rem 0.5rem 0.75rem;
+  border-radius: 0.25rem;
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+
+.emptyFrame {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 1.75rem 1.5rem;
+  border-radius: var(--radius-bit);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+  text-align: center;
+}
+.emptyInner {
+  display: grid;
+  place-items: center;
+  inline-size: 7rem;
+  aspect-ratio: 1;
+  margin-block-end: 0.5rem;
+  border: 1.5px dashed var(--line-strong);
+  border-radius: 0.25rem;
+  background-color: var(--surface);
+  color: var(--ink-muted);
+}

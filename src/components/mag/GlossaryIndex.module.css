@@ -1,0 +1,72 @@
+/*
+ * Letter groups: a ply-band shelf lip between groups, the initial carved into a birch block.
+ * Anchors land below the header and the sticky alphabet rail.
+ */
+
+.group {
+  display: grid;
+  gap: 1rem;
+  padding-block: 1.75rem;
+  scroll-margin-block-start: calc(var(--spacing-header) + 4.5rem);
+}
+.group + .group {
+  border-block-start: 1px solid var(--line);
+}
+
+.head {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  line-height: 1;
+}
+
+.letter {
+  display: grid;
+  place-items: center;
+  inline-size: 3rem;
+  block-size: 3rem;
+  border-radius: var(--radius-bit-sm);
+  background-color: var(--wood);
+  color: var(--ink);
+  font-family: var(--font-display);
+  font-size: 1.75rem;
+  line-height: 1;
+  /* A block resting on the shelf, not a button: an edge without the drop shadow. */
+  box-shadow:
+    0 1px 0 var(--ply-1),
+    0 2px 0 var(--ply-2),
+    0 3px 0 var(--ply-1),
+    0 4px 0 var(--ply-3);
+}
+.letter bdi {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+@media (min-width: 64rem) {
+  .group {
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 1.5rem;
+    padding-block: 2.25rem;
+    /* The rail may wrap to two rows between 1024 and 1280 px. */
+    scroll-margin-block-start: calc(var(--spacing-header-lg) + 7rem);
+  }
+  .head {
+    position: sticky;
+    inset-block-start: calc(var(--spacing-header-lg) + 7rem);
+    flex-direction: column;
+    align-items: flex-start;
+    align-self: start;
+    gap: 0.5rem;
+  }
+  .letter {
+    inline-size: 4rem;
+    block-size: 4rem;
+    font-size: 2.25rem;
+  }
+}

@@ -1,0 +1,255 @@
+/*
+ * /gallery «عکس‌های شما» — the fridge door (DESIGN.md §5.8, §8). A cream door with a handle at
+ * inline-end; fruit magnets (pomegranate, pistachio, quince) hold polaroids tilted by a server
+ * seed (--tilt). Each polaroid has a museum placard under its photo. The empty frame is always
+ * the last one. Polaroids settle as they scroll in; a pointer hover straightens and lifts them.
+ */
+
+.door {
+  position: relative;
+  padding: 2rem 1rem 2.5rem;
+  border-radius: 2rem;
+  background:
+    linear-gradient(to bottom, rgb(var(--shadow-rgb) / 0.04), transparent 30%),
+    var(--surface-raised);
+  box-shadow:
+    inset 0 0 0 1px var(--line),
+    0 1px 0 rgb(var(--shadow-rgb) / 0.05),
+    0 22px 40px -28px rgb(var(--shadow-rgb) / 0.5);
+}
+
+/* The door handle: a long rounded bar on the inline-end edge. */
+.door::after {
+  content: "";
+  position: absolute;
+  inset-block-start: 2.5rem;
+  inset-inline-end: 0.45rem;
+  inline-size: 0.5rem;
+  block-size: min(16rem, 40%);
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--wood-side), var(--wood-top), var(--wood-side));
+  box-shadow: 0 6px 10px -4px rgb(var(--shadow-rgb) / 0.35);
+}
+
+@media (min-width: 48rem) {
+  .door {
+    padding: 2.75rem 3rem 3.25rem 2.5rem;
+  }
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 2.25rem 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 48rem) {
+  .board {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 3rem 2rem;
+  }
+}
+
+@media (min-width: 72rem) {
+  .board {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.slot {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+/* ---------- Polaroid ---------- */
+
+.polaroid {
+  --tilt: 0deg;
+  position: relative;
+  inline-size: 100%;
+  max-inline-size: 15rem;
+  margin: 0;
+  padding: 0.4rem 0.4rem 0.75rem;
+  border-radius: 3px;
+  background-color: var(--bg);
+  box-shadow:
+    0 1px 0 rgb(var(--shadow-rgb) / 0.08),
+    0 14px 20px -14px rgb(var(--shadow-rgb) / 0.5);
+  rotate: var(--tilt);
+  transition:
+    rotate var(--dur-gentle) var(--ease-settle),
+    translate var(--dur-gentle) var(--ease-settle),
+    box-shadow var(--dur-gentle) var(--ease-settle);
+}
+
+@media (hover: hover) {
+  .polaroid:has(:focus-visible),
+  .polaroid:hover {
+    rotate: 0deg;
+    translate: 0 -4px;
+    box-shadow:
+      0 1px 0 rgb(var(--shadow-rgb) / 0.08),
+      0 22px 28px -16px rgb(var(--shadow-rgb) / 0.5);
+  }
+}
+
+/* The fruit magnet holding it. */
+.magnet {
+  position: absolute;
+  z-index: 1;
+  inset-block-start: -0.75rem;
+  inset-inline-start: 50%;
+  inline-size: 1.6rem;
+  block-size: 1.6rem;
+  translate: 50% 0;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.55), transparent 32%), var(--magnet, var(--accent));
+  box-shadow: 0 3px 5px -1px rgb(var(--shadow-rgb) / 0.35);
+}
+
+.magnet[data-fruit="pistachio"] {
+  --magnet: var(--success);
+}
+
+.magnet[data-fruit="quince"] {
+  --magnet: color-mix(in oklab, var(--highlight), var(--wood) 35%);
+}
+
+.photo {
+  position: relative;
+  display: block;
+  inline-size: 100%;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 2px;
+  background: var(--paper-tile) 0 0 / 160px repeat, var(--surface);
+  container-type: inline-size;
+}
+
+.photo img {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: cover;
+}
+
+button.photo {
+  padding: 0;
+  border: 0;
+  cursor: zoom-in;
+}
+
+/* ---------- Drawn frames: peg dolls and a manifest drawing at one cm scale ---------- */
+
+.scene {
+  /* --span is how many cm the frame shows across; dolls and drawings share the unit. */
+  --u: calc(100cqi / var(--span, 170));
+  --peg-unit: var(--u);
+  position: absolute;
+  z-index: 0;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: calc(5 * var(--u));
+  padding-block-end: 8%;
+}
+
+.scene::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 8%;
+  background: color-mix(in oklab, var(--wood) 70%, var(--surface));
+}
+
+.scene img {
+  flex: none;
+  inline-size: auto;
+  block-size: auto;
+  object-fit: fill;
+}
+
+.placard {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.6rem 0.35rem 0;
+  text-align: center;
+}
+
+/* ---------- The empty frame ---------- */
+
+.empty {
+  display: grid;
+  place-items: center;
+  gap: 0.5rem;
+  inline-size: 100%;
+  max-inline-size: 15rem;
+  aspect-ratio: 4 / 5;
+  padding: 1.25rem;
+  border: 2px dashed var(--line-strong);
+  border-radius: 4px;
+  color: var(--ink);
+  text-align: center;
+  rotate: var(--tilt, 0deg);
+  transition: rotate var(--dur-gentle) var(--ease-settle), background-color var(--dur-quick) var(--ease-wood);
+}
+
+@media (hover: hover) {
+  .empty:hover {
+    rotate: 0deg;
+    background-color: color-mix(in oklab, var(--bubble) 55%, transparent);
+  }
+}
+
+/* ---------- Settle as the wall scrolls in ---------- */
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .slot {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 80%;
+    }
+  }
+}
+
+@keyframes settle {
+  from {
+    translate: 0 -10px;
+    rotate: 2deg;
+    opacity: 0.001;
+  }
+}
+
+/* ---------- Lightbox ---------- */
+
+.lightbox {
+  inline-size: min(40rem, calc(100vw - 2rem));
+  max-block-size: calc(100dvh - 2rem);
+  margin: auto;
+  padding: 0.75rem 0.75rem 1rem;
+  border: 0;
+  border-radius: var(--radius-bit);
+  background-color: var(--bg);
+  color: var(--ink);
+  box-shadow: var(--shadow-sheet);
+}
+
+.lightbox::backdrop {
+  background: rgb(var(--shadow-rgb) / 0.55);
+}
+
+.lightbox img {
+  inline-size: 100%;
+  block-size: auto;
+  max-block-size: calc(100dvh - 12rem);
+  object-fit: contain;
+  border-radius: 2px;
+}

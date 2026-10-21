@@ -1,0 +1,142 @@
+/*
+ * The magazine masthead (DESIGN.md §7.1): a kraft notebook cover. The notebook is bound on the
+ * right like a Persian book, so its page edges show at the inline-end (left) and the bottom,
+ * and its elastic band crosses near the opening edge. Only ink/muted text sits on kraft
+ * (§2.3), so the heading lives on a paper label stuck to the cover. Static, no motion.
+ */
+
+.cover {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 1.25rem;
+  padding: 1.25rem 1.25rem 2.25rem;
+  padding-inline-end: 2.25rem; /* room for the band */
+  border-radius: var(--radius-bit-sm) var(--radius-bit-lg) var(--radius-bit-lg) var(--radius-bit-sm);
+  background-color: var(--tag);
+  /* Pages peeking out under the cover at the inline-end and the bottom edge. */
+  box-shadow:
+    -3px 3px 0 -1px var(--surface-raised),
+    -3px 3px 0 0 var(--line),
+    -6px 6px 0 -1px var(--surface-raised),
+    -6px 6px 0 0 var(--line),
+    0 18px 30px -18px rgb(var(--shadow-rgb) / 0.45);
+}
+.cover:dir(ltr) {
+  border-radius: var(--radius-bit-lg) var(--radius-bit-sm) var(--radius-bit-sm) var(--radius-bit-lg);
+  box-shadow:
+    3px 3px 0 -1px var(--surface-raised),
+    3px 3px 0 0 var(--line),
+    6px 6px 0 -1px var(--surface-raised),
+    6px 6px 0 0 var(--line),
+    0 18px 30px -18px rgb(var(--shadow-rgb) / 0.45);
+}
+/* The spine: a slightly darker strip along the binding (inline-start). */
+.cover::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 0.75rem;
+  z-index: -1;
+  border-start-start-radius: inherit;
+  border-end-start-radius: inherit;
+  background: rgb(var(--shadow-rgb) / 0.1);
+}
+
+.band {
+  position: absolute;
+  inset-block: -0.35rem;
+  inset-inline-end: 0.9rem;
+  inline-size: 0.6rem;
+  border-radius: 0.3rem;
+  background: color-mix(in oklab, var(--ink) 82%, var(--tag));
+  box-shadow: 1px 0 0 rgb(255 255 255 / 0.12) inset, 0 1px 2px rgb(var(--shadow-rgb) / 0.35);
+}
+
+.label {
+  position: relative;
+  padding: 1rem 1.1rem 1.25rem;
+  border-radius: var(--radius-bit-sm);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+/* Two pins of tape holding the label to the cover. */
+.label::before,
+.label::after {
+  content: "";
+  position: absolute;
+  inset-block-start: -0.45rem;
+  inline-size: 2.75rem;
+  block-size: 0.9rem;
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--surface-raised) 55%, transparent);
+  box-shadow: 0 0 0 1px var(--line);
+}
+.label::before {
+  inset-inline-start: 1.25rem;
+  rotate: 4deg;
+}
+.label::after {
+  inset-inline-end: 1.25rem;
+  rotate: -5deg;
+}
+
+.ask {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.pencil {
+  position: absolute;
+  inset-block-end: 0.55rem;
+  inset-inline-end: 3rem;
+  inline-size: min(13.75rem, 46%);
+  block-size: auto;
+  rotate: -2deg;
+}
+.pencil:dir(ltr) {
+  scale: -1 1;
+  rotate: 2deg;
+}
+.wood {
+  fill: var(--wood-top);
+}
+.graphite {
+  fill: var(--ink);
+}
+.body {
+  fill: var(--wood);
+}
+.stripe {
+  fill: var(--ply-2);
+  opacity: 0.55;
+}
+.ferrule {
+  fill: var(--line-strong);
+}
+.eraser {
+  fill: var(--accent);
+  opacity: 0.85;
+}
+
+@media (min-width: 48rem) {
+  .cover {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+    align-items: stretch;
+    gap: 1.5rem 2rem;
+    padding: 2rem 2rem 2.75rem;
+    padding-inline-end: 3.25rem;
+  }
+  .label {
+    padding: 1.5rem 1.75rem 1.75rem;
+  }
+  .ask {
+    align-self: center;
+  }
+  .band {
+    inset-inline-end: 1.4rem;
+    inline-size: 0.7rem;
+  }
+}

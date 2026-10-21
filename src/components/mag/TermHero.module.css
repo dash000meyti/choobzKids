@@ -1,0 +1,52 @@
+/*
+ * The definition card: a sheet of paper resting on a birch spine at inline-start, like an
+ * index card filed in a wooden box. Reading surface, not a control (no ply drop shadow).
+ */
+
+.card {
+  position: relative;
+  margin-block-start: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  padding-inline-start: 1.85rem;
+  border-radius: var(--radius-bit);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+.card::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.85rem;
+  inset-inline-start: 0.7rem;
+  inline-size: 5px;
+  border-radius: 999px;
+  background: repeating-linear-gradient(
+    to left,
+    var(--ply-1) 0 1.5px,
+    var(--ply-2) 1.5px 2.5px,
+    var(--ply-1) 2.5px 4px,
+    var(--ply-3) 4px 5px
+  );
+}
+
+.definition {
+  font-size: var(--text-lead);
+  line-height: 1.85;
+  color: var(--ink);
+}
+.definition dfn {
+  font-style: normal;
+  font-weight: 700;
+}
+/* A definition that never repeats the term verbatim is wholly the defining instance: no bold. */
+.definition dfn.whole {
+  font-weight: inherit;
+}
+
+.drawing {
+  aspect-ratio: 16 / 9;
+}
+@media (min-width: 40rem) {
+  .drawing {
+    aspect-ratio: 4 / 5;
+  }
+}

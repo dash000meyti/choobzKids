@@ -1,0 +1,129 @@
+/*
+ * Notebooks on a shelf. Each notebook is a tinted cover bound on the right (the spine at
+ * inline-start, rounded corners at the opening edge), with an elastic band near the opening
+ * edge and a paper label in theme colours. It stands on a laminated edge and seats when pressed.
+ */
+
+.shelf {
+  position: relative;
+  margin-inline: calc(-1 * var(--spacing-gutter));
+}
+
+.row {
+  display: flex;
+  gap: 0.875rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: inline mandatory;
+  scroll-padding-inline: var(--spacing-gutter);
+  padding: 0.75rem var(--spacing-gutter) 0.6rem;
+}
+
+.slot {
+  flex: 0 0 9.75rem;
+  scroll-snap-align: start;
+}
+
+/* The shelf lip the notebooks stand on, with its shadow on the wall below. */
+.lip {
+  display: block;
+  block-size: 6px;
+  margin-inline: var(--spacing-gutter);
+  border-radius: 2px;
+  box-shadow: 0 10px 14px -10px rgb(var(--shadow-rgb) / 0.55);
+}
+
+.notebook {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  block-size: 13.5rem;
+  padding: 2.25rem 0.85rem 0.85rem;
+  padding-inline-start: 1.35rem; /* clear the spine */
+  border-radius: 0.3rem var(--radius-bit) var(--radius-bit) 0.3rem;
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-quick) var(--ease-wood),
+    box-shadow var(--dur-quick) var(--ease-wood);
+  -webkit-tap-highlight-color: transparent;
+}
+.notebook:dir(ltr) {
+  border-radius: var(--radius-bit) 0.3rem 0.3rem var(--radius-bit);
+}
+/* Spine along the binding. */
+.notebook::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  inline-size: 0.6rem;
+  z-index: -1;
+  border-start-start-radius: inherit;
+  border-end-start-radius: inherit;
+  background: rgb(51 37 27 / 0.12); /* walnut shade on a fixed light tint */
+}
+@media (hover: hover) {
+  .notebook:hover {
+    translate: 0 -3px;
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+.notebook:active {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+.notebook:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 3px;
+}
+
+.elastic {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0.7rem;
+  inline-size: 4px;
+  border-radius: 2px;
+  background: rgb(51 37 27 / 0.62);
+}
+
+.stamp {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-start: 1rem;
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  margin-inline-end: 0.6rem; /* stays clear of the band */
+  padding: 0.6rem 0.65rem 0.7rem;
+  border-radius: var(--radius-bit-xs);
+  background: var(--surface-raised);
+  color: var(--ink);
+  box-shadow: 0 1px 0 rgb(51 37 27 / 0.12);
+}
+
+@media (min-width: 64rem) {
+  .shelf {
+    margin-inline: 0;
+  }
+  .row {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+    overflow: visible;
+    gap: 1.25rem;
+    padding-inline: 0.5rem;
+  }
+  .lip {
+    margin-inline: 0;
+  }
+  .notebook {
+    block-size: 15rem;
+  }
+}

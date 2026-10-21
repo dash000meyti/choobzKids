@@ -1,0 +1,122 @@
+/*
+ * /workshop — five step cards (DESIGN.md §5.6 copy, §8). Each card is a flat paper page with a
+ * kahgel picture of the step drawn from the learning tower's manifest; the last one carries the
+ * workshop stamp. Static by default; with scroll timelines the cards rise as they enter and the
+ * stamp presses once (§9.5, compositor only).
+ */
+
+.steps {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .steps {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 72rem) {
+  .steps {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--radius-bit-lg);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+
+.picture {
+  position: relative;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  background: var(--paper-tile) 0 0 / 160px repeat, var(--surface);
+}
+
+/* The drawing is contained in the box, so every card's picture has the same height. */
+.picture img {
+  position: absolute;
+  inset: 1rem 1.25rem 0.9rem;
+  inline-size: calc(100% - 2.5rem);
+  block-size: calc(100% - 1.9rem);
+  object-fit: contain;
+}
+
+.bead {
+  position: absolute;
+  inset-block-start: 0.75rem;
+  inset-inline-start: 0.75rem;
+  display: grid;
+  place-items: center;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  border-radius: 999px;
+  background-color: var(--wood);
+  box-shadow:
+    inset 0 0 0 1.5px var(--ply-2),
+    inset 0 -3px 0 color-mix(in oklab, var(--ply-3) 35%, transparent);
+  color: var(--ink);
+  font-weight: 800;
+  line-height: 1;
+}
+
+.stamp {
+  position: absolute;
+  inset-block-end: 0.9rem;
+  inset-inline-end: 0.9rem;
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 1rem 1.1rem 1.25rem;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .step {
+      animation: rise linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 70%;
+    }
+
+    :root:not([data-motion="reduce"]):not([data-lite]) .stamp {
+      animation: press linear both;
+      animation-timeline: view();
+      animation-range: entry 40% cover 45%;
+    }
+  }
+}
+
+@keyframes rise {
+  from {
+    translate: 0 18px;
+    opacity: 0.001;
+  }
+}
+
+/* The duck stamp comes down a little large and seats (§5.6 step 5). */
+@keyframes press {
+  0% {
+    scale: 1.25;
+    opacity: 0.001;
+  }
+  60% {
+    scale: 0.97;
+    opacity: 1;
+  }
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+}

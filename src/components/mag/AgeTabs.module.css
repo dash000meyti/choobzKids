@@ -1,0 +1,35 @@
+/*
+ * Phones: a rail that sticks under the 56px header for the length of the hub.
+ * ≥ 768px: the tabs hang off the masthead's lower edge (negative top margin) and scroll away.
+ */
+.rail {
+  position: sticky;
+  inset-block-start: var(--spacing-header);
+  z-index: var(--z-sticky);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-inline: calc(-1 * var(--spacing-gutter));
+  padding: 0.35rem var(--spacing-gutter) 0.5rem;
+  background-color: var(--bg);
+  box-shadow: 0 1px 0 var(--line);
+}
+/* Three tabs must fit a 360px phone: tighten the hex faces' side padding there. */
+@media (max-width: 47.999rem) {
+  .rail a > span {
+    padding-inline: 0.85rem;
+  }
+}
+
+@media (min-width: 48rem) {
+  .rail {
+    position: relative;
+    inset-block-start: auto;
+    justify-content: flex-start;
+    margin-block-start: -1.6rem;
+    margin-inline: 0;
+    padding: 0 2rem;
+    background: none;
+    box-shadow: none;
+  }
+}

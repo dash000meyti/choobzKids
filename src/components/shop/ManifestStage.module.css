@@ -1,0 +1,98 @@
+/*
+ * ManifestStage (DESIGN.md §6.3 block 2). Default CSS is the assembled frame; the exploded state
+ * is a radio away. The parts move on the settle spring with a small paint-order stagger, only
+ * when motion is allowed; otherwise they simply snap apart.
+ */
+
+/* The drawing stands on the arch floor, above the controls, as large as the box allows. */
+.drawing {
+  position: absolute;
+  inset-inline: 7%;
+  inset-block: 13% 25%;
+  display: grid;
+  place-items: end center;
+  container-type: size;
+}
+.drawing > :global([data-parts-stage]) {
+  inline-size: min(100cqi, 100cqb * var(--ratio, 1));
+}
+
+.foot {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 4.5%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* ---------- The two-option toggle: a tray holding two blocks; the chosen one is seated ---------- */
+.views {
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-bead);
+  background-color: var(--surface-sunken);
+  box-shadow: var(--inset-shadow-tray);
+}
+.view {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: 2.5rem;
+  padding-inline: 1rem;
+  border-radius: var(--radius-bead);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.view:has(:checked) {
+  background-color: var(--wood);
+  box-shadow: var(--shadow-ply-pressed);
+  translate: 0 2px;
+  font-weight: 700;
+}
+.view:has(:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .view:not(:has(:checked)):hover {
+    background-color: color-mix(in oklab, var(--surface-raised), white 6%);
+  }
+}
+
+/* ---------- Explode ---------- */
+.stage :global([data-state="exploded"]) {
+  opacity: 0;
+}
+.stage:has(.exploded:checked) :global([data-part]) {
+  translate: var(--ex) var(--ey);
+}
+.stage:has(.exploded:checked) :global([data-state="assembled"]) {
+  opacity: 0;
+}
+.stage:has(.exploded:checked) :global([data-state="exploded"]) {
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :global(:root:not([data-motion="reduce"]):not([data-lite])) .stage :global([data-part]) {
+    transition:
+      translate var(--dur-scene) var(--ease-settle),
+      opacity var(--dur-base) var(--ease-wood);
+    transition-delay: calc(var(--i, 0) * 30ms);
+  }
+  :global(:root:not([data-motion="reduce"]):not([data-lite])) .view {
+    transition:
+      translate var(--dur-press) var(--ease-press),
+      box-shadow var(--dur-press) linear,
+      background-color var(--dur-quick) var(--ease-wood);
+  }
+}

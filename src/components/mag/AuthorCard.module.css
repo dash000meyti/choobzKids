@@ -1,0 +1,46 @@
+/*
+ * Team card: raised paper on a ply edge (the card is a link), the same face as TermCard.
+ * A carved initial sits a little into the birch, like a letter cut with a router.
+ */
+
+.card {
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-quick) var(--ease-wood),
+    box-shadow var(--dur-quick) var(--ease-wood);
+}
+@media (hover: hover) {
+  .card:hover {
+    translate: 0 -2px;
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+.card:has(.link:active) {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.link:focus-visible {
+  outline: none;
+}
+.card:has(.link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.carved {
+  line-height: 1;
+  padding-block-start: 0.12em;
+  text-shadow:
+    0 1px 0 rgb(255 255 255 / 0.25),
+    0 -1px 0 rgb(var(--shadow-rgb) / 0.25);
+  box-shadow: var(--inset-shadow-tray);
+}

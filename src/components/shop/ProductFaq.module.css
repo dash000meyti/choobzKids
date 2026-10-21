@@ -1,0 +1,32 @@
+/*
+ * ProductFaq: paper drawers. The summary is the tappable part (a 44px+ row); the plus turns into
+ * a cross when the drawer is open. Native <details>: works without JS, find-in-page opens it.
+ */
+.item {
+  border-radius: var(--radius-bit);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+.summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-block-size: 3.5rem;
+  padding: 0.75rem 1.25rem;
+  cursor: pointer;
+  list-style: none;
+  border-radius: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.summary::-webkit-details-marker {
+  display: none;
+}
+.item[open] .icon {
+  rotate: 45deg;
+}
+@media (prefers-reduced-motion: no-preference) {
+  :global(:root:not([data-motion="reduce"]):not([data-lite])) .icon {
+    transition: rotate var(--dur-base) var(--ease-settle);
+  }
+}

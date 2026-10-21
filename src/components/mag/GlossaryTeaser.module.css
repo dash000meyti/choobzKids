@@ -1,0 +1,54 @@
+/*
+ * Wooden letter blocks: painted birch faces on a ply edge for letters that have terms (links);
+ * bare, unpainted outlines for the rest. Phones scroll the row inside itself; wide screens wrap.
+ */
+
+.alphabet {
+  display: flex;
+  gap: 0.4rem;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 0.25rem var(--spacing-gutter) 0.6rem;
+}
+
+.block {
+  display: grid;
+  place-items: center;
+  inline-size: 2.75rem;
+  block-size: 2.75rem;
+  border-radius: var(--radius-bit-xs);
+  font-family: var(--font-display);
+  font-size: var(--text-lg);
+  line-height: 1;
+}
+
+a.block {
+  background-color: var(--wood);
+  color: var(--ink);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-press) var(--ease-press),
+    box-shadow var(--dur-press) linear;
+}
+a.block:active {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+}
+a.block:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.blank {
+  color: var(--ink-muted);
+  opacity: 0.55;
+  box-shadow: inset 0 0 0 1px var(--line);
+}
+
+@media (min-width: 64rem) {
+  .alphabet {
+    flex-wrap: wrap;
+    overflow: visible;
+    padding-inline: var(--spacing-gutter);
+  }
+}

@@ -1,0 +1,44 @@
+/*
+ * The door stage (DESIGN.md §3.8): RoomKit geometry, physical coordinates (the door is on the right
+ * in both directions). Pencil labels are HTML (never SVG text), Mikhak in graphite on the wall;
+ * which one shows, and its kashida pull, is decided by HeightDoor's :has() rules.
+ */
+
+.stage {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: var(--radius-bit-xl);
+  background-color: var(--surface);
+  container-type: inline-size;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* A pencil note written just above its tick, ending at the door casing. */
+.mark {
+  position: absolute;
+  z-index: 2;
+  translate: 0 -100%;
+  padding-inline-end: 0.35em;
+  color: color-mix(in oklab, var(--ink) 78%, transparent);
+  font-size: clamp(0.8125rem, 3.4cqi, 1.0625rem);
+  line-height: 1.25;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-wood);
+}
+
+/* The child stands against the frame, in front of the wall pieces and the marks. */
+.childLayer {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}

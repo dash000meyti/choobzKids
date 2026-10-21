@@ -1,0 +1,50 @@
+/*
+ * The guide interlude (DESIGN.md §6.1, §4.11): a kraft notebook cover on a ply edge — raised,
+ * because the whole card is a link — with the guide stationery's elastic band down its
+ * inline-end edge. Kraft carries ink only (DESIGN.md §12). Lifts on hover, seats on press,
+ * rings the card on focus, like every card.
+ */
+
+.note {
+  background-color: var(--tag);
+  box-shadow: var(--shadow-ply);
+  transition:
+    translate var(--dur-quick) var(--ease-wood),
+    box-shadow var(--dur-quick) var(--ease-wood);
+}
+@media (hover: hover) {
+  .note:hover {
+    translate: 0 -2px;
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+.note:has(.link:active) {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+
+.link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+}
+.link:focus-visible {
+  outline: none;
+}
+.note:has(.link:focus-visible) {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.band {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-end: 0.6rem;
+  inline-size: 5px;
+  border-radius: 2px;
+  background-color: color-mix(in srgb, var(--ink) 72%, transparent);
+  pointer-events: none;
+}

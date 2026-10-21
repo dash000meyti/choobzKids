@@ -1,0 +1,176 @@
+/*
+ * /about — the picture-book spreads (DESIGN.md §8). Each spread is an open book: a picture page
+ * (kahgel wall, ply floor, peg dolls and manifest drawings at one true cm scale) and a text page,
+ * with a soft fold where they meet. Phones stack the pages; from 768px they open side by side
+ * and the second spread mirrors the first, like turning to the next pair of pages.
+ */
+
+.spread {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  overflow: hidden;
+  border-radius: var(--radius-bit-xl);
+  background-color: var(--surface-raised);
+  box-shadow: var(--shadow-paper);
+}
+
+.picture {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  min-block-size: 15rem;
+  padding: 2.5rem 1.25rem 0;
+  background: var(--paper-tile) 0 0 / 160px repeat, var(--surface);
+}
+
+/* The workshop spread hangs the cut sheet on the wall above the figures. */
+.picture[data-tall] {
+  min-block-size: 21rem;
+}
+
+/* The floor the figures stand on: a laminated plywood edge. */
+.picture::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: 0.6rem;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--ply-1) 0 1.5px,
+    var(--ply-2) 1.5px 2.5px,
+    var(--ply-1) 2.5px 4px,
+    var(--ply-3) 4px 5px
+  );
+}
+
+.text {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding: 1.75rem 1.25rem 2.25rem;
+}
+
+/* Picture-book page numbers (decorative). */
+.folio {
+  position: absolute;
+  inset-block-end: 0.8rem;
+  inset-inline-end: 1.25rem;
+  color: var(--ink-muted);
+  font-family: var(--font-accent);
+  font-size: var(--text-sm);
+}
+
+@media (min-width: 48rem) {
+  .spread {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .picture,
+  .picture[data-tall] {
+    min-block-size: 24rem;
+    padding-inline: 2rem;
+  }
+
+  .text {
+    justify-content: center;
+    padding: 2.75rem 2.5rem 3.25rem;
+  }
+
+  .spread[data-flip] .picture {
+    order: 2;
+  }
+
+  /*
+   * The fold: shade the inner edge of both pages. The site is RTL, so the first grid column is on
+   * the right and the spine sits on its left edge (and on the right edge of the second column).
+   */
+  .spread::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset-block: 0;
+    inset-inline-start: 50%;
+    inline-size: 3rem;
+    translate: 50% 0;
+    background: linear-gradient(
+      to right,
+      transparent,
+      rgb(var(--shadow-rgb) / 0.07) 42%,
+      rgb(var(--shadow-rgb) / 0.13) 50%,
+      rgb(var(--shadow-rgb) / 0.07) 58%,
+      transparent
+    );
+    pointer-events: none;
+  }
+}
+
+/* ---------- Figures at one scale: --k is px per cm on phones, a little larger on desktop ---------- */
+
+.scene {
+  --u: calc(var(--k, 1.4) * 1px);
+  --peg-unit: var(--u);
+  position: relative;
+  z-index: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: calc(6 * var(--u));
+  padding-block-end: 0.6rem;
+}
+
+@media (min-width: 64rem) {
+  .scene {
+    --u: calc(var(--k, 1.4) * 1.5px);
+  }
+}
+
+.drawing {
+  display: block;
+  flex: none;
+  block-size: auto;
+}
+
+/* The sheet hangs on the wall above the floor scene in the workshop spread. */
+.sheet {
+  position: absolute;
+  inset-block-start: 1.75rem;
+  inset-inline: 12%;
+  display: flex;
+  justify-content: center;
+}
+
+.sheet img {
+  inline-size: 100%;
+  max-inline-size: 22rem;
+  block-size: auto;
+  rotate: -2deg;
+  filter: drop-shadow(0 8px 10px rgb(var(--shadow-rgb) / 0.18));
+}
+
+/* The figures settle onto the floor as the spread scrolls in (motion allowed only). */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .scene {
+      animation: settle linear both;
+      animation-timeline: view();
+      animation-range: entry 5% cover 35%;
+    }
+  }
+}
+
+@keyframes settle {
+  from {
+    translate: 0 -14px;
+    opacity: 0.001;
+  }
+}
+
+/* ---------- «چوبز در یک نگاه» ---------- */
+
+.facts {
+  scroll-margin-block-start: calc(var(--spacing-header) + 1.5rem);
+}

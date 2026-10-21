@@ -1,0 +1,133 @@
+/*
+ * Age hub sub-ranges and the cabinet-drawer FAQ (DESIGN.md §7.5, §5.10).
+ * Anchors land below the sticky header; drawers are raised wood fronts (tappable) with the
+ * answer on paper inside. Static frame = the browser's own open/closed states; the height
+ * glide is progressive, behind the motion gates.
+ */
+
+.section {
+  scroll-margin-block-start: calc(var(--spacing-header) + 1rem);
+}
+@media (min-width: 64rem) {
+  .section {
+    scroll-margin-block-start: calc(var(--spacing-header-lg) + 1.5rem);
+  }
+}
+
+/* The sub-range's label: a hexagon badge in its age tint (a label, not a control). */
+.badge {
+  display: inline-grid;
+  place-items: center;
+  min-block-size: 2.25rem;
+  padding-inline: 1.25rem;
+  clip-path: polygon(16% 0, 84% 0, 100% 50%, 84% 100%, 16% 100%, 0 50%);
+  font-size: var(--text-sm);
+  font-weight: 700;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.tips {
+  display: grid;
+  gap: 0.6rem;
+  padding-inline-start: 1.1rem;
+  list-style: disc;
+}
+.tips li::marker {
+  color: var(--success);
+}
+
+/* ---------- FAQ drawers ---------- */
+
+.drawer {
+  border-radius: var(--radius-bit);
+}
+
+.front {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  min-block-size: 3.5rem;
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--radius-bit);
+  background-color: var(--wood);
+  box-shadow: var(--shadow-ply);
+  cursor: pointer;
+  list-style: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    translate var(--dur-gentle) var(--ease-settle),
+    box-shadow var(--dur-gentle) var(--ease-settle);
+}
+.front::-webkit-details-marker {
+  display: none;
+}
+.front:active {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+  transition-duration: var(--dur-press);
+  transition-timing-function: linear;
+}
+.front:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+@media (hover: hover) {
+  .front:hover {
+    box-shadow: var(--shadow-ply-lifted);
+  }
+}
+
+.question {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--text-base);
+  font-weight: 700;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+/* A turned wooden knob at inline-end. */
+.knob {
+  flex: none;
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  border-radius: 999px;
+  background: radial-gradient(circle at 38% 34%, var(--wood-top) 0 32%, var(--ply-2) 72%, var(--ply-3) 100%);
+  box-shadow:
+    0 1px 0 var(--ply-3),
+    0 3px 5px -2px rgb(var(--shadow-rgb) / 0.45);
+}
+
+/* Open: the drawer is pulled out toward the reader, its paper inside. */
+.drawer[open] > .front {
+  box-shadow: var(--shadow-ply-lifted);
+  border-end-start-radius: var(--radius-bit-xs);
+  border-end-end-radius: var(--radius-bit-xs);
+}
+.answer {
+  margin-inline: 0.5rem;
+  padding: 1rem 1.25rem 1.15rem;
+  border-end-start-radius: var(--radius-bit);
+  border-end-end-radius: var(--radius-bit);
+  background-color: var(--surface-raised);
+  box-shadow: var(--inset-shadow-tray);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (interpolate-size: allow-keywords) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .drawer {
+      interpolate-size: allow-keywords;
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .drawer::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size var(--dur-gentle) var(--ease-settle),
+        content-visibility var(--dur-gentle) allow-discrete;
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .drawer[open]::details-content {
+      block-size: auto;
+    }
+  }
+}

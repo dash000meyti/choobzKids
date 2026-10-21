@@ -1,0 +1,107 @@
+/*
+ * ShopWindow (DESIGN.md §6.1). Phones: the title block first, then a wide arched shop window
+ * with the drawings on its sill, then the intro. From `sm`: the text and intro in the start
+ * column beside a tall window at the end. The window is the stage's «طاق» arch recessed into
+ * kahgel, with a ply-band sill.
+ */
+
+.window {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "crumbs"
+    "text"
+    "niche"
+    "intro";
+}
+
+.crumbs {
+  grid-area: crumbs;
+  margin-block-end: 1rem;
+}
+
+.text {
+  grid-area: text;
+}
+
+.intro {
+  grid-area: intro;
+  margin-block-start: 1.25rem;
+  max-inline-size: var(--container-prose);
+}
+
+.niche {
+  grid-area: niche;
+  position: relative;
+  overflow: hidden;
+  margin-block-start: 1.25rem;
+  aspect-ratio: 16 / 7;
+  border-radius: var(--radius-arch);
+  background-color: var(--surface);
+  box-shadow: var(--inset-shadow-tray);
+}
+
+/* One drawing standing on the sill. */
+.single {
+  position: absolute;
+  inset: 16% 30% calc(6px + 4%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+/* /shop: a few drawings side by side, the middle one taller and in front. */
+.sill {
+  position: absolute;
+  inset: 20% 16% calc(6px + 4%);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+.piece {
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  flex: 1 1 0;
+  min-inline-size: 0;
+  block-size: 66%;
+}
+.front {
+  flex-grow: 1.3;
+  block-size: 100%;
+  margin-inline: -6%;
+  z-index: 1;
+}
+
+@media (min-width: 40rem) {
+  .window {
+    grid-template-columns: minmax(0, 1fr) 12rem;
+    grid-template-rows: auto auto 1fr;
+    grid-template-areas:
+      "crumbs crumbs"
+      "text niche"
+      "intro niche";
+    column-gap: 2rem;
+  }
+  .niche {
+    align-self: start;
+    margin-block-start: 0;
+    aspect-ratio: 4 / 5;
+  }
+  .single {
+    inset: 18% 13% calc(6px + 3%);
+  }
+  .sill {
+    inset: 24% 6% calc(6px + 3%);
+  }
+}
+
+@media (min-width: 64rem) {
+  .window {
+    grid-template-columns: minmax(0, 1fr) 17rem;
+    column-gap: 4rem;
+  }
+  .intro {
+    margin-block-start: 1.5rem;
+  }
+}

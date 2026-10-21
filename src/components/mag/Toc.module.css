@@ -1,0 +1,203 @@
+/*
+ * TOC: a string with beads. The string is a 1px ink-20% line down the inline-start side; each
+ * entry threads a 9px honey bead on it. The current entry (TocSpy sets aria-current) fills its
+ * bead with anar and reads bolder — never colour alone.
+ */
+
+/* The article root: lets the fixed pill read the inline TOC's view timeline. */
+.scope {
+  timeline-scope: --toc;
+}
+
+.list {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding-inline-start: 1.5rem;
+}
+.list::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.9rem;
+  inset-inline-start: 0.5rem;
+  inline-size: 1px;
+  background: color-mix(in oklab, var(--ink) 20%, transparent);
+}
+
+.item {
+  position: relative;
+}
+.item::before {
+  content: "";
+  position: absolute;
+  inset-block-start: 0.95rem;
+  inset-inline-start: calc(-1rem - 4.5px);
+  inline-size: 9px;
+  block-size: 9px;
+  border-radius: 999px;
+  background: var(--color-asal);
+  box-shadow: 0 0 0 1.5px var(--ply-1);
+  transition:
+    background-color var(--dur-quick) var(--ease-wood),
+    scale var(--dur-quick) var(--ease-wood);
+}
+.item:has(> [aria-current])::before {
+  background: var(--accent);
+  scale: 1.3;
+}
+
+.link {
+  display: block;
+  padding-block: 0.45rem;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+  transition: color var(--dur-quick) var(--ease-wood);
+}
+.link:hover {
+  color: var(--ink);
+}
+.link[aria-current] {
+  color: var(--ink);
+  font-weight: 700;
+}
+.link:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-bit-xs);
+}
+
+/* ---------- Desktop: sticky in the inline-start column ---------- */
+
+.aside {
+  position: sticky;
+  inset-block-start: calc(var(--spacing-header-lg) + 1.5rem);
+  max-block-size: calc(100dvh - var(--spacing-header-lg) - 3rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding-block-end: 1rem;
+  scrollbar-width: thin;
+}
+
+/* ---------- Phones: <details> under the TL;DR ---------- */
+
+.inline {
+  view-timeline: --toc block;
+  border-radius: var(--radius-bit);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-paper), inset 0 0 0 1px var(--line);
+}
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  min-block-size: 3rem;
+  padding-inline: 1rem;
+  cursor: pointer;
+  color: var(--ink-muted);
+  list-style: none;
+  border-radius: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.summary::-webkit-details-marker {
+  display: none;
+}
+.summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.chevron {
+  transition: rotate var(--dur-base) var(--ease-wood);
+}
+.inline[open] .chevron {
+  rotate: 180deg;
+}
+
+/* ---------- Phones: floating pill above the dock ---------- */
+
+.pill {
+  position: fixed;
+  inset-inline-end: var(--spacing-gutter);
+  inset-block-end: calc(var(--spacing-dock) + env(safe-area-inset-bottom) + 0.75rem);
+  z-index: var(--z-dock);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  block-size: 2.75rem;
+  padding-inline: 1rem 1.15rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--ink);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  box-shadow: var(--shadow-ply);
+  -webkit-tap-highlight-color: transparent;
+}
+.pill:active {
+  translate: 0 2px;
+  box-shadow: var(--shadow-ply-pressed);
+}
+.pill:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.progress {
+  display: none;
+}
+
+@media (min-width: 64rem) {
+  .pill {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    /* Hidden while the inline TOC is on screen or still ahead; in once it has scrolled away. */
+    :root:not([data-motion="reduce"]):not([data-lite]) .pill {
+      animation: toc-pill linear both;
+      animation-timeline: --toc;
+      animation-range: exit 0% exit 100%;
+    }
+    /* The taut string: reading progress across the whole page. */
+    :root:not([data-motion="reduce"]):not([data-lite]) .progress {
+      display: block;
+      position: absolute;
+      inset-inline: 1rem;
+      inset-block-end: 0.4rem;
+      block-size: 1.5px;
+      border-radius: 1px;
+      background: var(--thread);
+      transform-origin: right;
+      animation: toc-progress linear both;
+      animation-timeline: scroll(root block);
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .progress:dir(ltr) {
+      transform-origin: left;
+    }
+  }
+}
+
+@keyframes toc-pill {
+  from {
+    opacity: 0;
+    translate: 0 1rem;
+    visibility: hidden;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+    visibility: visible;
+  }
+}
+
+@keyframes toc-progress {
+  from {
+    scale: 0 1;
+  }
+  to {
+    scale: 1 1;
+  }
+}

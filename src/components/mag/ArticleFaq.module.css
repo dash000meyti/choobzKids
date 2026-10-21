@@ -1,0 +1,39 @@
+/*
+ * FAQ drawers: raised paper faces on a ply edge (the question is the handle you pull). The open
+ * drawer keeps its face; the plus turns into a cross. Rotation only, on an HTML-wrapped icon.
+ */
+
+.drawer {
+  border-radius: var(--radius-bit);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow-ply);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-block-size: 3.25rem;
+  padding: 0.75rem 1rem;
+  font-weight: 700;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  border-radius: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+.summary::-webkit-details-marker {
+  display: none;
+}
+.summary:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.toggle {
+  color: var(--ink-muted);
+  transition: rotate var(--dur-base) var(--ease-wood);
+}
+.drawer[open] .toggle {
+  rotate: 45deg;
+}

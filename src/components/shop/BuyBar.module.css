@@ -1,0 +1,65 @@
+/*
+ * BuyBar: the dock's other face (DESIGN.md §4.2, §9.5). Fallback: always shown below 1024px (the
+ * dock hides itself when [data-buybar] exists). With scroll timelines and motion allowed, it turns
+ * in on its bottom hinge while the dock turns away, both on the price block's --price timeline
+ * (declared in BottomDock.module.css). The gate matches the dock's exactly, so the two faces can
+ * never both be up or both be down.
+ */
+.bar {
+  position: fixed;
+  inset-inline: 0;
+  inset-block-end: 0;
+  z-index: var(--z-dock);
+  padding-block-end: env(safe-area-inset-bottom);
+  box-shadow: 0 -8px 20px -14px rgb(var(--shadow-rgb) / 0.45);
+}
+@media (min-width: 64rem) {
+  .bar {
+    display: none;
+  }
+}
+
+.inner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  block-size: var(--spacing-dock);
+  padding-inline: var(--spacing-gutter);
+}
+
+.thumb {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  inline-size: 2.5rem;
+  block-size: 2.5rem;
+  padding: 0.1875rem;
+  border-radius: var(--radius-bit-xs);
+  background-color: var(--surface);
+  box-shadow: var(--inset-shadow-tray);
+  overflow: hidden;
+}
+.thumbImage {
+  inline-size: 100%;
+  block-size: 100%;
+  object-fit: contain;
+}
+
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    :global(:root:not([data-motion="reduce"])) .bar {
+      transform-origin: bottom center;
+      backface-visibility: hidden;
+      animation: buybar-turn-in linear both;
+      animation-timeline: --price;
+      animation-range: exit 0% exit 100%;
+    }
+  }
+}
+@keyframes buybar-turn-in {
+  from {
+    transform: perspective(600px) rotateX(-90deg);
+    opacity: 0;
+    visibility: hidden;
+  }
+}

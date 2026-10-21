@@ -1,0 +1,78 @@
+/*
+ * Room panel (DESIGN.md §5.3): a tray of piece rows (recessed = container), a summary strip on a
+ * birch board that sticks to the bottom of the viewport while the panel is in view — above the
+ * mobile dock — then the four wheels and the actions. Only the one-line strip sticks, so it never
+ * covers more than a row of the list. The board is a reading surface, so it has no ply edge.
+ */
+
+.builder {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.pieces {
+  display: flex;
+  flex-direction: column;
+  padding: 0.25rem 0.75rem;
+}
+
+.piece {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding-block: 0.625rem;
+}
+.piece + .piece {
+  border-block-start: 1px solid var(--line);
+}
+/* A piece taken out of the room steps back (works without JS too, from the checkbox state). */
+.piece:has(input:not(:checked)) > :not(label) {
+  opacity: 0.5;
+}
+.piece > :not(label) {
+  transition: opacity var(--dur-base) var(--ease-wood);
+}
+
+.thumb {
+  display: grid;
+  place-items: end center;
+  flex: none;
+  inline-size: 3.5rem;
+  block-size: 3.5rem;
+  padding: 0.25rem;
+  border-radius: var(--radius-bit-sm);
+  background-color: var(--surface);
+}
+
+.summary {
+  position: sticky;
+  z-index: var(--z-sticky);
+  inset-block-end: calc(var(--spacing-dock) + env(safe-area-inset-bottom) + 0.5rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-bit);
+  background-color: var(--wood);
+  box-shadow: var(--shadow-paper), 0 0 0 1px rgb(var(--shadow-rgb) / 0.08);
+}
+
+.wheels {
+  padding-inline: 0.25rem;
+}
+.wheels[hidden] {
+  display: none;
+}
+@media (min-width: 64rem) {
+  .summary {
+    inset-block-end: 1rem;
+  }
+}
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+}

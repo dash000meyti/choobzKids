@@ -1,0 +1,80 @@
+/*
+ * /reviews — the sticky-note wall (DESIGN.md §8, §5.8). Notes are flat paper (they are read, not
+ * pressed) in four theme-aware papers, taped to the wall at a slight tilt seeded on the server
+ * (--tilt). A masonry of CSS columns, so long and short notes pack without gaps.
+ */
+
+.wall {
+  columns: 1;
+  column-gap: 1.25rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .wall {
+    columns: 2;
+  }
+}
+
+@media (min-width: 64rem) {
+  .wall {
+    columns: 3;
+    column-gap: 1.75rem;
+  }
+}
+
+.item {
+  break-inside: avoid;
+  padding-block: 0.9rem 0.6rem;
+}
+
+.note {
+  --paper: var(--surface-raised);
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 1.6rem 1.25rem 1.1rem;
+  border-radius: 3px 3px var(--radius-bit-sm) 3px;
+  background-color: var(--paper);
+  box-shadow:
+    0 1px 0 rgb(var(--shadow-rgb) / 0.06),
+    0 12px 18px -14px rgb(var(--shadow-rgb) / 0.45);
+  rotate: var(--tilt, 0deg);
+}
+
+.note[data-paper="kraft"] {
+  --paper: color-mix(in oklab, var(--tag) 70%, var(--surface-raised));
+}
+
+.note[data-paper="mint"] {
+  --paper: var(--bubble);
+}
+
+.note[data-paper="mustard"] {
+  --paper: color-mix(in oklab, var(--highlight), var(--surface-raised) 45%);
+}
+
+/* A strip of masking tape across the top edge. */
+.note::before {
+  content: "";
+  position: absolute;
+  inset-block-start: -0.6rem;
+  inset-inline-start: 50%;
+  inline-size: 4.5rem;
+  block-size: 1.25rem;
+  translate: 50% 0;
+  rotate: calc(var(--tilt, 0deg) * -1.5);
+  border-radius: 2px;
+  background: color-mix(in oklab, var(--surface-raised) 55%, transparent);
+  box-shadow: 0 1px 2px rgb(var(--shadow-rgb) / 0.12);
+}
+
+.sample {
+  position: absolute;
+  inset-block-start: 0.6rem;
+  inset-inline-end: 0.75rem;
+}

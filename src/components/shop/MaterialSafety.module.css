@@ -1,0 +1,99 @@
+/*
+ * The ply-edge macro (DESIGN.md §6.3 block 14): a magnified cut edge drawn in CSS — thirteen
+ * plies with glue lines, a clear coat, and the router-rounded end. Physical coordinates (it is
+ * a drawing, never mirrored); the labels are HTML with leader lines toward the board.
+ */
+.macro {
+  padding: 1.25rem;
+  border-radius: var(--radius-bit-xl);
+  background-color: var(--surface);
+}
+
+.scene {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  container-type: inline-size;
+}
+
+.board {
+  position: absolute;
+  left: 0;
+  top: 26%;
+  width: 54%;
+  height: 46%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* A 6 mm router bit on an 18 mm board: corners rounded to a third of the thickness. */
+  border-radius: 0 11cqi 11cqi 0;
+  /* The board runs on past the frame: it fades out at the far end. */
+  mask-image: linear-gradient(to right, transparent, #000 22%);
+  box-shadow:
+    0 0 0 1.5px var(--ink),
+    0 16px 22px -18px rgb(var(--shadow-rgb) / 0.6);
+}
+/* Each ply: birch face with a thin dark glue line under it; neighbours alternate grain tone. */
+.ply {
+  flex: 1;
+  background: linear-gradient(to bottom, var(--wood-top) 0 82%, var(--ply-2) 82% 100%);
+}
+.ply:nth-child(even) {
+  background: linear-gradient(to bottom, var(--wood) 0 82%, var(--ply-2) 82% 100%);
+}
+.ply:last-of-type {
+  background: var(--wood);
+}
+/* The clear water-based coat: a glossy skin over the top face and around the rounded end. */
+.coat {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow:
+    inset 0 3px 0 rgb(255 255 255 / 0.55),
+    inset -3px 0 0 rgb(255 255 255 / 0.35);
+  pointer-events: none;
+}
+
+.label {
+  position: absolute;
+  left: 62%;
+  right: 0;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--radius-bit-xs);
+  background-color: var(--surface-raised);
+  color: var(--ink);
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  line-height: 1.5;
+  text-align: right;
+  direction: rtl;
+  translate: 0 -50%;
+}
+/* Leader line from the label back to the part it names. */
+.label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  right: 100%;
+  height: 1px;
+  background-color: rgb(var(--shadow-rgb) / 0.45);
+}
+/* Leader lengths are % of the label (38% of the scene): they end on the coat, the cut face and the corner. */
+.labelCoat {
+  top: 26%;
+}
+.labelCoat::before {
+  width: 40%;
+}
+.labelPly {
+  top: 49%;
+}
+.labelPly::before {
+  width: 21%;
+}
+.labelEdge {
+  top: 70%;
+}
+.labelEdge::before {
+  width: 27%;
+}

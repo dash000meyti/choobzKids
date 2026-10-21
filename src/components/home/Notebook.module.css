@@ -1,0 +1,147 @@
+/*
+ * Notebook (DESIGN.md §5.5).
+ * - Bubbles: a conversation, so each turn sits at its own inline offset. A <details> inside each
+ *   mint bubble; the sprout marker grows into a leaf when it opens. Height animates with
+ *   `interpolate-size` + `::details-content` where supported, instantly elsewhere.
+ * - Bubbles pop (scale .96 → 1, settle) as they enter. Static frame: all in place.
+ * - The kraft notebook: kraft cover, stitched spine at inline-start, elastic band at inline-end.
+ *   Only ink sits on kraft (DESIGN.md §2.3); the cards inside are their own paper.
+ */
+
+.chat {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.turn {
+  max-inline-size: 92%;
+}
+.turn:nth-child(2) {
+  margin-inline-start: auto;
+  margin-inline-end: 2%;
+}
+.turn:nth-child(3) {
+  margin-inline-start: 5%;
+}
+
+.bubble {
+  box-shadow: 0 1px 0 rgb(var(--shadow-rgb) / 0.06), 0 12px 22px -16px rgb(var(--shadow-rgb) / 0.35);
+}
+
+.summary {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-block-size: 2.75rem;
+  padding-block: 0.25rem;
+  font-weight: 700;
+  font-size: var(--text-lead);
+  line-height: 1.55;
+  color: var(--ink);
+  cursor: pointer;
+  list-style: none;
+  border-radius: var(--radius-bit-xs);
+}
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+/* A seed when closed, a sprout when open (the leaf is in the icon; only its size changes). */
+.sprout {
+  flex: none;
+  inline-size: 1.5rem;
+  block-size: 1.5rem;
+  margin-block-start: 0.15rem;
+  color: var(--success);
+  scale: 0.6;
+  transform-origin: 50% 100%;
+  transition: scale var(--dur-gentle) var(--ease-settle);
+}
+.details[open] .sprout {
+  scale: 1;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @supports (interpolate-size: allow-keywords) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .details {
+      interpolate-size: allow-keywords;
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .details::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition:
+        block-size var(--dur-gentle) var(--ease-settle),
+        content-visibility var(--dur-gentle) allow-discrete;
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .details[open]::details-content {
+      block-size: auto;
+    }
+  }
+
+  @supports (animation-timeline: view()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .turn {
+      animation: bubble-pop linear both;
+      animation-timeline: view();
+      animation-range: entry calc(10% + var(--i) * 8%) entry calc(80% + var(--i) * 8%);
+    }
+  }
+}
+
+@keyframes bubble-pop {
+  from {
+    opacity: 0;
+    scale: 0.96;
+    translate: 0 6px;
+  }
+}
+
+/* ---------- The kraft notebook ---------- */
+
+.notebook {
+  position: relative;
+  padding: 1rem;
+  padding-block-start: 1.25rem;
+  border-radius: var(--radius-bit) var(--radius-bit-lg) var(--radius-bit-lg) var(--radius-bit);
+  background-color: var(--tag);
+  box-shadow:
+    inset -1px 0 0 rgb(var(--shadow-rgb) / 0.08),
+    0 1px 0 rgb(var(--shadow-rgb) / 0.08),
+    0 18px 30px -18px rgb(var(--shadow-rgb) / 0.45);
+}
+
+/* Stitched spine down the inline-start edge (a right-bound Persian book). */
+.notebook::before {
+  content: "";
+  position: absolute;
+  inset-block: 0.75rem;
+  inset-inline-start: 0.4rem;
+  inline-size: 0;
+  border-inline-start: 1.5px dashed rgb(var(--shadow-rgb) / 0.28);
+  pointer-events: none;
+}
+
+.elastic {
+  display: none;
+}
+
+@media (min-width: 40rem) {
+  .notebook {
+    padding: 1.5rem;
+    padding-inline-end: 2.75rem;
+  }
+  /* The elastic band runs top to bottom near the inline-end edge, over the cover only. */
+  .elastic {
+    display: block;
+    position: absolute;
+    inset-block: -0.4rem;
+    inset-inline-end: 1rem;
+    inline-size: 0.6rem;
+    border-radius: 0.3rem;
+    background: linear-gradient(to right, rgb(0 0 0 / 0.18), transparent 35%, rgb(255 255 255 / 0.12) 60%, rgb(0 0 0 / 0.2)),
+      var(--thread);
+    box-shadow: 0 2px 4px rgb(var(--shadow-rgb) / 0.35);
+    pointer-events: none;
+  }
+}

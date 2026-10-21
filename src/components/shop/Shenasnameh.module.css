@@ -1,0 +1,52 @@
+/*
+ * Shenasnameh: a kraft certificate. Flat (no ply edge), a stitched-looking dashed rule inside the
+ * edge, and a stamp burnt into the corner. Ink only on kraft (DESIGN.md §2.3).
+ */
+.card {
+  position: relative;
+  padding: 1.125rem 1.125rem 1.25rem;
+  border-radius: var(--radius-bit);
+  background-color: var(--tag);
+  color: var(--ink);
+  outline: 1.5px dashed rgb(var(--shadow-rgb) / 0.22);
+  outline-offset: -0.5rem;
+}
+
+.rows {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.875rem 1rem;
+  margin-block-start: 0.875rem;
+  padding-block-start: 0.875rem;
+  border-block-start: 1px dotted rgb(var(--shadow-rgb) / 0.3);
+}
+.row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+  min-inline-size: 0;
+}
+.wide {
+  grid-column: 1 / -1;
+}
+
+/* A round stamp burnt into the paper: char-brown rings, slightly tilted, never a product fact. */
+.stamp {
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0.0625rem;
+  flex-shrink: 0;
+  inline-size: 4.5rem;
+  block-size: 4.5rem;
+  border-radius: 999px;
+  border: 1.5px solid color-mix(in srgb, var(--ply-3) 70%, transparent);
+  outline: 1px solid color-mix(in srgb, var(--ply-3) 45%, transparent);
+  outline-offset: 2px;
+  color: color-mix(in srgb, var(--ply-3) 85%, var(--ink));
+  font-size: var(--text-2xs);
+  font-weight: 700;
+  line-height: 1.2;
+  rotate: -10deg;
+  opacity: 0.85;
+}
