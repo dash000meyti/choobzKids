@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { crumbTrail } from "@/components/layout/Breadcrumbs";
+import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
+import { CategoryStrip } from "@/components/studio/CategoryStrip";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { Prose } from "@/components/mag/Prose";
-import { CategoryRail } from "@/components/shop/CategoryRail";
 import { FilterBar } from "@/components/shop/FilterBar";
 import { ProductGrid } from "@/components/shop/ProductGrid";
-import { ShopWindow } from "@/components/shop/ShopWindow";
 import { AskChoobz } from "@/components/ui/AskChoobz";
 import { Bubble } from "@/components/ui/Bubble";
 import { Button } from "@/components/ui/Button";
@@ -118,20 +117,27 @@ export default async function CategoryShopPage({ params }: PageProps<"/shop/[cat
     <PageTurn>
       <JsonLd data={jsonLd} />
       <div className="mx-auto max-w-page px-gutter pt-5 pb-section lg:pt-8">
-        <ShopWindow
-          trail={trail}
-          kicker="ویترین کارگاه چوبز"
-          title={heading(category)}
-          lead={category.tagline}
-          count={products.length}
-          ageRange={ageRange}
-          display={{ kind: "category", slug: category.slug, illustration: category.illustration }}
-        >
-          {lead ? <Prose markdown={lead} variant="page" className="text-muted" /> : null}
-          {more ? <MoreIntro markdown={more} /> : null}
-        </ShopWindow>
+        <header className="pb-8 pt-4 lg:pb-10 lg:pt-10">
+          <Breadcrumbs items={trail} />
+          <h1 className="headline mt-6 text-3xl lg:text-[4.5rem]">
+            {heading(category)}
+            {category.tagline ? (
+              <>
+                {" "}
+                <span className="block text-xl text-muted lg:text-[2rem] lg:leading-snug">{category.tagline}</span>
+              </>
+            ) : null}
+          </h1>
+          <p className="mt-4 text-sm text-muted">
+            {toFaDigits(products.length)} محصول{formatAgeRange(ageRange.min, ageRange.max) ? ` · مناسب ${formatAgeRange(ageRange.min, ageRange.max)}` : ""}
+          </p>
+          <div className="mt-5 max-w-[46rem]">
+            {lead ? <Prose markdown={lead} variant="page" className="text-muted" /> : null}
+            {more ? <MoreIntro markdown={more} /> : null}
+          </div>
+        </header>
 
-        <CategoryRail categories={page.categories} current={category.slug} className="mt-8 lg:mt-10" />
+        <CategoryStrip categories={page.categories} current={category.slug} />
 
         {guide ? <GuideLink guide={guide} className="mt-6 lg:mt-8" /> : null}
 

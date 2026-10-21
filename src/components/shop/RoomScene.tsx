@@ -1,21 +1,17 @@
 import type { ReactNode } from "react";
-import { PegDoll } from "@/components/illustrations/PegDoll";
-import { RoomBackdrop } from "@/components/illustrations/RoomKit";
 import { illustrationFrame, illustrationSize } from "@/components/illustrations/sizes";
-import { isRoomSlot, placeOnStage, placePerson, wallLineTop } from "@/components/shop/room-slots";
+import { isRoomSlot, placeOnStage } from "@/components/shop/room-slots";
 import type { RoomCardData, RoomPiece } from "@/db/queries/cards";
-import { toFaDigits } from "@/lib/format";
 import { cn, illustrationUrl } from "@/lib/utils";
+import { Render } from "@/components/studio/Render";
 import styles from "./RoomScene.module.css";
 
 /*
- * One ready-made room at true scale (DESIGN.md §3.8, §6.4): the RoomKit backdrop with each piece's
- * manifest drawing standing in its named slot, a peg-doll child for scale and, on /rooms/{preset},
- * the dashed 70 cm «خط دید کودک» that teaches the Montessori eye line.
- *
+ * A ready-made room. `RoomScene` is the Studio stage (the pieces as studio renders on one tile);
+ * `ScenePiece` still places a single drawing at true scale for scenes built on the room kit.
  * The scene is a picture (aria-hidden): the piece list in RoomBuilder is the accessible content.
  * Pieces carry `data-scene-piece` + `data-room` so RoomTotals can fade the ones the visitor takes
- * out of the room, and so the home door's AgeRoomVT can name them for the room morph.
+ * out of the room.
  */
 
 /** The Montessori eye line drawn on /rooms/{preset}, in cm above the floor. */
@@ -70,22 +66,24 @@ type RoomSceneProps = {
   className?: string;
 };
 
-export function RoomScene({ room, roomKey, childCm, eyeLine = false, children, className }: RoomSceneProps) {
-  const kitchen = room.variant === "default" && room.pieces.some((piece) => piece.slot === "kitchen");
+export function RoomScene({ room, roomKey, children, className }: RoomSceneProps) {
+  // Studio stage: the room's pieces as studio renders standing side by side on one light tile.
+  // Toggles in RoomBuilder fade pieces out through `data-off` (RoomTotals).
   return (
-    <div aria-hidden="true" className={cn(styles.stage, className)}>
-      <RoomBackdrop variant={room.variant} showKitchen={kitchen} className={styles.backdrop} />
-      {eyeLine ? (
-        <span className={styles.eyeLine} style={{ top: wallLineTop(EYE_LINE_CM) }}>
-          <span className={styles.eyeLabel}>خط دید کودک · {toFaDigits(EYE_LINE_CM)} سانت</span>
-        </span>
-      ) : null}
-      {room.pieces.map((piece) => (
-        <ScenePiece key={piece.productId} piece={piece} roomKey={roomKey} />
-      ))}
-      {childCm ? (
-        <PegDoll heightCm={childCm} className={styles.person} style={placePerson("by-door", childCm)} />
-      ) : null}
+    <div aria-hidden="true" className={cn("relative overflow-hidden rounded-[2rem] bg-surface px-6 pb-8 pt-10", className)}>
+      <div className="flex items-end justify-center gap-2">
+        {room.pieces.map((piece) => (
+          <div
+            key={piece.productId}
+            data-scene-piece={piece.productId}
+            data-room={roomKey}
+            data-off={piece.defaultOn ? undefined : ""}
+            className="min-w-0 flex-1 transition-opacity duration-300 data-[off]:opacity-20"
+          >
+            <Render productKey={piece.illustration ?? piece.slug} alt="" sizes="(min-width: 1024px) 180px, 22vw" box="3 / 4" />
+          </div>
+        ))}
+      </div>
       {children}
     </div>
   );
