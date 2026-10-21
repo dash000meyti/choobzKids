@@ -429,3 +429,8 @@
   .no-print, header, footer { display: none !important; }
   body { background: #fff !important; color: #000 !important; }
 }
+
+/* Browsers without backdrop blur get an opaque bar instead of a see-through one. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .glass { background: color-mix(in oklab, var(--bg) 96%, transparent); }
+}

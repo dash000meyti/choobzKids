@@ -102,8 +102,8 @@ export function ProductGrid({ groups, rooms = [], interludeEvery = 8, className 
         return (
           <section key={group.slug} data-group={group.slug} aria-labelledby={headingId}>
             {group.title ? (
-              <header className="mb-4 flex items-end justify-between gap-4 border-b border-line pb-2">
-                <h2 id={headingId} className="font-display text-xl text-ink">
+              <header className="mb-6 flex items-end justify-between gap-4">
+                <h2 id={headingId} className="headline text-2xl text-ink lg:text-[2.25rem]">
                   {group.title}
                   <span className="ms-2 align-middle font-body text-sm text-muted">
                     {toFaDigits(group.products.length)} مدل
@@ -112,7 +112,7 @@ export function ProductGrid({ groups, rooms = [], interludeEvery = 8, className 
                 <Link
                   href={`/shop/${group.slug}`}
                   transitionTypes={["nav-forward"]}
-                  className="link-mark mb-1 shrink-0 text-sm font-semibold text-ink"
+                  className="link-arrow mb-1 shrink-0 text-sm"
                 >
                   همه<span className="sr-only"> محصولات {group.title}</span>
                   <span aria-hidden="true"> ←</span>

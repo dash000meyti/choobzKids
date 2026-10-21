@@ -4,17 +4,15 @@ import type { ProductCardData } from "@/db/queries/catalog";
 import { listVariantOptions, type VariantOption } from "@/db/queries/cards";
 import { getSettings, type SiteSettings } from "@/db/queries/settings";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
-import { AgeBadge } from "@/components/ui/AgeBadge";
 import { Button } from "@/components/ui/Button";
-import { IconButton } from "@/components/ui/IconButton";
 import { InstallmentLine } from "@/components/ui/InstallmentLine";
 import { IntentLink } from "@/components/ui/IntentLink";
 import { Price } from "@/components/ui/Price";
 import { Sheet, sheetInvokerProps } from "@/components/ui/Sheet";
 import { Stage, type StageProps } from "@/components/ui/Stage";
-import { StampBadge } from "@/components/ui/StampBadge";
 import { StockBadge } from "@/components/ui/StockBadge";
-import { toFaDigits } from "@/lib/format";
+import { formatToman } from "@/lib/format";
+import { Render } from "@/components/studio/Render";
 import { cn, illustrationUrl, mediaUrl } from "@/lib/utils";
 import styles from "./ProductCard.module.css";
 
@@ -58,7 +56,6 @@ const TOY_PLAY: Record<string, "roll" | "rock"> = {
   "pikler-arch": "rock",
 };
 
-const SWATCH_LIMIT = 4;
 const HEX_COLOUR = /^#(?:[\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/i;
 
 export async function ProductCard(props: ProductCardProps) {
@@ -101,7 +98,7 @@ function ProductCardView({
   return (
     <>
       <article
-        className={cn("group relative flex h-full flex-col rounded-bit p-3", styles.card, className)}
+        className={cn("group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] bg-surface text-center", className)}
         data-product={product.id}
         data-age-min={product.ageMinMonths ?? undefined}
         data-age-max={product.ageMaxMonths ?? undefined}
@@ -111,67 +108,50 @@ function ProductCardView({
         data-order={product.sortOrder}
         data-published={product.publishedAt ?? undefined}
       >
-        <div className="relative">
-          {stage ? (
-            <Stage
-              {...stage.media}
-              alt={stage.alt}
-              slug={product.slug}
-              priority={priority}
-              vtName={`product-${product.id}`}
-              className={stage.play ? styles[stage.play] : undefined}
-            />
+        <div className="relative px-5 pt-6 transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+          {stage && stage.media.kind !== "illustration" ? (
+            <Stage {...stage.media} alt={stage.alt} slug={product.slug} priority={priority} vtName={`product-${product.id}`} />
           ) : (
-            <EmptyStage />
+            <Render
+              productKey={product.illustration ?? product.slug}
+              alt={`${product.name}، تصویر سه‌بعدی`}
+              sizes="(min-width: 1280px) 300px, (min-width: 768px) 30vw, 46vw"
+              priority={priority}
+              box="1 / 1"
+            />
           )}
-          <div className="pointer-events-none absolute inset-x-2 top-2 flex items-start gap-2">
-            <AgeBadge min={product.ageMinMonths} max={product.ageMaxMonths} />
-            {stamp ? (
-              <StampBadge tone={stamp.tone} className="ms-auto">
-                {stamp.label}
-              </StampBadge>
-            ) : null}
-          </div>
         </div>
 
-        <div className="mt-3 flex flex-1 flex-col gap-1 px-1">
+        <div className="flex flex-1 flex-col items-center gap-1 px-4 pb-5 pt-3">
+          {stamp ? <p className="eyebrow text-xs">{stamp.label}</p> : null}
           {showCategory ? <p className="text-xs text-muted">{product.category.name}</p> : null}
-          <h3 className="line-clamp-2 text-base font-bold text-ink">
+          <h3 className="line-clamp-2 text-base font-extrabold leading-snug text-ink">
             <CardLink href={href} prefetch={prefetch} className={styles.link}>
               {product.name}
             </CardLink>
           </h3>
-          {product.subtitle ? <p className="line-clamp-1 text-sm text-muted">{product.subtitle}</p> : null}
+          {product.subtitle ? <p className="line-clamp-2 text-xs text-muted">{product.subtitle}</p> : null}
+          <p className="mt-auto pt-2 text-sm">
+            <data value={product.price}>
+              {pricesDiffer ? "از " : ""}
+              {formatToman(product.price)}
+            </data>
+          </p>
+          <InstallmentLine price={product.price} snapppay={snapppay} link={false} />
 
-          <div className="mt-auto flex flex-col gap-0.5 pt-2">
-            <Price
-              price={product.price}
-              compareAt={product.compareAtPrice}
-              from={pricesDiffer}
-              // At most one stamp per card: the discount stamp yields to the corner stamp.
-              showDiscount={!stamp}
-            />
-            <InstallmentLine price={product.price} snapppay={snapppay} link={false} />
-          </div>
-
-          <div className="mt-2 flex min-h-11 items-center justify-between gap-2">
-            <VariantHint product={product} />
+          <div className="mt-3 flex items-center justify-center">
             {product.availability === "out_of_stock" ? (
               <StockBadge availability="out_of_stock" className="text-xs" />
             ) : needsChoice ? (
-              <IconButton
-                icon="plus"
-                label={`انتخاب مدل و افزودن ${product.name} به سبد`}
-                className={styles.above}
+              <button
+                type="button"
+                className={cn(styles.above, "relative h-9 rounded-full bg-accent px-4 text-xs font-semibold text-on-accent")}
                 {...sheetInvokerProps(sheetId)}
-              />
+              >
+                انتخاب و خرید
+              </button>
             ) : (
-              // Raised above the stretched link by AddToCartButton itself.
-              <AddToCartButton
-                size="icon"
-                label={`افزودن ${product.name} به سبد`}
-                items={cartItem(product, variants[0] ?? null)}
-              />
+              <AddToCartButton size="sm" label="افزودن به سبد" items={cartItem(product, variants[0] ?? null)} />
             )}
           </div>
         </div>
@@ -271,36 +251,6 @@ function CardLink({
   );
 }
 
-function EmptyStage() {
-  return <div className="aspect-[4/5] rounded-arch bg-surface" aria-hidden="true" />;
-}
-
-/** Wood-chip swatches (≤ 4, then «+۲»), or «۳ مدل» for size-only variants. */
-function VariantHint({ product }: { product: ProductCardData }) {
-  const swatches = product.swatches.filter((s) => HEX_COLOUR.test(s.swatch));
-  if (swatches.length) {
-    const shown = swatches.slice(0, SWATCH_LIMIT);
-    const more = swatches.length - shown.length;
-    return (
-      <p className="flex items-center gap-1.5">
-        <span className="sr-only">رنگ‌ها: {swatches.map((s) => s.name).join("، ")}</span>
-        {shown.map((s) => (
-          <WoodChip key={s.name} colour={s.swatch} />
-        ))}
-        {more > 0 ? (
-          <span aria-hidden="true" className="text-xs font-semibold text-muted">
-            +{toFaDigits(more)}
-          </span>
-        ) : null}
-      </p>
-    );
-  }
-  if (product.variantCount > 1) {
-    return <p className="text-xs text-muted">{toFaDigits(product.variantCount)} مدل</p>;
-  }
-  // Keeps the quick-add at inline-end.
-  return <span />;
-}
 
 function WoodChip({ colour }: { colour: string }) {
   return <span aria-hidden="true" className={styles.chip} style={{ "--chip": colour } as CSSProperties} />;

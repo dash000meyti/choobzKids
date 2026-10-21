@@ -1,4 +1,4 @@
-/* Trail on a string: a 1px ink-20% thread between items, a 6px honey bead with a ply ring on it. */
+/* Breadcrumb trail: small grey text with chevrons (Studio). */
 .nav {
   font-size: var(--text-xs);
   line-height: 1.65;
@@ -21,27 +21,12 @@
 .item + .item {
   padding-inline-start: 1.75rem;
 }
-/* The string segment between two items… */
+/* A quiet chevron between items (points left: forward in RTL). */
 .item + .item::before {
-  content: "";
+  content: "‹";
   position: absolute;
-  inset-inline-start: 0.3rem;
-  inline-size: 1.15rem;
-  inset-block-start: 50%;
-  block-size: 1px;
-  background: color-mix(in oklab, var(--ink) 20%, transparent);
-}
-/* …and the wooden bead threaded on it. */
-.item + .item::after {
-  content: "";
-  position: absolute;
-  inset-inline-start: calc(0.3rem + 1.15rem / 2 - 3px);
-  inset-block-start: calc(50% - 3px);
-  inline-size: 6px;
-  block-size: 6px;
-  border-radius: 999px;
-  background: var(--color-asal);
-  box-shadow: 0 0 0 1px var(--ply-1);
+  inset-inline-start: 0.6rem;
+  color: var(--ink-muted);
 }
 
 .current {

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import type { MouseEvent } from "react";
 import { openCart } from "@/components/layout/cart/CartProvider";
 import { useCart } from "@/components/layout/cart/store";
@@ -14,7 +15,7 @@ export function BagButton() {
     openCart();
   };
   return (
-    <a
+    <Link
       href="/cart"
       onClick={onClick}
       data-cart-target
@@ -30,6 +31,6 @@ export function BagButton() {
           {count > 9 ? "+۹" : toFaDigits(count)}
         </span>
       )}
-    </a>
+    </Link>
   );
 }

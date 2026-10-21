@@ -44,7 +44,7 @@ export function Breadcrumbs({ items, className }: BreadcrumbsProps) {
                 {item.name}
               </span>
             ) : (
-              <Link href={item.path} transitionTypes={["nav-back"]} className="link-mark text-ink">
+              <Link href={item.path} transitionTypes={["nav-back"]} className="text-muted hover:text-ink">
                 {item.name}
               </Link>
             )}

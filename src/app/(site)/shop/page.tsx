@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
-import { crumbTrail } from "@/components/layout/Breadcrumbs";
+import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
+import { CategoryStrip } from "@/components/studio/CategoryStrip";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { Prose } from "@/components/mag/Prose";
-import { CategoryRail } from "@/components/shop/CategoryRail";
 import { FilterBar } from "@/components/shop/FilterBar";
 import { ProductGrid } from "@/components/shop/ProductGrid";
-import { ShopWindow } from "@/components/shop/ShopWindow";
 import { AskChoobz } from "@/components/ui/AskChoobz";
 import { Button } from "@/components/ui/Button";
 import { getSettings, type SiteSettings } from "@/db/queries/settings";
@@ -23,7 +22,6 @@ import { pageMetadata } from "@/lib/seo";
 
 const PATH = "/shop";
 const TITLE = "فروشگاه وسایل چوبی کودک؛ مونته‌سوری و پیکلر";
-const H1 = "فروشگاه وسایل چوبی کودک";
 const TRAIL = crumbTrail({ name: "فروشگاه", path: PATH });
 
 /** SEO.md §2.3: «{productCount} محصول چوبی برای کودک ۰ تا ۶ سال؛ … ارسال سراسری و خرید قسطی.» */
@@ -61,21 +59,18 @@ export default async function ShopPage() {
     <PageTurn>
       <JsonLd data={jsonLd} />
       <div className="mx-auto max-w-page px-gutter pt-5 pb-section lg:pt-8">
-        <ShopWindow
-          trail={TRAIL}
-          kicker="ویترین کارگاه چوبز"
-          title={H1}
-          count={shop.products.length}
-          ageRange={shop.ageRange}
-          display={{
-            kind: "shelf",
-            illustrations: shop.categories.map((c) => c.illustration).filter((key): key is string => !!key),
-          }}
-        >
-          {shop.intro ? <Prose markdown={shop.intro} variant="page" className="text-muted" /> : null}
-        </ShopWindow>
+        <header className="pb-8 pt-4 lg:pb-12 lg:pt-10">
+          <Breadcrumbs items={TRAIL} />
+          <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
+            <h1 className="headline text-3xl lg:text-[4.5rem]">
+              فروشگاه.{" "}
+              <span className="text-muted">بهترین راه برای خرید وسایل چوبز.</span>
+            </h1>
+          </div>
+          {shop.intro ? <p className="mt-5 max-w-[46rem] text-muted">{shop.intro.replace(/[*_#>]/g, "")}</p> : null}
+        </header>
 
-        <CategoryRail categories={shop.categories} className="mt-8 lg:mt-10" />
+        <CategoryStrip categories={shop.categories} />
 
         <div className="mt-6 lg:mt-10">
           <FilterBar facets={shop.facets} total={shop.products.length}>
@@ -103,7 +98,7 @@ export default async function ShopPage() {
 function BuyingFaq({ faqs }: { faqs: ShopIndex["faqs"] }) {
   return (
     <section aria-labelledby="buying-faq" className="max-w-prose">
-      <h2 id="buying-faq" className="font-display text-xl text-ink">
+      <h2 id="buying-faq" className="headline text-2xl text-ink">
         پیش از خرید چه بپرسیم؟
       </h2>
       <div className="mt-4 divide-y divide-line border-y border-line">
