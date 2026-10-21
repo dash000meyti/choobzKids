@@ -75,6 +75,7 @@ export async function generateMetadata({ params }: PageProps<"/product/[slug]">)
   const p = data.product;
   const offers = productOffers(data);
   return pageMetadata({
+    ownOgImage: true,
     title: titleCore(p),
     description: description(data, settings, offers[0]),
     path: productPath(p),

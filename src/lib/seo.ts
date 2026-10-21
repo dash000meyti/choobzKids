@@ -113,8 +113,13 @@ export type PageSeo = {
   description: string;
   /** Canonical path built from route params, never from the request URL. */
   path: string;
-  /** 1200×630 JPEG for og:image. Omit to fall back to file-based `opengraph-image`s. */
+  /** 1200×630 JPEG for og:image. Omit to use the site card (or the segment's own, see below). */
   image?: PageSeoImage;
+  /**
+   * The route has its own `opengraph-image` file. Next only applies a file-based image when the
+   * page's metadata has no `openGraph.images` key at all, so the key is then left out.
+   */
+  ownOgImage?: boolean;
   type?: "website" | "article" | "profile";
   publishedTime?: Date | string | null;
   modifiedTime?: Date | string | null;
@@ -137,6 +142,15 @@ export type PageSeo = {
  * Per-page metadata. Nested `alternates`/`openGraph` objects REPLACE the root layout's (Next merges
  * metadata shallowly), so the RSS link, siteName and locale are repeated on every page.
  */
+/** The site-wide card (app/opengraph-image.tsx). */
+const SITE_OG_IMAGE = {
+  url: absoluteUrl("/opengraph-image"),
+  width: 1200,
+  height: 630,
+  alt: "چوبز کیدز: اسباب‌بازی و وسایل چوبی مونته‌سوری، ساخت کارگاه چوبز",
+  type: "image/png",
+};
+
 export function pageMetadata(p: PageSeo): Metadata {
   const title = composeTitle(p.title, p.suffix);
   const ogTitle = stripSuffix(p.title.trim());
@@ -144,14 +158,17 @@ export function pageMetadata(p: PageSeo): Metadata {
   const url = absoluteUrl(p.path);
   const images = p.image
     ? [{ url: absoluteUrl(p.image.url), width: p.image.width, height: p.image.height, alt: p.image.alt, type: p.image.type }]
-    : undefined;
+    : p.ownOgImage
+      ? undefined
+      : [SITE_OG_IMAGE];
 
   const types: Record<string, { url: string; title?: string }[]> = {
     "application/rss+xml": [{ url: SITE.rss.path, title: SITE.rss.title }],
   };
   if (p.markdownPath) types["text/markdown"] = [{ url: p.markdownPath }];
 
-  const common = { siteName: SITE.name, locale: SITE.locale, url, title: ogTitle, description, images };
+  // A page's openGraph replaces the root's, so the inherited site card has to be restated here.
+  const common = { siteName: SITE.name, locale: SITE.locale, url, title: ogTitle, description, ...(images ? { images } : {}) };
   const openGraph: Metadata["openGraph"] =
     p.type === "article"
       ? {
@@ -171,7 +188,7 @@ export function pageMetadata(p: PageSeo): Metadata {
     // A noindex page carries no canonical: never combine noindex with a canonical (SEO.md §2.4).
     alternates: { ...(p.noindex ? {} : { canonical: url }), types },
     openGraph,
-    twitter: { card: "summary_large_image", title: ogTitle, description, images: images?.map((i) => i.url) },
+    twitter: { card: "summary_large_image", title: ogTitle, description, ...(images ? { images: images.map((i) => i.url) } : {}) },
     ...(p.noindex ? { robots: { index: false, follow: true } } : {}),
     ...(p.other && Object.keys(p.other).length ? { other: p.other } : {}),
   };

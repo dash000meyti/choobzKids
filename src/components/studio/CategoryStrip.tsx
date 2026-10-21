@@ -4,7 +4,8 @@ import { cn } from "@/lib/utils";
 import { Render } from "./Render";
 
 /* The Apple Store category row: small renders with names, scrolling sideways on phones. */
-const KEY_FOR: Record<string, string> = {
+/** The studio render that stands for each category (also used by its share card). */
+export const CATEGORY_RENDER: Record<string, string> = {
   climbing: "pikler-triangle",
   "learning-towers": "learning-tower",
   furniture: "kids-table-chair",
@@ -28,7 +29,7 @@ export function CategoryStrip({ categories, current }: { categories: CategorySum
               )}
             >
               <span className="w-20">
-                <Render productKey={KEY_FOR[c.slug] ?? c.illustration ?? c.slug} alt="" sizes="80px" box="1 / 1" />
+                <Render productKey={CATEGORY_RENDER[c.slug] ?? c.illustration ?? c.slug} alt="" sizes="80px" box="1 / 1" />
               </span>
               {c.name}
             </Link>

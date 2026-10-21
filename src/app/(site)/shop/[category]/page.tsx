@@ -68,6 +68,7 @@ export async function generateMetadata({ params }: PageProps<"/shop/[category]">
   const [page, settings] = await Promise.all([getCategoryPage(slug), getSettings()]);
   if (!page) return {};
   return pageMetadata({
+    ownOgImage: true,
     title: seoTitle(page.category),
     description: describe(page, !!settings.snapppay?.enabled),
     path: canonical(page.category),

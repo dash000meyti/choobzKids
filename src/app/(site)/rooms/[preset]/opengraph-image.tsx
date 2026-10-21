@@ -17,5 +17,5 @@ const KICKER = "چیدمان آمادهٔ اتاق مونته‌سوری";
 export default async function Image({ params }: { params: Promise<{ preset: string }> }) {
   const { preset } = await params;
   const room = await getRoomPreset(preset);
-  return ogResponse(room?.name ?? "اتاقش رو بچین", KICKER, [tag.rooms]);
+  return ogResponse(room?.name ?? "اتاقش رو بچین", KICKER, [tag.rooms], "room-set");
 }

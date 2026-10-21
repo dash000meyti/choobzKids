@@ -10,5 +10,5 @@ export const size = OG_SIZE;
 export const contentType = "image/png";
 
 export default function Image() {
-  return ogResponse("فروشگاه وسایل چوبی کودک", "ویترین کارگاه چوبز", []);
+  return ogResponse("فروشگاه وسایل چوبی کودک", "ویترین کارگاه چوبز", [], "pikler-triangle");
 }

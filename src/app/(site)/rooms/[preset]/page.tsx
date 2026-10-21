@@ -61,6 +61,7 @@ export async function generateMetadata({ params }: PageProps<"/rooms/[preset]">)
   const room = await getRoomPreset(preset);
   if (!room) return {};
   return pageMetadata({
+    ownOgImage: true,
     title: room.seoTitle?.trim() || heading(room),
     description: describe(room),
     path: pathOf(room),

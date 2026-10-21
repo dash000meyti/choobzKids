@@ -1,4 +1,4 @@
-import { KraftTag } from "./KraftTag";
+import { cn } from "@/lib/utils";
 
 /*
  * «نمونه» on seed sample content (reviews, UGC) outside production (BUILD-GUIDE "Content honesty").
@@ -6,8 +6,13 @@ import { KraftTag } from "./KraftTag";
  */
 export function SampleBadge({ className }: { className?: string }) {
   return (
-    <KraftTag size="sm" className={className}>
+    <span
+      className={cn(
+        "inline-flex h-6 items-center rounded-full bg-raised px-2.5 text-xs font-semibold text-muted ring-1 ring-line ring-inset",
+        className,
+      )}
+    >
       نمونه
-    </KraftTag>
+    </span>
   );
 }

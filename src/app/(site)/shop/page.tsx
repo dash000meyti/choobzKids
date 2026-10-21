@@ -36,7 +36,8 @@ function describe(shop: ShopIndex, settings: SiteSettings): string {
 
 export async function generateMetadata(): Promise<Metadata> {
   const [shop, settings] = await Promise.all([getShopIndex(), getSettings()]);
-  return pageMetadata({ title: TITLE, description: describe(shop, settings), path: PATH });
+  return pageMetadata({
+    ownOgImage: true, title: TITLE, description: describe(shop, settings), path: PATH });
 }
 
 export default async function ShopPage() {

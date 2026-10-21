@@ -61,6 +61,7 @@ export async function generateMetadata({ params }: PageProps<"/mag/[slug]">): Pr
   const { post, topic, author } = data;
   const named = author && !author.isPlaceholder ? author : null;
   return pageMetadata({
+    ownOgImage: true,
     title: post.seoTitle ?? post.title,
     description: post.seoDescription ?? post.excerpt,
     path: pathOf(post),
