@@ -45,7 +45,10 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 31,
     maximumDiskCacheSize: 2_000_000_000,
     maximumResponseBody: 15_000_000,
-    localPatterns: [{ pathname: "/media/**", search: "" }],
+    localPatterns: [
+      { pathname: "/media/**", search: "" },
+      { pathname: "/renders/**", search: "" },
+    ],
   },
 
   turbopack: {

@@ -43,3 +43,4 @@ next-env.d.ts
 # local data (SQLite DB + uploads live on the Docker volume in production)
 /data/
 /.scripts/
+/public/renders/raw/

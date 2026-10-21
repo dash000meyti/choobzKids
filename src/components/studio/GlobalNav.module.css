@@ -1,0 +1,51 @@
+.bar {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--z-header);
+  border-block-end: 1px solid color-mix(in oklab, var(--line) 70%, transparent);
+}
+.link {
+  position: relative;
+  padding-block: 0.25rem;
+  font-size: 0.8125rem;
+  color: color-mix(in oklab, var(--ink) 80%, transparent);
+  transition: color var(--dur-quick) var(--ease-wood);
+}
+.link:hover,
+.link[aria-current="page"] { color: var(--ink); }
+
+/* Mobile menu: a full-screen popover sheet that slides down from the bar (Popover API, no JS). */
+.menu {
+  position: fixed;
+  inset: var(--spacing-header) 0 0;
+  margin: 0;
+  width: 100%;
+  max-width: none;
+  height: auto;
+  max-height: none;
+  border: 0;
+  padding: 1.5rem var(--spacing-gutter) 3rem;
+  background: var(--bg);
+  color: var(--ink);
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-12px);
+  transition: opacity var(--dur-base) var(--ease-wood), transform var(--dur-base) var(--ease-out-expo),
+    overlay var(--dur-base) allow-discrete, display var(--dur-base) allow-discrete;
+}
+.menu:popover-open { opacity: 1; transform: none; }
+@starting-style {
+  .menu:popover-open { opacity: 0; transform: translateY(-12px); }
+}
+.menuLink {
+  display: block;
+  padding-block: 0.55rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.menu .menuLink { opacity: 0; transform: translateY(-6px); transition: opacity 400ms var(--ease-wood), transform 500ms var(--ease-out-expo); }
+.menu:popover-open .menuLink { opacity: 1; transform: none; }
+@starting-style {
+  .menu:popover-open .menuLink { opacity: 0; transform: translateY(-6px); }
+}

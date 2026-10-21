@@ -1,0 +1,9 @@
+/* Scroll story: a sticky 3D stage beside the making steps. */
+.section { position: relative; }
+.stage {
+  position: sticky;
+  inset-block-start: calc(var(--spacing-header) + 2vh);
+  height: min(78svh, 46rem);
+}
+.step { min-height: 55svh; display: flex; align-items: center; }
+@media (min-width: 64rem) { .step { min-height: 75svh; } }

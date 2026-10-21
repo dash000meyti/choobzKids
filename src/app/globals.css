@@ -1,20 +1,19 @@
 /* ==================================================================
-   choobz.kids — tokens & base. Tailwind CSS v4.3 (CSS-first config).
-   Components use SEMANTIC utilities only (bg-bg, text-ink, bg-accent…).
-   Raw palette utilities (bg-anar…) are allowed only in
-   src/components/illustrations/** and ui/ primitives (CI grep check).
+   choobz.kids — "Studio" design system (docs/DESIGN-STUDIO.md).
+   Quiet luxury: white and studio-grey tiles, near-black type, heavy
+   tight headlines, product renders doing the talking.
+   Token and utility NAMES are kept from the first design so every
+   component keeps compiling; their values express the new direction.
    ================================================================== */
 @import "tailwindcss";
 
 /* ---------- Variants ---------- */
-/* «لالایی» dark: follows the OS unless the viewer chose; toggle writes html[data-theme] */
 @custom-variant dark {
   @media (prefers-color-scheme: dark) {
     &:where(:root:not([data-theme="light"]), :root:not([data-theme="light"]) *) { @slot; }
   }
   &:where([data-theme="dark"], [data-theme="dark"] *) { @slot; }
 }
-/* Motion allowed: OS allows it, viewer did not pick «حرکت آرام», device is not in the lite tier */
 @custom-variant motion-ok {
   @media (prefers-reduced-motion: no-preference) {
     &:where(:root:not([data-motion="reduce"]):not([data-lite]), :root:not([data-motion="reduce"]):not([data-lite]) *) { @slot; }
@@ -22,9 +21,6 @@
 }
 @custom-variant lite (&:where([data-lite], [data-lite] *));
 
-/* ---------- Raw palette & scales ----------
-   `static` = always emit every variable to :root, because inline SVG, inline
-   styles and the manifest renderer reference them where Tailwind cannot see. */
 @theme static {
   --color-*: initial;
   --text-*: initial;
@@ -37,108 +33,118 @@
   --breakpoint-*: initial;
   --container-*: initial;
 
-  /* Core palette — Persian-named (light, «روز») */
-  --color-shir: #FBF6EC;           /* milk — page paper */
-  --color-shir-raised: #FFFBF3;    /* fresh paper — cards, sheets, drawer faces */
-  --color-kahgel: #F1E6D3;         /* straw plaster — walls, stages, alternate sections */
-  --color-kahgel-sunken: #F4EBDC;  /* inputs, trays */
-  --color-takhte: #E8D3AE;         /* birch face — wood surfaces */
-  --color-takhte-light: #F0E0C2;   /* top faces, light ply stratum */
-  --color-takhte-shade: #D9BE92;   /* side faces in drawings */
-  --color-asal: #C8955A;           /* honey ply edge — DECORATIVE ONLY (2.47:1) */
-  --color-ply-dark: #9C6B3A;       /* dark ply stratum, grain */
-  --color-kraft: #E6CFA4;          /* kraft tags, شناسنامه paper */
-  --color-gerdu: #33251B;          /* walnut — ink */
-  --color-gerdu-narm: #6B5545;     /* soft walnut — secondary ink */
-  --color-khat: #8A7666;           /* pencil line — input borders (4.01:1 on shir) */
-  --color-anar: #B23A26;           /* pomegranate — CTA, Tati's thread, sale */
-  --color-anar-deep: #8F2C1C;      /* pressed CTA */
-  --color-zardchube: #F2B93B;      /* turmeric — highlighter, sun. NEVER text */
-  --color-nana: #D7EBDA;           /* mint — speech bubbles, TL;DR */
-  --color-pesteh: #3E6A4C;         /* pistachio-sage — in stock, installments, success */
-  --color-firuzeh: #1F6E77;        /* turquoise — focus ring, info, blueprint lines */
-  --color-lapis: #8EA6CF;          /* Orosi glass — DECORATIVE ONLY */
-  --color-shab: #1B2040;           /* night — footer sky */
-  --color-shab-raised: #262C55;
-  --color-mahtab: #F5E8C6;         /* moonlight — text on night */
-  --color-mahtab-narm: #B9A88A;
-  --color-ember: #E5715A;          /* night CTA */
+  /* Neutrals */
+  --color-white: #FFFFFF;
+  --color-black: #000000;
+  --color-paper: #FFFFFF;          /* page */
+  --color-studio: #F5F5F7;         /* product tiles, alternate sections */
+  --color-studio-deep: #E8E8ED;    /* pressed tile, inputs */
+  --color-graphite: #1D1D1F;       /* ink, primary CTA */
+  --color-graphite-soft: #6E6E73;  /* secondary text (5.07:1 on white) */
+  --color-mist: #86868B;           /* tertiary text on black (5.6:1) */
+  --color-hairline: #D2D2D7;
+  --color-night: #000000;
+  --color-night-raised: #161617;
+  --color-night-tile: #1D1D1F;
+  --color-moon: #F5F5F7;
 
-  /* Accent pairs — DB `categories.accent` / `topics.accent` keys. tint = background, ink = text/icon */
-  --color-terracotta-tint: #F3D5C8; --color-terracotta-ink: #9A4428;
-  --color-wood-tint: #EAD6B2;       --color-wood-ink: #7A5230;
-  --color-sage-tint: #DCE7D6;       --color-sage-ink: #3E6A4C;
-  --color-mustard-tint: #F7E2A6;    --color-mustard-ink: #735508;
-  --color-sky-tint: #D6E7EE;        --color-sky-ink: #245F74;
-  --color-plum-tint: #ECDCE6;       --color-plum-ink: #6E3A5E;
-  --color-mint-tint: #D7EBDA;       --color-mint-ink: #2F6B53;
-  --color-cream-tint: #F4EADB;      --color-cream-ink: #6B5545;
+  /* Brand: natural birch and a burnt-walnut link colour */
+  --color-birch: #E9D7B7;
+  --color-birch-deep: #C9A877;
+  --color-walnut: #8A5A2B;         /* links / small accents (5.9:1 on white) */
+  --color-ember: #B64400;          /* «جدید» eyebrow (5.1:1 on white) */
+  --color-sage: #2E7D4F;           /* installments / in stock (5.0:1 on white) */
+  --color-sky: #0066CC;
 
-  /* Age bands (fixed colours; CONTENT-PLAN §5 #2). Text on them is always ink */
-  --color-age-0-6m: #D7EBDA;
-  --color-age-6-12m: #D6E7EE;
-  --color-age-1-2y: #F7E2A6;
-  --color-age-2-3y: #F3D5C8;
-  --color-age-3-6y: #E1E6C2;
+  /* Legacy palette names (illustrations, drawings) mapped into the new palette */
+  --color-shir: #FFFFFF;
+  --color-shir-raised: #FFFFFF;
+  --color-kahgel: #F5F5F7;
+  --color-kahgel-sunken: #F5F5F7;
+  --color-takhte: #E9D7B7;
+  --color-takhte-light: #F2E6CF;
+  --color-takhte-shade: #D7BD93;
+  --color-asal: #C8955A;
+  --color-ply-dark: #9C6B3A;
+  --color-kraft: #F5F5F7;
+  --color-gerdu: #1D1D1F;
+  --color-gerdu-narm: #6E6E73;
+  --color-khat: #86868B;
+  --color-anar: #1D1D1F;
+  --color-anar-deep: #000000;
+  --color-zardchube: #E9D7B7;
+  --color-nana: #F5F5F7;
+  --color-pesteh: #2E7D4F;
+  --color-firuzeh: #0066CC;
+  --color-lapis: #8EA6CF;
+  --color-shab: #000000;
+  --color-shab-raised: #161617;
+  --color-mahtab: #F5F5F7;
+  --color-mahtab-narm: #86868B;
 
-  /* Fluid type scale, 360 → 1440 px. Each step has a rem term (WCAG 1.4.4). */
-  --text-2xs: clamp(0.75rem, 0.7396rem + 0.0463vw, 0.7813rem);   --text-2xs--line-height: 1.6;   /* 12 → 12.5  legal, micro (Persian floor 12px) */
-  --text-xs: clamp(0.8438rem, 0.8333rem + 0.0463vw, 0.875rem);   --text-xs--line-height: 1.65;   /* 13.5 → 14  captions, meta, badges */
-  --text-sm: clamp(0.9375rem, 0.9271rem + 0.0463vw, 0.9688rem);  --text-sm--line-height: 1.65;   /* 15 → 15.5  UI, card meta, buttons-sm */
-  --text-base: clamp(1.0625rem, 1.0417rem + 0.0926vw, 1.125rem); --text-base--line-height: 1.85; /* 17 → 18    body */
-  --text-lead: clamp(1.1875rem, 1.1458rem + 0.1852vw, 1.3125rem); --text-lead--line-height: 1.8; /* 19 → 21    lead, sub, article body */
-  --text-lg: clamp(1.3125rem, 1.2292rem + 0.3704vw, 1.5625rem);  --text-lg--line-height: 1.5;    /* 21 → 25    H3, card titles (large) */
-  --text-xl: clamp(1.5625rem, 1.3958rem + 0.7407vw, 2.0625rem);  --text-xl--line-height: 1.4;    /* 25 → 33    H2 (content pages) */
-  --text-2xl: clamp(1.875rem, 1.5417rem + 1.4815vw, 2.875rem);   --text-2xl--line-height: 1.32;  /* 30 → 46    H2 (home, hubs) */
-  --text-3xl: clamp(2.125rem, 1.5833rem + 2.4074vw, 3.75rem);    --text-3xl--line-height: 1.3;   /* 34 → 60    page H1 */
-  --text-display: clamp(2.625rem, 1.5rem + 5vw, 6rem);           --text-display--line-height: 1.28; /* 42 → 96 hero display line */
+  --color-terracotta-tint: #F5F5F7; --color-terracotta-ink: #1D1D1F;
+  --color-wood-tint: #F5F5F7;       --color-wood-ink: #1D1D1F;
+  --color-sage-tint: #F5F5F7;       --color-sage-ink: #1D1D1F;
+  --color-mustard-tint: #F5F5F7;    --color-mustard-ink: #1D1D1F;
+  --color-sky-tint: #F5F5F7;        --color-sky-ink: #1D1D1F;
+  --color-plum-tint: #F5F5F7;       --color-plum-ink: #1D1D1F;
+  --color-mint-tint: #F5F5F7;       --color-mint-ink: #1D1D1F;
+  --color-cream-tint: #F5F5F7;      --color-cream-ink: #1D1D1F;
+  --color-age-0-6m: #F5F5F7;
+  --color-age-6-12m: #F5F5F7;
+  --color-age-1-2y: #F5F5F7;
+  --color-age-2-3y: #F5F5F7;
+  --color-age-3-6y: #F5F5F7;
 
-  /* Spacing: 4 px base + named layout spacings */
+  /* Type scale (360 → 1440 px). Persian headlines never go below 1.2 line-height. */
+  --text-2xs: 0.75rem;   --text-2xs--line-height: 1.5;
+  --text-xs: 0.8125rem;  --text-xs--line-height: 1.55;
+  --text-sm: 0.9375rem;  --text-sm--line-height: 1.6;
+  --text-base: 1.0625rem; --text-base--line-height: 1.75;
+  --text-lead: clamp(1.1875rem, 1.104rem + 0.37vw, 1.4375rem); --text-lead--line-height: 1.6;
+  --text-lg: clamp(1.25rem, 1.13rem + 0.52vw, 1.625rem);       --text-lg--line-height: 1.45;
+  --text-xl: clamp(1.5rem, 1.28rem + 0.93vw, 2.125rem);         --text-xl--line-height: 1.35;
+  --text-2xl: clamp(2rem, 1.56rem + 1.85vw, 3.25rem);           --text-2xl--line-height: 1.25;
+  --text-3xl: clamp(2.5rem, 1.83rem + 2.96vw, 4.5rem);          --text-3xl--line-height: 1.2;
+  --text-display: clamp(3rem, 1.89rem + 4.63vw, 6.25rem);       --text-display--line-height: 1.18;
+
   --spacing: 0.25rem;
-  --spacing-gutter: clamp(1rem, 0.6667rem + 1.4815vw, 2rem);      /* 16 → 32 page side gutter */
-  --spacing-section: clamp(4rem, 2.6667rem + 5.9259vw, 8rem);     /* 64 → 128 section padding-block */
-  --spacing-tap: 2.75rem;          /* 44 px minimum target */
-  --spacing-header: 3.5rem;        /* 56 mobile header */
-  --spacing-header-lg: 4.5rem;     /* 72 desktop header */
-  --spacing-dock: 4rem;            /* 64 mobile bottom dock (+ safe area) */
+  --spacing-gutter: clamp(1.25rem, 0.83rem + 1.85vw, 2.5rem);
+  --spacing-section: clamp(5rem, 3.5rem + 6.67vw, 10rem);
+  --spacing-tap: 2.75rem;
+  --spacing-header: 3rem;
+  --spacing-header-lg: 3.25rem;
+  --spacing-dock: 0rem;
 
-  /* CNC router-bit radii: nothing is sharp, because nothing in the workshop is */
-  --radius-bit-xs: 0.375rem;       /* 6  chips, small inputs */
-  --radius-bit-sm: 0.625rem;       /* 10 buttons, inputs */
-  --radius-bit: 1rem;              /* 16 cards */
-  --radius-bit-lg: 1.5rem;         /* 24 sheets, drawers, trays */
-  --radius-bit-xl: 2.5rem;         /* 40 scenes, cover sheet */
-  --radius-bead: 999px;            /* pills, beads */
-  --radius-arch: 50% 50% 1rem 1rem / 40% 40% 1rem 1rem;  /* «طاق» frame for 4:5 stages */
+  --radius-bit-xs: 0.5rem;
+  --radius-bit-sm: 999px;          /* buttons are pills */
+  --radius-bit: 1.375rem;          /* cards */
+  --radius-bit-lg: 1.75rem;        /* tiles, sheets */
+  --radius-bit-xl: 2.25rem;
+  --radius-bead: 999px;
+  --radius-arch: 1.75rem;
 
-  /* Easing. Springs are pre-computed CSS linear() — no spring runtime */
-  --ease-wood: cubic-bezier(.2, .8, .2, 1);           /* default enter/exit */
-  --ease-page: cubic-bezier(.65, 0, .35, 1);          /* page turn, scroll-scrubbed moves */
-  --ease-exit: cubic-bezier(.4, 0, 1, 1);             /* short exits */
-  /* settle: k260 c22 m1 · ~5% overshoot · use 620ms. Drops, room morph, cover parts */
-  --ease-settle: linear(0, 0.149, 0.428, 0.694, 0.883, 0.995, 1.043, 1.052, 1.043, 1.028, 1.015, 1.005, 1, 0.998, 0.997, 0.998, 1);
-  /* press: k700 c45 · no overshoot · use 330ms (release) */
-  --ease-press: linear(0, 0.025 2.8%, 0.095 5.8%, 0.518 18.2%, 0.694 24.5%, 0.821 30.8%, 0.913 37.8%, 0.970 45.8%, 1 56%, 1);
-  /* hop: k420 c16 · ~25% overshoot · use 800ms. TOYS ONLY: cart hop, badge bump */
-  --ease-hop: linear(0, 0.387, 0.967, 1.249, 1.21, 1.053, 0.948, 0.935, 0.973, 1.008, 1.018, 1.011, 1, 0.995, 0.996, 0.999, 1);
-  /* wobble: k300 c10 · ROTATION ONLY (±6°): cart icon wobble, Tati quack */
-  --ease-wobble: linear(0, 0.646, 1.334, 1.266, 0.936, 0.86, 0.984, 1.058, 1.026, 0.982, 0.983, 1.002, 1.008, 1.002, 0.997, 0.998, 1);
+  --ease-wood: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-page: cubic-bezier(0.65, 0, 0.35, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-settle: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-press: cubic-bezier(0.25, 0.1, 0.25, 1);
+  --ease-hop: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-wobble: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
 
-  --animate-blink: tati-blink 7s steps(1, end) infinite;
-  @keyframes tati-blink { 0%, 95%, 100% { scale: 1 1; } 96%, 98% { scale: 1 0.1; } }
+  --animate-blink: none;
 
-  /* Breakpoints (mobile-first; < 40rem is the phone default) */
-  --breakpoint-sm: 40rem;   /* 640  large phones landscape */
-  --breakpoint-md: 48rem;   /* 768  tablet */
-  --breakpoint-lg: 64rem;   /* 1024 desktop: dock → header nav, spreads */
-  --breakpoint-xl: 80rem;   /* 1280 */
-  --breakpoint-2xl: 90rem;  /* 1440 */
+  --breakpoint-sm: 40rem;
+  --breakpoint-md: 48rem;
+  --breakpoint-lg: 64rem;
+  --breakpoint-xl: 80rem;
+  --breakpoint-2xl: 90rem;
 
-  /* Containers (max-w-* and @container sizes) */
-  --container-prose: 38rem;   /* article measure ≈ 60–70 Persian chars */
-  --container-narrow: 48rem;  /* policy pages, glossary term */
-  --container-page: 80rem;    /* 1280 content max */
-  --container-wide: 90rem;    /* 1440 spreads, hero */
+  --container-prose: 40rem;
+  --container-narrow: 61.25rem;    /* 980 — Apple's reading width */
+  --container-page: 80rem;
+  --container-wide: 90rem;
 }
 
 /* ---------- Semantic layer (theme-switchable) ---------- */
@@ -165,132 +171,169 @@
   --color-highlight: var(--highlight);
   --color-tag: var(--tag);
   --color-thread: var(--thread);
+  --color-link: var(--link);
+  --color-eyebrow: var(--eyebrow);
 
-  /* Fonts: next/font exposes --ff-* (src/app/fonts.ts, FONTS.md §5.4); Tailwind tokens wrap them */
   --font-body: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
-  --font-display: var(--ff-display), var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
-  --font-accent: var(--ff-hand), var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
+  --font-display: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
+  --font-accent: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
   --font-sans: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
 
-  /* Soft, wood-like elevation. Ply strata = the laminated edge under a raised piece */
-  --shadow-paper: 0 1px 0 rgb(var(--shadow-rgb) / .06), 0 10px 24px -14px rgb(var(--shadow-rgb) / .28);
-  --shadow-ply: 0 1px 0 var(--ply-1), 0 2px 0 var(--ply-2), 0 3px 0 var(--ply-1), 0 4px 0 var(--ply-3), 0 10px 18px -10px rgb(var(--shadow-rgb) / .45);
-  --shadow-ply-pressed: 0 1px 0 var(--ply-2), 0 2px 0 var(--ply-3), 0 4px 8px -6px rgb(var(--shadow-rgb) / .35);
-  --shadow-ply-lifted: 0 1px 0 var(--ply-1), 0 2px 0 var(--ply-2), 0 3px 0 var(--ply-1), 0 4px 0 var(--ply-3), 0 18px 30px -12px rgb(var(--shadow-rgb) / .42);
-  --shadow-sheet: 0 -8px 40px rgb(var(--shadow-rgb) / .14);
-  --inset-shadow-tray: inset 0 2px 0 rgb(var(--shadow-rgb) / .05), inset 0 10px 22px -14px rgb(var(--shadow-rgb) / .30);
+  --shadow-paper: 0 2px 12px rgb(0 0 0 / 0.06);
+  --shadow-ply: none;
+  --shadow-ply-pressed: none;
+  --shadow-ply-lifted: 0 18px 40px -18px rgb(0 0 0 / 0.22);
+  --shadow-sheet: 0 -10px 40px rgb(0 0 0 / 0.12);
+  --shadow-float: 0 10px 30px -12px rgb(0 0 0 / 0.2);
+  --inset-shadow-tray: none;
 }
 
 :root {
   color-scheme: light;
-  --bg: var(--color-shir);
-  --surface: var(--color-kahgel);
-  --surface-raised: var(--color-shir-raised);
-  --surface-sunken: var(--color-kahgel-sunken);
-  --wood: var(--color-takhte);
-  --wood-top: var(--color-takhte-light);
-  --wood-side: var(--color-takhte-shade);
-  --ply-1: var(--color-takhte-light);
-  --ply-2: var(--color-asal);
-  --ply-3: var(--color-ply-dark);
-  --ink: var(--color-gerdu);
-  --ink-muted: var(--color-gerdu-narm);
-  --line: rgb(51 37 27 / .14);            /* hairlines — decorative, not a component boundary */
-  --line-strong: var(--color-khat);       /* input/toggle boundaries (≥ 3:1) */
-  --accent: var(--color-anar);
-  --accent-press: var(--color-anar-deep);
-  --on-accent: var(--color-shir-raised);
-  --bubble: var(--color-nana);
-  --success: var(--color-pesteh);
-  --focus: var(--color-firuzeh);
-  --info: var(--color-firuzeh);
-  --danger: var(--color-anar);
-  --highlight: rgb(242 185 59 / .55);     /* mustard swash (mother's hand) */
-  --link-mark: rgb(242 185 59 / .38);     /* inline link band */
-  --tag: var(--color-kraft);
-  --thread: var(--color-anar);
-  --shadow-rgb: 51 37 27;
-  --paper-tile: url("/textures/paper.webp");
+  --bg: var(--color-paper);
+  --surface: var(--color-studio);
+  --surface-raised: var(--color-white);
+  --surface-sunken: var(--color-studio);
+  --wood: var(--color-birch);
+  --wood-top: #F2E6CF;
+  --wood-side: #D7BD93;
+  --ply-1: #F2E6CF;
+  --ply-2: #C8955A;
+  --ply-3: #9C6B3A;
+  --ink: var(--color-graphite);
+  --ink-muted: var(--color-graphite-soft);
+  --line: var(--color-hairline);
+  --line-strong: var(--color-mist);
+  --accent: var(--color-graphite);
+  --accent-press: var(--color-black);
+  --on-accent: var(--color-white);
+  --bubble: var(--color-studio);
+  --success: var(--color-sage);
+  --focus: var(--color-sky);
+  --info: var(--color-sky);
+  --danger: #D70015;
+  --highlight: transparent;
+  --link-mark: transparent;
+  --tag: var(--color-studio);
+  --thread: transparent;
+  --link: var(--color-walnut);
+  --eyebrow: var(--color-ember);
+  --shadow-rgb: 0 0 0;
+  --paper-tile: none;
+  --header-bg: rgb(255 255 255 / 0.78);
 
-  /* Motion durations (used as duration-(--dur-quick) etc.) */
-  --dur-press: 90ms;     /* block press, chip toggle */
-  --dur-quick: 160ms;    /* hover, focus, colour */
-  --dur-base: 240ms;     /* popovers, sheet content, tabs */
-  --dur-gentle: 360ms;   /* card tricks, bubble pops, drawer */
-  --dur-page: 420ms;     /* page turn (view transition) */
-  --dur-scene: 620ms;    /* cover parts, room morph (= settle spring length) */
-  --dur-toy: 800ms;      /* cart hop (= hop spring length) */
-  --stagger: 90ms;
+  --dur-press: 120ms;
+  --dur-quick: 200ms;
+  --dur-base: 300ms;
+  --dur-gentle: 450ms;
+  --dur-page: 500ms;
+  --dur-scene: 900ms;
+  --dur-toy: 600ms;
+  --stagger: 70ms;
 
-  /* z-index scale (dialogs and popovers use the top layer and ignore these) */
   --z-raised: 1;
-  --z-sticky: 20;        /* filter rail, in-section summary bars */
+  --z-sticky: 20;
   --z-header: 30;
-  --z-thread: 31;        /* Tati rider sits on the header border */
-  --z-dock: 40;          /* bottom dock / buy bar */
+  --z-thread: 31;
+  --z-dock: 40;
   --z-toast: 70;
   --z-skip: 90;
-
-  /* RTL motion direction multiplier (forward = toward inline-end = left) */
   --dir: -1;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
-    --bg: #1C1612; --surface: #261E18; --surface-raised: #30261E; --surface-sunken: #17120E;
-    --wood: #4A3A2A; --wood-top: #5A4733; --wood-side: #3A2D20;
-    --ply-1: #5A4733; --ply-2: #7A5B40; --ply-3: #2A2018;
-    --ink: #F5E8C6; --ink-muted: #C9B79C;
-    --line: rgb(245 232 198 / .14); --line-strong: #8E7C68;
-    --accent: #E5715A; --accent-press: #D2644E; --on-accent: #1C1612;
-    --bubble: #22342A; --success: #8FC7A0; --focus: #7CC6CD; --info: #7CC6CD; --danger: #E5715A;
-    --highlight: rgb(227 181 74 / .35); --link-mark: rgb(227 181 74 / .30);
-    --tag: #3A2D20; --thread: #E5715A;
-    --shadow-rgb: 0 0 0;
-    --paper-tile: url("/textures/paper-night.webp");
+    --bg: var(--color-night);
+    --surface: var(--color-night-raised);
+    --surface-raised: var(--color-night-tile);
+    --surface-sunken: var(--color-night-raised);
+    --ink: var(--color-moon);
+    --ink-muted: var(--color-mist);
+    --line: #424245;
+    --line-strong: #6E6E73;
+    --accent: var(--color-moon);
+    --accent-press: var(--color-white);
+    --on-accent: var(--color-graphite);
+    --bubble: var(--color-night-raised);
+    --success: #4CC47F;
+    --focus: #2997FF;
+    --info: #2997FF;
+    --tag: var(--color-night-raised);
+    --link: #E2B57A;
+    --eyebrow: #FF8A3D;
+    --header-bg: rgb(22 22 23 / 0.78);
   }
 }
 :root[data-theme="dark"] {
   color-scheme: dark;
-  --bg: #1C1612; --surface: #261E18; --surface-raised: #30261E; --surface-sunken: #17120E;
-  --wood: #4A3A2A; --wood-top: #5A4733; --wood-side: #3A2D20;
-  --ply-1: #5A4733; --ply-2: #7A5B40; --ply-3: #2A2018;
-  --ink: #F5E8C6; --ink-muted: #C9B79C;
-  --line: rgb(245 232 198 / .14); --line-strong: #8E7C68;
-  --accent: #E5715A; --accent-press: #D2644E; --on-accent: #1C1612;
-  --bubble: #22342A; --success: #8FC7A0; --focus: #7CC6CD; --info: #7CC6CD; --danger: #E5715A;
-  --highlight: rgb(227 181 74 / .35); --link-mark: rgb(227 181 74 / .30);
-  --tag: #3A2D20; --thread: #E5715A;
-  --shadow-rgb: 0 0 0;
-  --paper-tile: url("/textures/paper-night.webp");
+  --bg: var(--color-night);
+  --surface: var(--color-night-raised);
+  --surface-raised: var(--color-night-tile);
+  --surface-sunken: var(--color-night-raised);
+  --ink: var(--color-moon);
+  --ink-muted: var(--color-mist);
+  --line: #424245;
+  --line-strong: #6E6E73;
+  --accent: var(--color-moon);
+  --accent-press: var(--color-white);
+  --on-accent: var(--color-graphite);
+  --bubble: var(--color-night-raised);
+  --success: #4CC47F;
+  --focus: #2997FF;
+  --info: #2997FF;
+  --tag: var(--color-night-raised);
+  --link: #E2B57A;
+  --eyebrow: #FF8A3D;
+  --header-bg: rgb(22 22 23 / 0.78);
+}
+
+/* A section that is always dark (product "night" tiles, footer-adjacent bands) */
+.theme-night {
+  color-scheme: dark;
+  --bg: var(--color-night);
+  --surface: var(--color-night-raised);
+  --surface-raised: var(--color-night-tile);
+  --ink: var(--color-moon);
+  --ink-muted: var(--color-mist);
+  --line: #424245;
+  --accent: var(--color-moon);
+  --on-accent: var(--color-graphite);
+  --link: #E2B57A;
+  --eyebrow: #FF8A3D;
+  --success: #4CC47F;
+  background-color: var(--bg);
+  color: var(--ink);
 }
 
 /* ---------- Base ---------- */
 @layer base {
   html {
     font-family: var(--font-body);
-    font-feature-settings: "ss01";            /* Estedad round dots = wooden beads */
-    font-synthesis: none;                     /* Ario is one weight; never faux-bold */
+    font-feature-settings: "ss01";
+    font-synthesis: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
     scroll-padding-block-start: calc(var(--spacing-header) + 1rem);
   }
-  :where(:lang(fa), [dir="rtl"]) { letter-spacing: 0; }   /* never track Persian */
+  :where(:lang(fa), [dir="rtl"]) { letter-spacing: 0; }
   body {
-    background: var(--paper-tile) 0 0 / 160px repeat, var(--bg);
+    background: var(--bg);
     color: var(--ink);
     font-size: var(--text-base);
-    line-height: 1.85;
+    line-height: 1.75;
   }
   h1, h2, h3, h4 { text-wrap: balance; }
   p, li, dd, figcaption { text-wrap: pretty; }
-  h1, .font-display { font-family: var(--font-display); font-weight: 400; font-feature-settings: normal; line-height: 1.3; }
-  .swash { font-feature-settings: "ss02"; }                /* Ario swash ک/گ — hero + chapter lines only */
-  .font-accent { line-height: 1.55; font-feature-settings: normal; }
-  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
-  ::selection { background: var(--highlight); color: var(--ink); }
+  h1, .font-display { font-family: var(--font-display); font-weight: 800; line-height: 1.2; }
+  h2 { font-weight: 800; }
+  .swash { font-feature-settings: "ss01"; }
+  .font-accent { font-weight: 600; }
+  :focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 6px; }
+  ::selection { background: rgb(0 102 204 / 0.18); color: var(--ink); }
   a { color: inherit; text-decoration: none; }
   [hidden] { display: none !important; }
   @media (prefers-reduced-motion: reduce) {
@@ -301,102 +344,88 @@
   }
 }
 
-/* ---------- Signature utilities (each documented in §3–§4) ---------- */
-@utility ply {               /* raised, tappable piece */
+/* ---------- Utilities (names kept from the first design) ---------- */
+@utility ply {               /* a clean tappable card */
   background-color: var(--surface-raised);
-  box-shadow: var(--shadow-ply);
-  transition: translate var(--dur-press) var(--ease-press), box-shadow var(--dur-press) linear;
-  &:active, &[aria-pressed="true"] { translate: 0 2px; box-shadow: var(--shadow-ply-pressed); }
+  transition: transform var(--dur-quick) var(--ease-wood), box-shadow var(--dur-quick) var(--ease-wood);
+  &:active { transform: scale(0.985); }
 }
-@utility tray {              /* recessed container */
-  background-color: var(--surface-sunken);
-  box-shadow: var(--inset-shadow-tray);
+@utility tray {
+  background-color: var(--surface);
   border-radius: var(--radius-bit-lg);
 }
-@utility ply-band {          /* a visible plywood edge: dividers, shelf lips, progress */
-  background: repeating-linear-gradient(to bottom, var(--ply-1) 0 1.5px, var(--ply-2) 1.5px 2.5px, var(--ply-1) 2.5px 4px, var(--ply-3) 4px 5px);
+@utility ply-band {
+  background: var(--line);
+  height: 1px;
 }
-@utility ply-type {          /* painted face, raw ply edge. ≥ 40px, once per viewport */
-  font-family: var(--font-display);
-  color: var(--accent);
-  padding-block-end: .14em;
-  text-shadow: 0 1px 0 var(--ply-1), 0 2px 0 var(--ply-2), 0 3px 0 var(--ply-1), 0 4px 0 var(--ply-3), 0 12px 20px rgb(var(--shadow-rgb) / .16);
+@utility ply-type {
+  font-weight: 900;
+  color: inherit;
 }
-@utility mark-swash {        /* mustard highlighter (mother's hand). Never on prices */
-  background: linear-gradient(transparent 38%, var(--highlight) 38% 88%, transparent 88%) right / 100% 100% no-repeat;
-  box-decoration-break: clone;
-  border-radius: .3em .6em .4em .5em;
-  padding-inline: .12em;
+@utility mark-swash { background: none; }
+@utility link-mark {
+  color: var(--link);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.25em;
+  &:hover { text-decoration-thickness: 2px; }
 }
-@utility link-mark {         /* inline prose links: shape, not colour, marks the link (1.4.1) */
-  background: linear-gradient(transparent 62%, var(--link-mark) 62% 94%, transparent 94%) right / 100% 100% no-repeat;
-  transition: background-size var(--dur-quick) var(--ease-wood);
-  &:hover { background-image: linear-gradient(transparent 20%, var(--link-mark) 20% 94%, transparent 94%); }
+@utility kashida { display: inline; }
+@utility grain { position: relative; }
+@utility contact-shadow {
+  background: radial-gradient(closest-side, rgb(0 0 0 / .14), transparent);
 }
-@utility kashida {           /* Mikhak KSHD pull. DOM text stays clean (no ـ) */
-  display: inline-block;
-  contain: layout;
-  font-family: var(--font-accent);
-  font-variation-settings: "KSHD" var(--kshd, 120);
-}
-
-/* Animated custom property for the kashida pull (Mikhak KSHD axis) */
-@property --kshd { syntax: "<number>"; inherits: true; initial-value: 120; }
-@keyframes kashida-pull { 0% { --kshd: 120; } 45% { --kshd: 200; } 100% { --kshd: 120; } }
-
-/* ---------- Shared texture utilities (DESIGN.md §3) ---------- */
-@utility grain {             /* wood faces: slug-seeded tile via --grain (src/lib/grain.ts) */
-  position: relative;
-  isolation: isolate;
-  &::before {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    border-radius: inherit;
-    background: var(--grain, none) var(--grain-x, 0%) 0 / 100% 100%;
-    scale: var(--grain-flip, 1) 1;
-    opacity: .9;
-    pointer-events: none;
-  }
-}
-@utility contact-shadow {    /* soft ellipse under an object */
-  background: radial-gradient(closest-side, rgb(var(--shadow-rgb) / .22), transparent);
-}
-@utility paper {             /* paper speckle on alternate sections */
-  background: var(--paper-tile) 0 0 / 160px repeat, var(--surface);
-}
+@utility paper { background: var(--surface); }
 @utility no-scrollbar {
   scrollbar-width: none;
   &::-webkit-scrollbar { display: none; }
 }
-
-:root[data-theme="dark"] .grain::before { opacity: .6; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .grain::before { opacity: .6; } }
-
-/* Page bottom padding for the mobile dock */
-@media (max-width: 63.999rem) {
-  body { padding-block-end: calc(var(--spacing-dock) + env(safe-area-inset-bottom)); }
+@utility eyebrow {
+  color: var(--eyebrow);
+  font-weight: 700;
+  font-size: var(--text-sm);
+}
+@utility headline {
+  font-weight: 900;
+  line-height: 1.18;
+  text-wrap: balance;
+}
+@utility glass {
+  background: var(--header-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+@utility link-arrow {
+  color: var(--link);
+  font-weight: 600;
+  &::after { content: " ‹"; }
+  &:hover { text-decoration: underline; text-underline-offset: 0.25em; }
 }
 
-/* View transitions (DESIGN.md §9.6) */
+/* ---------- Scroll reveal (progressive; content is visible without support) ---------- */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% cover 28%;
+    }
+  }
+}
+@keyframes reveal-up { from { opacity: 0; transform: translateY(32px); } }
+
+/* View transitions */
 ::view-transition { pointer-events: none; }
 @media (prefers-reduced-motion: no-preference) {
-  :root:not([data-motion="reduce"])::view-transition-old(.turn-forward) { animation: turn-away var(--dur-page) var(--ease-page) both; transform-origin: right center; }
-  :root:not([data-motion="reduce"])::view-transition-new(.turn-forward) { animation: turn-reveal var(--dur-page) var(--ease-page) both; }
-  :root:not([data-motion="reduce"])::view-transition-old(.turn-back) { animation: turn-reveal var(--dur-page) var(--ease-page) reverse both; }
-  :root:not([data-motion="reduce"])::view-transition-new(.turn-back) { animation: turn-away var(--dur-page) var(--ease-page) reverse both; transform-origin: right center; }
-  ::view-transition-group(.morph) { animation-duration: var(--dur-page); animation-timing-function: var(--ease-settle); }
+  ::view-transition-old(root) { animation: vt-fade-out 220ms var(--ease-exit) both; }
+  ::view-transition-new(root) { animation: vt-fade-in 360ms var(--ease-wood) both; }
+  ::view-transition-group(.morph) { animation-duration: var(--dur-page); animation-timing-function: var(--ease-out-expo); }
 }
-@keyframes turn-away { to { transform: perspective(1400px) translateX(8%) rotateY(-12deg); opacity: 0; } }
-@keyframes turn-reveal { from { transform: translateX(-3%); opacity: .5; } }
-::view-transition-group(site-header), ::view-transition-group(tati), ::view-transition-group(dock) { animation: none; }
-@media (prefers-reduced-motion: reduce) {
-  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation-duration: 120ms !important; }
-}
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+::view-transition-group(site-header) { animation: none; }
 
-/* Print: checklists and articles print cleanly */
 @media print {
-  .no-print, header, footer, nav[aria-label="منوی پایین"] { display: none !important; }
-  body { background: #fff !important; color: #000 !important; padding: 0 !important; }
+  .no-print, header, footer { display: none !important; }
+  body { background: #fff !important; color: #000 !important; }
 }

@@ -1,21 +1,18 @@
 import type { ReactNode } from "react";
 import { getNavData, type NavData } from "@/db/queries/nav";
-import { BottomDock } from "./BottomDock";
 import { CartProvider, type CartConfig } from "./cart/CartProvider";
 import { HoverIntent } from "./HoverIntent";
 import { InvokerPolyfill } from "./InvokerPolyfill";
-import { MenuDialog } from "./MenuDialog";
 import { NavDismiss } from "./NavDismiss";
 import { SearchDialog } from "./SearchDialog";
-import { SiteFooter } from "./SiteFooter";
-import { SiteHeader } from "./SiteHeader";
 import { SkipLinks } from "./SkipLinks";
 import { socialLinks } from "./socials";
+import { GlobalFooter } from "@/components/studio/GlobalFooter";
+import { GlobalNav } from "@/components/studio/GlobalNav";
 
 /*
- * The site chrome around every page (DESIGN.md §4): skip links, the sticky header with Tati's
- * thread, <main id="main">, the night footer, the phone dock, the «فهرست» and search dialogs, and
- * the cart island (provider, toasts, lazy drawer). Static: one cached nav read (getNavData) and
+ * The site chrome around every page: skip links, the glass global nav, <main id="main">, the
+ * footer, the search dialog and the cart island (provider, toasts, lazy drawer). Static: one cached nav read (getNavData) and
  * nothing request-time, so it is part of every prerendered page. Pages render their own content
  * only (wrapped in <PageTurn>), never a second <main>.
  */
@@ -39,13 +36,11 @@ export async function SiteShell({ children }: { children: ReactNode }) {
   return (
     <CartProvider config={cartConfig(nav)}>
       <SkipLinks />
-      <SiteHeader nav={nav} />
+      <GlobalNav nav={nav} />
       <main id="main" tabIndex={-1} className="outline-none">
         {children}
       </main>
-      <SiteFooter nav={nav} />
-      <BottomDock />
-      <MenuDialog nav={nav} />
+      <GlobalFooter nav={nav} />
       <SearchDialog />
       <NavDismiss />
       <InvokerPolyfill />
