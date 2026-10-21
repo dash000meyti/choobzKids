@@ -65,6 +65,9 @@ const nextConfig: NextConfig = {
 
   experimental: {
     agentUpgrade: process.env.CI ? false : "security",
+    // Unmatched URLs render app/global-not-found.tsx on its own, so the 404 (with its site chrome)
+    // is not embedded in every page's RSC payload the way a root not-found.tsx is.
+    globalNotFound: true,
   },
 
   async rewrites() {

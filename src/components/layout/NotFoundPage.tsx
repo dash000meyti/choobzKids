@@ -1,8 +1,6 @@
 import Form from "next/form";
 import Link from "next/link";
-import { PillarShelf } from "@/components/mag/PillarShelf";
 import { pill } from "@/components/studio/Actions";
-import { CategoryStrip } from "@/components/studio/CategoryStrip";
 import { Render } from "@/components/studio/Render";
 import { Icon } from "@/components/ui/Icon";
 import { listCategories } from "@/db/queries/catalog";
@@ -28,7 +26,7 @@ export async function NotFoundPage() {
         <h1 className="headline mt-1 text-3xl lg:text-[4rem]">این صفحه پیدا نشد</h1>
         <p className="mt-3 text-lead text-muted">نخ از دستمون در رفت! شاید آدرس عوض شده باشد؛ از این‌جا راه را پیدا کنیم.</p>
 
-        <Form action="/search" role="search" className="mt-8 flex w-full max-w-[32rem] items-stretch gap-2">
+        <Form action="/search" role="search" className="mt-8 flex w-full max-w-lg items-stretch gap-2">
           <label htmlFor="nf-q" className="sr-only">
             دنبال چی می‌گردی؟
           </label>
@@ -56,16 +54,41 @@ export async function NotFoundPage() {
         </Link>
       </header>
 
-      {stocked.length ? (
-        <section aria-labelledby="nf-shop" className="mt-20">
-          <h2 id="nf-shop" className="headline mb-6 text-center text-2xl lg:text-[2.25rem]">
-            سری به فروشگاه بزنید.
-          </h2>
-          <CategoryStrip categories={stocked} />
-        </section>
-      ) : null}
-
-      <PillarShelf pillars={mag.pillars.slice(0, 3)} className="mt-20" />
+      {/* Plain text links: this tree is part of every page's payload (it is the not-found boundary). */}
+      <div className="mx-auto mt-16 grid max-w-3xl gap-10 sm:grid-cols-2">
+        {stocked.length ? (
+          <nav aria-labelledby="nf-shop">
+            <h2 id="nf-shop" className="text-sm font-semibold text-muted">
+              دسته‌های فروشگاه
+            </h2>
+            <ul className="mt-3 flex flex-wrap gap-2">
+              {stocked.map((category) => (
+                <li key={category.slug}>
+                  <Link href={`/shop/${category.slug}`} className="inline-flex h-10 items-center rounded-full bg-surface px-4 text-sm font-semibold text-ink hover:bg-line">
+                    {category.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
+        {mag.pillars.length ? (
+          <nav aria-labelledby="nf-guides">
+            <h2 id="nf-guides" className="text-sm font-semibold text-muted">
+              راهنماهای کامل
+            </h2>
+            <ul className="mt-3 flex flex-col">
+              {mag.pillars.slice(0, 3).map((pillar) => (
+                <li key={pillar.id} className="border-b border-line last:border-b-0">
+                  <Link href={`/mag/${pillar.slug}`} className="link-arrow flex min-h-12 items-center text-sm">
+                    {pillar.shortTitle}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        ) : null}
+      </div>
     </div>
   );
 }

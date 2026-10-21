@@ -46,7 +46,7 @@ export function Render({
       width={width}
       height={height}
       sizes={sizesAttr}
-      quality={90}
+      quality={75}
       draggable={false}
       className={cn(box ? "h-full w-full object-contain object-bottom" : "h-auto w-full", "select-none", className)}
       {...(priority ? { fetchPriority: "high" as const, loading: "eager" as const } : {})}
