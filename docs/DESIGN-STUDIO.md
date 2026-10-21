@@ -50,3 +50,17 @@ black tiles. Big, heavy, tight Persian headlines; one line of copy; two actions.
   safety, care → FAQ → guides → related.
 - **Shop / category**: large headline + category strip with renders → product tiles + filters.
 - **Footer**: quiet grey band, fine print first, dense link columns, legal line.
+- **Content and policy pages** (glossary, FAQ, workshop, installments, policies, reviews, gallery,
+  topic hubs, search): centred or start-aligned `headline` H1 with an `eyebrow` above; grey
+  `bg-surface` cards (1.5–1.75rem radius) instead of paper, kraft or sticky-note surfaces; FAQ
+  as a hairline accordion; chips are hairline pills that fill with ink when chosen.
+- **404**: `app/(site)/not-found.tsx` (inside the site layout) and `app/global-not-found.tsx` (URLs
+  that match no route, with its own chrome). Keep the shared `NotFoundPage` light: Next embeds the
+  not-found tree in every page's RSC payload.
+
+## Share cards (src/lib/og.ts)
+
+White 1200×630 card: masthead, eyebrow-coloured kicker and Estedad Bold title at the inline start,
+the page's product render on a grey tile at the inline end. Product, category, room and article
+routes have their own `opengraph-image`; every other page restates the site card through
+`pageMetadata()` (never pass an empty `openGraph.images` key: Next then drops file-based images).

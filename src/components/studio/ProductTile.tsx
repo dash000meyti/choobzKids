@@ -53,14 +53,15 @@ export function ProductTile({
       <p className={cn("mt-2 text-muted", hero ? "text-lead lg:text-[1.75rem] lg:leading-snug" : "text-lead")}>{tagline}</p>
       <PriceLine price={product.price} from={product.variantCount > 1} snapppay={snapppay} className="mt-2 text-sm" />
       <Actions learnHref={href} buyHref={`${href}#buy`} className="relative z-[1] mt-5" prefetch />
-      <div className={cn("relative mt-8 w-full pb-8", hero ? "max-w-[44rem]" : "max-w-[30rem]")}>
+      <div className={cn("relative mt-8 w-full pb-8", hero ? "max-w-[44rem] [--tile-box:5/4] md:[--tile-box:16/10]" : "max-w-[30rem]")}>
         <Render
           productKey={product.illustration ?? product.slug}
           angle={angle}
           alt={`${product.name}، تصویر سه‌بعدی از روی ابعاد واقعی`}
           sizes={hero ? "(min-width: 1024px) 704px, 92vw" : "(min-width: 768px) 480px, 92vw"}
           priority={priority}
-          box={hero ? "16 / 10" : "4 / 3"}
+          // Hero tiles stand taller on phones, where a 16:10 box leaves the product small.
+          box={hero ? "var(--tile-box)" : "4 / 3"}
         />
       </div>
     </article>
