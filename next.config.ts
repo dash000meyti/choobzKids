@@ -64,8 +64,6 @@ const nextConfig: NextConfig = {
   },
 
   experimental: {
-    // Tailwind output is small; inlining removes the render-blocking CSS request on first visits.
-    inlineCss: true,
     agentUpgrade: process.env.CI ? false : "security",
   },
 

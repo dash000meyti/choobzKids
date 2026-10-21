@@ -5,7 +5,8 @@
    Token and utility NAMES are kept from the first design so every
    component keeps compiling; their values express the new direction.
    ================================================================== */
-@import "tailwindcss";
+/* Scan only the source tree: docs and seed JSON are full of class-like words. */
+@import "tailwindcss" source("..");
 
 /* ---------- Variants ---------- */
 @custom-variant dark {

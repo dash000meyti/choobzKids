@@ -1,5 +1,7 @@
 # DESIGN.md — «سفر تاتی، از ورق تا خانه» (Tati's Journey: from the sheet to your home)
 
+> **Superseded visually (2026-10-21):** the current look is the «Studio» direction in `docs/DESIGN-STUDIO.md`. This document still owns the information architecture, content blocks, copy and honesty rules, and performance budgets.
+
 Status: **final design direction for Phase 1** (public front end). Locked on ۲۴ مهر ۱۴۰۵ (2026-10-16).
 This is the single source of truth for visual design, UX, components and motion. Engineers build from it in parallel.
 
