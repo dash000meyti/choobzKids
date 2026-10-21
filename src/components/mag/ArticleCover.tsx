@@ -1,10 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ViewTransition, type CSSProperties } from "react";
-import { illustrationSize, illustrationSource } from "@/components/illustrations/sizes";
+import { ViewTransition } from "react";
+import { illustrationSource } from "@/components/illustrations/sizes";
+import { Render } from "@/components/studio/Render";
 import type { ArticleCover as CoverData } from "@/db/queries/mag";
-import { grainStyle } from "@/lib/grain";
-import { cn, illustrationUrl, mediaUrl } from "@/lib/utils";
+import { cn, mediaUrl } from "@/lib/utils";
 
 /*
  * Article cover (DESIGN.md §7.3 #4): an arch-masked figure with its caption. A cover photo when
@@ -56,24 +56,16 @@ export function ArticleCover({ postId, slug, cover, className }: ArticleCoverPro
   );
 }
 
-function Drawing({ slug, illustration, name }: { slug: string; illustration: string; name: string | null }) {
-  const { width, height } = illustrationSize(illustration, "assembled");
+function Drawing({ illustration, name }: { slug: string; illustration: string; name: string | null }) {
   return (
-    <div className="grain relative isolate aspect-[4/3] overflow-hidden rounded-arch bg-surface" style={grainStyle(slug) as CSSProperties}>
-      <span aria-hidden="true" className="contact-shadow absolute inset-x-[22%] bottom-[5%] h-[8%] rounded-[50%]" />
-      <span className="absolute inset-x-[16%] top-[11%] bottom-[8%]">
-        {/* eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3) */}
-        <img
-          src={illustrationUrl(illustration, "assembled")}
-          width={width}
-          height={height}
-          alt={name ? `طرح ${name}` : ""}
-          loading="eager"
-          fetchPriority="high"
-          decoding="async"
-          className="size-full object-contain object-bottom"
-        />
-      </span>
+    <div className="relative overflow-hidden rounded-[1.75rem] bg-surface px-[12%] pb-6 pt-8">
+      <Render
+        productKey={illustration}
+        alt={name ? `${name}، تصویر سه‌بعدی از روی ابعاد واقعی` : ""}
+        sizes={COVER_SIZES}
+        priority
+        box="4 / 3"
+      />
     </div>
   );
 }

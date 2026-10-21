@@ -1,5 +1,5 @@
-import { HexLink } from "@/components/layout/HexLink";
-import { AGE_HUBS, AGE_STAGES } from "@/lib/ages";
+import Link from "next/link";
+import { AGE_HUBS } from "@/lib/ages";
 import { cn } from "@/lib/utils";
 import styles from "./AgeTabs.module.css";
 
@@ -12,12 +12,12 @@ import styles from "./AgeTabs.module.css";
 export function AgeTabs({ className }: { className?: string }) {
   return (
     <nav aria-label="سن به سن" className={cn(styles.rail, className)}>
-      <ul className="no-scrollbar flex min-w-0 items-center gap-2 overflow-x-auto py-1 sm:gap-3">
+      <ul className="no-scrollbar flex min-w-0 items-center justify-center gap-2 overflow-x-auto py-1">
         {AGE_HUBS.map((hub) => (
           <li key={hub.slug} className="shrink-0">
-            <HexLink href={`/age/${hub.slug}`} tint={AGE_STAGES.find((s) => s.hub === hub.slug)?.key ?? "0-6m"}>
+            <Link href={`/age/${hub.slug}`} className="inline-flex h-10 items-center rounded-full bg-surface px-5 text-sm font-semibold text-ink hover:bg-sunken">
               {hub.label}
-            </HexLink>
+            </Link>
           </li>
         ))}
       </ul>

@@ -1,3 +1,4 @@
+import { RENDER_SIZES, renderName } from "@/lib/utils";
 /*
  * Intrinsic sizes and ortho label positions of the built drawings
  * (sizes.generated.json, written by scripts/illustrations/build.ts).
@@ -66,6 +67,11 @@ export function illustrationFrame(key: string, view: IllustrationView = "assembl
 
 /** Intrinsic size for `<img width height>` (rounded viewBox size). */
 export function illustrationSize(key: string, view: IllustrationView = "assembled", pose?: string): { width: number; height: number } {
+  const render = pose ? null : renderName(key, view);
+  if (render) {
+    const [width, height] = RENDER_SIZES[render];
+    return { width, height };
+  }
   const frame = illustrationFrame(key, view, pose);
   return { width: Math.round(frame.width), height: Math.round(frame.height) };
 }

@@ -35,19 +35,18 @@ const PILL = cn(
   buttonStyles.button,
   "relative inline-flex h-10 shrink-0 select-none items-center gap-1.5 rounded-bead px-4 text-sm font-semibold whitespace-nowrap",
   "after:absolute after:-inset-y-0.5 after:inset-x-0 after:content-['']",
-  "bg-wood text-ink shadow-ply",
-  "active:translate-y-0.5 active:shadow-ply-pressed",
-  "not-aria-pressed:not-aria-[current=page]:hover:bg-[color-mix(in_oklab,var(--wood),white_6%)]",
-  "aria-pressed:translate-y-0.5 aria-pressed:bg-success aria-pressed:text-on-accent aria-pressed:shadow-ply-pressed",
-  "aria-[current=page]:translate-y-0.5 aria-[current=page]:bg-success aria-[current=page]:text-on-accent aria-[current=page]:shadow-ply-pressed",
+  "bg-bg text-ink ring-1 ring-inset ring-line-strong/60",
+  "not-aria-pressed:not-aria-[current=page]:hover:ring-ink",
+  "aria-pressed:bg-ink aria-pressed:text-bg aria-pressed:ring-ink",
+  "aria-[current=page]:bg-ink aria-[current=page]:text-bg aria-[current=page]:ring-ink",
   "disabled:cursor-not-allowed disabled:opacity-60",
 );
 
-function Content({ icon, selected, children }: { icon?: IconName; selected: boolean; children: ReactNode }) {
-  const glyph = selected ? "check" : icon;
+/** Studio pills are text-only; the icon prop is kept for API compatibility. */
+function Content({ selected, children }: { icon?: IconName; selected: boolean; children: ReactNode }) {
   return (
     <>
-      {glyph ? <Icon name={glyph} className="-ms-1 size-[1.15em]" /> : null}
+      {selected ? <Icon name="check" className="-ms-1 size-[1.05em]" /> : null}
       <span>{children}</span>
     </>
   );

@@ -40,7 +40,13 @@ import type { SiteSettings } from "@/db/queries/settings";
 import type { Dimensions, ProductSpec, Source } from "@/db/schema";
 import { formatAgeRange, toFaDigits, tomanToRial } from "@/lib/format";
 import { absoluteUrl, dateTehran, isoTehran, SITE } from "@/lib/seo";
-import { illustrationUrl, mediaUrl } from "@/lib/utils";
+import { illustrationUrl, mediaUrl, renderName } from "@/lib/utils";
+
+/** A stable image URL for structured data: the studio render file itself, else the drawing. */
+const pictureUrl = (key: string) => {
+  const render = renderName(key, "assembled");
+  return render ? `/renders/${render}.webp` : illustrationUrl(key, "assembled");
+};
 
 /*
  * schema.org JSON-LD (SEO.md §3). Every builder returns plain nodes with stable @ids (§3.1);
@@ -942,7 +948,7 @@ export function productNodes(p: ProductLdInput, ctx: ProductLdContext): Thing[] 
   const gallery: LdImage[] = p.images?.length
     ? p.images
     : p.illustration
-      ? [{ url: illustrationUrl(p.illustration, "assembled"), alt: p.name }]
+      ? [{ url: pictureUrl(p.illustration), alt: p.name }]
       : [];
   const [primary, ...more] = gallery;
   const image = primary ? [ref(ids.primaryImage(path)), ...more.map(imageUrl)] : undefined;
@@ -1168,7 +1174,7 @@ export function articleNodes(post: ArticleLdInput, ctx: ArticleLdContext = {}): 
   const gallery: LdImage[] = ctx.images?.length
     ? ctx.images
     : post.illustration
-      ? [{ url: illustrationUrl(post.illustration, "assembled"), alt: post.title }]
+      ? [{ url: pictureUrl(post.illustration), alt: post.title }]
       : [];
   const asRef = (n: AuthorNode) => ("@id" in n && n["@id"] ? ref(n["@id"]) : n);
   const ageRange = formatAgeRange(post.ageMinMonths, post.ageMaxMonths);

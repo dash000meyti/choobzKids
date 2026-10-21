@@ -1,15 +1,9 @@
 import Form from "next/form";
-import { Button } from "@/components/ui/Button";
-import { Kicker } from "@/components/ui/Kicker";
-import { TextInput } from "@/components/ui/TextInput";
 import { cn } from "@/lib/utils";
-import styles from "./MagHero.module.css";
 
 /*
- * «مجله چوبز» masthead (DESIGN.md §7.1): a kraft notebook cover held shut by an elastic band,
- * a pencil resting on its lower edge, and a paper label carrying the two-layer heading. Under
- * the label, the big question box is a plain GET form to /search, so it works without JS.
- * The age tabs (AgeTabs) sit right below and overlap the cover's bottom edge.
+ * «مجله چوبز» masthead, Studio style: eyebrow, a large headline, one line of promise and a
+ * search field (a plain GET form to /search, so it works without JS).
  */
 
 type MagHeroProps = {
@@ -27,58 +21,31 @@ export const MAG_SEO = {
 
 export function MagHero({ className }: MagHeroProps) {
   return (
-    <header className={cn(styles.cover, className)}>
-      <span aria-hidden="true" className={styles.band} />
-      <div className={styles.label}>
-        <Kicker decorative>
-          بازی · کشف · رشد
-        </Kicker>
-        <h1 className="mt-1 font-display text-3xl text-ink text-balance">{MAG_H1}</h1>
-        <p className="mt-3 max-w-prose text-base text-muted sm:text-lead">
-          راهنماهای ساده و منبع‌دار برای مامان‌ها و باباها؛ از مونته‌سوری و پیکلر تا چیدمان اتاق، بازی آزاد و هدیهٔ
-          کودک ۰ تا ۶ سال.
-        </p>
-      </div>
-
-      <Form action="/search" role="search" aria-label="پرسیدن از مجله" className={styles.ask}>
-        <label htmlFor="mag-ask" className="text-sm font-bold text-ink sm:text-base">
-          سؤالت رو بپرس…
+    <header className={cn("pb-10 pt-6 text-center lg:pb-14 lg:pt-10", className)}>
+      <p className="eyebrow">مجله چوبز</p>
+      <h1 className="headline mx-auto mt-2 max-w-[48rem] text-3xl lg:text-[4.5rem]">{MAG_H1}</h1>
+      <p className="mx-auto mt-4 max-w-[40rem] text-lead text-muted">
+        راهنماهای ساده و منبع‌دار برای پدر و مادرها؛ از مونته‌سوری و پیکلر تا چیدمان اتاق، بازی آزاد و هدیهٔ کودک ۰ تا ۶
+        سال.
+      </p>
+      <Form action="/search" role="search" aria-label="جستجو در مجله" className="mx-auto mt-8 flex max-w-[34rem] items-center gap-2">
+        <label htmlFor="mag-ask" className="sr-only">
+          سؤالتان را بپرسید
         </label>
-        <div className="flex items-stretch gap-2">
-          <TextInput
-            id="mag-ask"
-            name="q"
-            type="search"
-            size="lg"
-            enterKeyHint="search"
-            autoComplete="off"
-            maxLength={80}
-            placeholder="مثلاً: برج یادگیری از چند سالگی؟"
-            className="min-w-0 flex-1 bg-raised"
-          />
-          <Button type="submit" variant="primary" size="lg" iconStart="search" className="max-sm:w-14! max-sm:px-0!">
-            <span className="max-sm:sr-only">بپرس</span>
-          </Button>
-        </div>
+        <input
+          id="mag-ask"
+          name="q"
+          type="search"
+          enterKeyHint="search"
+          autoComplete="off"
+          maxLength={80}
+          placeholder="مثلاً: برج یادگیری از چند سالگی؟"
+          className="h-12 min-w-0 flex-1 rounded-full bg-surface px-5 text-base text-ink outline-none placeholder:text-muted focus-visible:ring-2 focus-visible:ring-focus"
+        />
+        <button type="submit" className="h-12 rounded-full bg-accent px-6 text-sm font-semibold text-on-accent">
+          جستجو
+        </button>
       </Form>
-
-      <Pencil className={styles.pencil} />
     </header>
-  );
-}
-
-/* The pencil on the cover (story layer): birch body with honey stripes, graphite tip, eraser. */
-function Pencil({ className }: { className?: string }) {
-  return (
-    <svg aria-hidden="true" focusable="false" viewBox="0 0 220 20" className={className}>
-      {/* Drawn tip-left; mirrored under LTR so the tip always points to inline-end. */}
-      <path d="M2 10 22 3.5v13z" className={styles.wood} />
-      <path d="M2 10 8.5 7.9v4.2z" className={styles.graphite} />
-      <rect x="22" y="3.5" width="160" height="13" className={styles.body} />
-      <rect x="22" y="7.2" width="160" height="1.6" className={styles.stripe} />
-      <rect x="22" y="11.2" width="160" height="1.6" className={styles.stripe} />
-      <rect x="182" y="3" width="14" height="14" rx="1.5" className={styles.ferrule} />
-      <path d="M196 3h14a6 6 0 0 1 6 6v2a6 6 0 0 1-6 6h-14z" className={styles.eraser} />
-    </svg>
   );
 }
