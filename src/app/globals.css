@@ -153,7 +153,8 @@
   --color-surface: var(--surface);
   --color-raised: var(--surface-raised);
   --color-sunken: var(--surface-sunken);
-  --color-wood: var(--wood);
+  /* `bg-wood` surfaces (old wooden buttons/chips) become studio grey; drawings keep var(--wood). */
+  --color-wood: var(--surface);
   --color-wood-top: var(--wood-top);
   --color-wood-side: var(--wood-side);
   --color-ink: var(--ink);

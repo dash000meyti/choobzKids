@@ -4,14 +4,13 @@ import { pegDollWidthCm, PegDoll } from "@/components/illustrations/PegDoll";
 import { DOOR_MARKS, ROOM_VIEWBOX, RoomBackdrop } from "@/components/illustrations/RoomKit";
 import { illustrationFrame, illustrationSize } from "@/components/illustrations/sizes";
 import { isRoomSlot, placeOnStage, placePerson, ROOM_SLOTS } from "@/components/shop/room-slots";
-import { Bubble } from "@/components/ui/Bubble";
 import { AGE_TINT } from "@/components/ui/tints";
 import type { AgeHubData, AgeIndexHub, AgeScene } from "@/db/queries/age";
 import type { RoomPiece } from "@/db/queries/cards";
-import { AGE_STAGES, WHO_SOURCE } from "@/lib/ages";
 import { formatNumber } from "@/lib/format";
 import { cn, illustrationUrl } from "@/lib/utils";
 import styles from "./AgeHubHero.module.css";
+import { Render } from "@/components/studio/Render";
 
 /*
  * Age hub header (DESIGN.md §7.5): the hub's hexagon in its age tint, the plain keyword H1
@@ -28,51 +27,42 @@ type AgeHubHeroProps = {
 };
 
 export function AgeHubHero({ hub, className }: AgeHubHeroProps) {
-  const story = AGE_STAGES.find((s) => s.key === hub.scene.stage.key)?.milestone;
+  const pieces = (hub.scene.room?.pieces ?? []).filter((p) => p.defaultOn).slice(0, 4);
   return (
-    <header className={cn("grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-12", className)}>
-      <div className="flex min-w-0 flex-col items-start gap-4">
-        <ViewTransition name={`age-hub-${hub.slug}`} share="morph" default="none">
-          <span className={cn(styles.hubHex, AGE_TINT[hub.tint])}>{hub.label}</span>
-        </ViewTransition>
-        <h1 className="text-3xl text-ink">{hub.h1}</h1>
-        <p className="max-w-prose text-lead text-muted">
-          نقاط عطف رشد، بازی‌های پیشنهادی در خانه، وسایل چوبی مناسب و چیدمان آمادهٔ اتاق برای هر بازهٔ این سن؛ از
-          مهارت‌ها شروع کنید و تا اتاقش پیش بروید.
-        </p>
-        <nav aria-label="بازه‌های سنی این صفحه" className="mt-1">
-          <ul className="flex flex-wrap gap-x-3 gap-y-4">
-            {hub.sections.map((section) => {
-              const face = <span className={cn(styles.face, AGE_TINT[section.stage?.key ?? hub.tint])}>{section.label}</span>;
-              return (
-                <li key={section.anchor}>
-                  <a href={`#${section.anchor}`} className={styles.hex}>
-                    {section.stage ? (
-                      <ViewTransition name={`age-${section.stage.key}`} share="morph" default="none">
-                        {face}
-                      </ViewTransition>
-                    ) : (
-                      face
-                    )}
-                  </a>
-                </li>
-              );
-            })}
-          </ul>
-        </nav>
-      </div>
-
-      <figure className="flex min-w-0 flex-col gap-1">
-        {story ? (
-          <Bubble size="sm" className="self-start font-accent text-lead">
-            {story}
-          </Bubble>
-        ) : null}
-        <DoorScene scene={hub.scene} />
-        <figcaption className="mt-2 text-2xs text-muted">
-          خط‌های قد روی چارچوب: میانگین قد کودکان در هر سن · {WHO_SOURCE}
-        </figcaption>
-      </figure>
+    <header className={cn("text-center", className)}>
+      <ViewTransition name={`age-hub-${hub.slug}`} share="morph" default="none">
+        <p className="eyebrow">{hub.label}</p>
+      </ViewTransition>
+      <h1 className="headline mx-auto mt-2 max-w-[48rem] text-3xl lg:text-[4rem]">{hub.h1}</h1>
+      <p className="mx-auto mt-4 max-w-[40rem] text-lead text-muted">
+        نقاط عطف رشد، بازی‌های پیشنهادی در خانه، وسایل چوبی مناسب و چیدمان آمادهٔ اتاق برای هر بازهٔ این سن.
+      </p>
+      <nav aria-label="بازه‌های سنی این صفحه" className="mt-6">
+        <ul className="flex flex-wrap justify-center gap-2">
+          {hub.sections.map((section) => (
+            <li key={section.anchor}>
+              <a href={`#${section.anchor}`} className="inline-flex h-10 items-center rounded-full bg-surface px-5 text-sm font-semibold text-ink hover:bg-sunken">
+                {section.stage ? (
+                  <ViewTransition name={`age-${section.stage.key}`} share="morph" default="none">
+                    <span>{section.label}</span>
+                  </ViewTransition>
+                ) : (
+                  section.label
+                )}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+      {pieces.length ? (
+        <div aria-hidden="true" className="mx-auto mt-10 flex max-w-[56rem] items-end justify-center gap-3 rounded-[2rem] bg-surface px-6 pb-6 pt-10">
+          {pieces.map((piece) => (
+            <div key={piece.productId} className="min-w-0 flex-1">
+              <Render productKey={piece.illustration ?? piece.slug} alt="" sizes="(min-width: 1024px) 200px, 22vw" box="3 / 4" />
+            </div>
+          ))}
+        </div>
+      ) : null}
     </header>
   );
 }
