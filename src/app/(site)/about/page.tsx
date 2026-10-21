@@ -1,11 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import type { CSSProperties, ReactNode } from "react";
-import { PegDoll, type PegDollTint, type PegDollVariant } from "@/components/illustrations/PegDoll";
+import type { ReactNode } from "react";
 import { LETTERING } from "@/components/illustrations/lettering/Lettering";
-import { YekiBud } from "@/components/illustrations/lettering/YekiBud";
-import { illustrationFrame, illustrationSize } from "@/components/illustrations/sizes";
 import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { FactList, LastUpdated, PageFaqs, workingDays, type FactRow } from "@/components/mag/PolicyPage";
@@ -20,7 +17,7 @@ import { getSettings, type SiteSettings } from "@/db/queries/settings";
 import { formatJalali, formatNumber, toFaDigits } from "@/lib/format";
 import { breadcrumbNode, graph, ids, JsonLd, webPageNode } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
-import { illustrationUrl } from "@/lib/utils";
+import { Render } from "@/components/studio/Render";
 import styles from "./about.module.css";
 
 /*
@@ -32,7 +29,6 @@ import styles from "./about.module.css";
  */
 
 const PATH = "/about";
-const SHEET = illustrationSize("learning-tower", "flat");
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("about");
@@ -44,47 +40,6 @@ export async function generateMetadata(): Promise<Metadata> {
     modifiedTime: page.updatedAt,
     noindex: page.noindex,
   });
-}
-
-/* ------------------------------------------------------------------ */
-/* Picture pages: peg dolls and manifest drawings at one cm scale        */
-/* ------------------------------------------------------------------ */
-
-type Figure =
-  | { kind: "doll"; variant: PegDollVariant; heightCm: number; tint?: PegDollTint }
-  | { kind: "drawing"; illustration: string; alt: string };
-
-function SceneFigure({ figure }: { figure: Figure }) {
-  if (figure.kind === "doll") return <PegDoll variant={figure.variant} heightCm={figure.heightCm} tint={figure.tint} />;
-  const frame = illustrationFrame(figure.illustration, "assembled");
-  // Drawing units are projected mm: the front floor corner (originY) stands on the floor line.
-  const style: CSSProperties = {
-    width: `calc(${(frame.width / 10).toFixed(1)} * var(--u))`,
-    marginBlockEnd: `calc(${(-(frame.height - frame.originY) / 10).toFixed(1)} * var(--u))`,
-  };
-  return (
-    // eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3)
-    <img
-      src={illustrationUrl(figure.illustration, "assembled")}
-      width={Math.round(frame.width)}
-      height={Math.round(frame.height)}
-      alt={figure.alt}
-      loading="lazy"
-      decoding="async"
-      className={styles.drawing}
-      style={style}
-    />
-  );
-}
-
-function Scene({ figures, scale }: { figures: Figure[]; scale: number }) {
-  return (
-    <div className={styles.scene} style={{ "--k": scale } as CSSProperties}>
-      {figures.map((figure, index) => (
-        <SceneFigure key={index} figure={figure} />
-      ))}
-    </div>
-  );
 }
 
 function Spread({
@@ -273,7 +228,7 @@ export default async function AboutPage() {
       <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
         <Breadcrumbs items={trail} />
         <header className="mt-6 max-w-narrow lg:mt-10">
-          <h1 className="ply-type text-[length:max(2.5rem,var(--text-3xl))] leading-[1.3]">{page.title}</h1>
+          <h1 className="headline text-3xl lg:text-[4.5rem]">{page.title}</h1>
           {page.excerpt ? <p className="mt-4 max-w-prose text-lead text-muted">{page.excerpt}</p> : null}
         </header>
 
@@ -281,22 +236,13 @@ export default async function AboutPage() {
           <Spread
             id="spread-beginning"
             folio={1}
-            picture={
-              <Scene
-                scale={1.7}
-                figures={[
-                  { kind: "doll", variant: "child", heightCm: 82 },
-                  { kind: "drawing", illustration: "duck-pull-toy", alt: "اردک چرخ‌دار چوبی، نشان چوبز" },
-                ]}
-              />
-            }
+            picture={<Render productKey="duck-pull-toy" alt="اردک چرخ‌دار چوبی، نشان چوبز" sizes="(min-width: 1024px) 480px, 88vw" box="4 / 3" />}
           >
-            <YekiBud className="text-xl text-success" />
-            <span className="sr-only">{LETTERING.yekiBud}</span>
-            <h2 id="spread-beginning" className="font-display text-xl text-ink">
+            <p className="eyebrow">{LETTERING.yekiBud}</p>
+            <h2 id="spread-beginning" className="headline text-2xl text-ink lg:text-[2.25rem]">
               چوبز برای چه ساخته شد؟
             </h2>
-            <blockquote className="font-accent text-lead text-ink">
+            <blockquote className="text-lead font-semibold text-ink">
               «لازم نیست مامانِ کاملی باشی. فقط کافیه دنیای بچه‌ت رو آماده کنی؛ ما کنارتیم تا اون دنیا رو با هم، از
               چوب بسازیم.»
             </blockquote>
@@ -312,33 +258,12 @@ export default async function AboutPage() {
             folio={2}
             flip
             tall
-            picture={
-              <>
-                <div className={styles.sheet}>
-                  {/* eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3) */}
-                  <img
-                    src={illustrationUrl("learning-tower", "flat")}
-                    width={SHEET.width}
-                    height={SHEET.height}
-                    alt="قطعه‌های برج یادگیری، چیده‌شده روی یک ورق چندلایی پیش از برش"
-                    loading="lazy"
-                    decoding="async"
-                  />
-                </div>
-                <Scene
-                  scale={1.25}
-                  figures={[
-                    { kind: "drawing", illustration: "learning-tower", alt: "برج یادگیری سرهم‌شده" },
-                    { kind: "doll", variant: "child", heightCm: 92, tint: "sage" },
-                  ]}
-                />
-              </>
-            }
+            picture={<Render productKey="learning-tower" angle="hero-exploded" alt="قطعه‌های برج یادگیری پیش از مونتاژ" sizes="(min-width: 1024px) 480px, 88vw" box="4 / 3" />}
           >
             <Kicker decorative tone="success">
               از ورق تا خونه
             </Kicker>
-            <h2 id="spread-workshop" className="font-display text-xl text-ink">
+            <h2 id="spread-workshop" className="headline text-2xl text-ink lg:text-[2.25rem]">
               هر وسیلهٔ چوبز از کجا می‌آید؟
             </h2>
             <p className="text-base text-ink">{settings.org.description}</p>
@@ -362,22 +287,12 @@ export default async function AboutPage() {
           <Spread
             id="spread-families"
             folio={3}
-            picture={
-              <Scene
-                scale={0.8}
-                figures={[
-                  { kind: "doll", variant: "father", heightCm: 176 },
-                  { kind: "doll", variant: "child", heightCm: 80, tint: "sky" },
-                  { kind: "drawing", illustration: "pikler-triangle", alt: "مثلث پیکلر" },
-                  { kind: "doll", variant: "mother-scarf", heightCm: 162 },
-                ]}
-              />
-            }
+            picture={<Render productKey="pikler-triangle" alt="مثلث پیکلر" sizes="(min-width: 1024px) 480px, 88vw" box="4 / 3" />}
           >
             <Kicker decorative tone="success">
               از خونه‌های شما
             </Kicker>
-            <h2 id="spread-families" className="font-display text-xl text-ink">
+            <h2 id="spread-families" className="headline text-2xl text-ink lg:text-[2.25rem]">
               قصهٔ چوبز کجا ادامه پیدا می‌کند؟
             </h2>
             <p className="text-base text-ink">
