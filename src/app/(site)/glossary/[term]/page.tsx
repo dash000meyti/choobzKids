@@ -178,13 +178,13 @@ function PillarLink({ slug, title }: { slug: string; title: string }) {
     <IntentLink
       href={`/mag/${slug}`}
       transitionTypes={["nav-forward"]}
-      className="ply mt-8 flex items-center gap-4 rounded-bit p-4 sm:p-5"
+      className="mt-8 flex items-center gap-4 rounded-[1.5rem] bg-surface p-5 transition-colors hover:bg-sunken"
     >
-      <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-bit-sm bg-wood text-ink">
+      <span aria-hidden="true" className="grid size-11 shrink-0 place-items-center rounded-full bg-bg text-ink">
         <Icon name="notebook" className="size-6" />
       </span>
       <span className="flex min-w-0 flex-1 flex-col">
-        <span className="text-xs font-semibold text-success">راهنمای کامل</span>
+        <span className="eyebrow text-xs">راهنمای کامل</span>
         <span className="font-bold text-ink">{title}</span>
       </span>
       <Icon name="arrow-end" className="size-5 shrink-0 text-muted" />

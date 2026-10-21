@@ -49,7 +49,7 @@ const MONTH_SCRIPT =
 function WheelGlyph() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-      <circle cx="12" cy="12" r="10" fill="var(--wood)" stroke="var(--ink)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
+      <circle cx="12" cy="12" r="10" fill="var(--bg)" stroke="var(--ink)" strokeWidth="1.5" vectorEffect="non-scaling-stroke" />
       <path
         d="M12 3.6v2.8M12 17.6v2.8M3.6 12h2.8M17.6 12h2.8"
         stroke="var(--ink)"

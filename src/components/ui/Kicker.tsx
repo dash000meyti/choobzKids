@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Doodle, type DoodleName } from "./Doodle";
+import type { DoodleName } from "./Doodle";
 
 /*
  * The decorative half of a two-layer heading (DESIGN.md §1.2 law 5, §4.12): a Mikhak line in the
@@ -21,16 +21,14 @@ type KickerProps = {
   className?: string;
 };
 
-const TONE = { accent: "text-accent", success: "text-success", muted: "text-muted" } as const;
-
-export function Kicker({ children, tone = "accent", doodle, decorative, as: Tag = "p", className }: KickerProps) {
+/**
+ * Studio direction: every kicker is the same small eyebrow line; tone and doodle are accepted for
+ * compatibility but no longer change the look.
+ */
+export function Kicker({ children, decorative, as: Tag = "p", className }: KickerProps) {
   return (
-    <Tag
-      className={cn("flex items-center gap-2 font-accent text-lead", TONE[tone], className)}
-      aria-hidden={decorative || undefined}
-    >
-      {doodle ? <Doodle name={doodle} tone="inherit" className="h-[1.2em] w-auto opacity-80" /> : null}
-      <span>{children}</span>
+    <Tag className={cn("eyebrow", className)} aria-hidden={decorative || undefined}>
+      {children}
     </Tag>
   );
 }

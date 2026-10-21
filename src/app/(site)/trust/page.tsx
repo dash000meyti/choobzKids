@@ -19,7 +19,7 @@ const PATH = "/trust";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("trust");
-  if (!page) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!page) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   return pageMetadata({
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? page.excerpt ?? page.title,
@@ -127,7 +127,7 @@ export default async function TrustPage() {
       >
         {settings.enamad ? (
           <section aria-labelledby="enamad-title">
-            <h2 id="enamad-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+            <h2 id="enamad-title" className="headline text-2xl lg:text-[2.25rem]">
               نماد اعتماد الکترونیکی چوبز
             </h2>
             <div className="tray mt-4 flex flex-col items-center gap-4 p-5 text-center sm:flex-row sm:text-start">
@@ -143,7 +143,7 @@ export default async function TrustPage() {
           </section>
         ) : null}
         <section aria-labelledby="identifiers-title">
-          <h2 id="identifiers-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+          <h2 id="identifiers-title" className="headline text-2xl lg:text-[2.25rem]">
             اطلاعات کسب‌وکار چوبز
           </h2>
           <p className="mt-1.5 text-sm text-muted">هر موردی که اینجا نیست، هنوز ثبت یا تأیید نهایی نشده است.</p>

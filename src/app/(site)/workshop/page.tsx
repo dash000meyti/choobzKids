@@ -1,20 +1,17 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { illustrationSize, type IllustrationView } from "@/components/illustrations/sizes";
+import { Render, type RenderAngle } from "@/components/studio/Render";
 import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { LastUpdated, PageFaqs, RelatedLinks } from "@/components/mag/PolicyPage";
 import { Prose } from "@/components/mag/Prose";
 import { AskChoobz } from "@/components/ui/AskChoobz";
 import { Kicker } from "@/components/ui/Kicker";
-import { StampBadge } from "@/components/ui/StampBadge";
 import { getPage, listWorkshopLog, type WorkshopLogEntry } from "@/db/queries/pages";
 import { getSettings } from "@/db/queries/settings";
 import { formatJalali, formatNumber, toFaDigits } from "@/lib/format";
 import { breadcrumbNode, graph, ids, JsonLd, webPageNode } from "@/lib/jsonld";
 import { pageMetadata } from "@/lib/seo";
-import { illustrationUrl } from "@/lib/utils";
-import styles from "./workshop.module.css";
 
 /*
  * /workshop «کارگاه چوبز» (DESIGN.md §5.6, §8; SEO.md §8.11): the five steps from
@@ -28,7 +25,7 @@ const PATH = "/workshop";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("workshop");
-  if (!page) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!page) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   return pageMetadata({
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? page.excerpt ?? page.title,
@@ -38,37 +35,20 @@ export async function generateMetadata(): Promise<Metadata> {
   });
 }
 
-/** What each step looks like, drawn from manifests: sheet → cut plan → parts → finished → stamped. */
-const STEP_PICTURES: { illustration: string; view: IllustrationView; alt: string }[] = [
-  { illustration: "learning-tower", view: "flat", alt: "قطعه‌های برج یادگیری، چیده‌شده روی یک ورق چندلایی توس" },
-  { illustration: "learning-tower", view: "ortho", alt: "نقشهٔ ابعاد برج یادگیری که مسیر برش از روی آن ساخته می‌شود" },
-  { illustration: "learning-tower", view: "exploded", alt: "قطعه‌های برج یادگیری پیش از سرهم شدن" },
-  { illustration: "learning-tower", view: "assembled", alt: "برج یادگیری سرهم‌شده با روکش نهایی" },
-  { illustration: "duck-pull-toy", view: "assembled", alt: "اردک چرخ‌دار چوبی، آمادهٔ بسته‌بندی" },
+/** What each step looks like, as studio renders of the learning tower: board → cut → parts → finished → the duck. */
+const STEP_PICTURES: { key: string; angle: RenderAngle; alt: string }[] = [
+  { key: "learning-tower", angle: "top", alt: "برج یادگیری از بالا؛ صفحه‌های چندلای توس" },
+  { key: "learning-tower", angle: "front", alt: "برج یادگیری از روبه‌رو، با برش‌های دقیق CNC" },
+  { key: "learning-tower", angle: "hero-exploded", alt: "قطعه‌های برج یادگیری پیش از سرهم شدن" },
+  { key: "learning-tower", angle: "hero", alt: "برج یادگیری سرهم‌شده با روکش نهایی" },
+  { key: "duck-pull-toy", angle: "hero", alt: "اردک چرخ‌دار چوبی، آمادهٔ بسته‌بندی" },
 ];
 
-function StepPicture({ index, last }: { index: number; last: boolean }) {
+function StepPicture({ index }: { index: number }) {
   const picture = STEP_PICTURES[index] ?? STEP_PICTURES[3];
-  const size = illustrationSize(picture.illustration, picture.view);
   return (
-    <div className={styles.picture}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3) */}
-      <img
-        src={illustrationUrl(picture.illustration, picture.view)}
-        width={size.width}
-        height={size.height}
-        alt={picture.alt}
-        loading="lazy"
-        decoding="async"
-      />
-      <span aria-hidden="true" className={styles.bead}>
-        {toFaDigits(index + 1)}
-      </span>
-      {last ? (
-        <span className={styles.stamp}>
-          <StampBadge tone="accent">ساخت کارگاه چوبز</StampBadge>
-        </span>
-      ) : null}
+    <div className="rounded-[1.5rem] bg-surface px-5 pb-4 pt-6">
+      <Render productKey={picture.key} angle={picture.angle} alt={picture.alt} sizes="(min-width: 1024px) 240px, 45vw" box="1 / 1" />
     </div>
   );
 }
@@ -77,7 +57,7 @@ function WorkshopLog({ entries }: { entries: WorkshopLogEntry[] }) {
   if (!entries.length) return null;
   return (
     <section aria-labelledby="log-title" className="mt-14">
-      <h2 id="log-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+      <h2 id="log-title" className="headline text-2xl lg:text-[2.25rem]">
         این روزها در کارگاه چه گذشت؟
       </h2>
       <ol className="mt-5 flex flex-col">
@@ -122,26 +102,27 @@ export default async function WorkshopPage() {
       <JsonLd data={jsonLd} />
       <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
         <Breadcrumbs items={trail} />
-        <header className="mt-6 max-w-narrow lg:mt-10">
+        <header className="mx-auto mt-8 max-w-[48rem] text-center lg:mt-12">
           <Kicker decorative tone="success" className="mb-1">
             از ورق تا اتاقِ بچه‌ت
           </Kicker>
-          <h1 className="text-3xl text-ink">{page.title}</h1>
-          {page.excerpt ? <p className="mt-4 max-w-prose text-lead text-muted">{page.excerpt}</p> : null}
+          <h1 className="headline text-3xl lg:text-[4.5rem]">{page.title}</h1>
+          {page.excerpt ? <p className="mx-auto mt-4 max-w-prose text-lead text-muted">{page.excerpt}</p> : null}
         </header>
 
         {steps.length ? (
           <section aria-labelledby="steps-title" className="mt-12 lg:mt-16">
-            <h2 id="steps-title" className="font-display text-2xl text-ink">
+            <h2 id="steps-title" className="headline text-2xl lg:text-[3rem]">
               یک وسیلهٔ چوبز از چه قدم‌هایی می‌گذرد؟
             </h2>
             <p className="mt-2 max-w-prose text-lead text-muted">{settings.org.description}</p>
-            <ol className={`${styles.steps} mt-7`}>
+            <ol className="mt-8 grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-3 lg:grid-cols-5">
               {steps.map((step, index) => (
-                <li key={step.title} className={styles.step}>
-                  <StepPicture index={index} last={index === steps.length - 1} />
-                  <div className={styles.body}>
-                    <h3 className="text-base leading-snug font-bold text-ink">{step.title}</h3>
+                <li key={step.title}>
+                  <StepPicture index={index} />
+                  <div className="mt-4">
+                    <p className="text-sm font-bold text-muted tabular-nums">{toFaDigits(String(index + 1).padStart(2, "0"))}</p>
+                    <h3 className="mt-1 text-lg leading-snug font-extrabold text-ink">{step.title}</h3>
                     <p className="text-sm text-muted">{step.body}</p>
                   </div>
                 </li>

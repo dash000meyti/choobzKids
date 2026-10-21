@@ -3,7 +3,6 @@ import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { AlphabetRail } from "@/components/mag/AlphabetRail";
 import { GlossaryIndex } from "@/components/mag/GlossaryIndex";
-import { Kicker } from "@/components/ui/Kicker";
 import { getGlossaryIndex } from "@/db/queries/glossary";
 import { formatNumber } from "@/lib/format";
 import { breadcrumbNode, definedTermSetNode, graph, ids, JsonLd, webPageNode } from "@/lib/jsonld";
@@ -50,11 +49,9 @@ export default async function GlossaryPage() {
       <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
         <Breadcrumbs items={TRAIL} />
 
-        <header className="mt-6 flex max-w-prose flex-col gap-3 lg:mt-8">
-          <Kicker tone="success" doodle="sprout" decorative>
-            از الف تا ی، به زبان ساده
-          </Kicker>
-          <h1 className="text-3xl text-ink">{TITLE}</h1>
+        <header className="mx-auto mt-8 flex max-w-[48rem] flex-col items-center gap-3 pb-6 text-center lg:mt-12">
+          <p className="eyebrow">واژه‌نامهٔ چوبز</p>
+          <h1 className="headline text-3xl lg:text-[4rem]">{TITLE}</h1>
           <p className="text-lead text-muted">
             {formatNumber(total)} اصطلاحی که در مجلهٔ چوبز و صفحه‌های محصول می‌بینید، هر کدام با تعریفی کوتاه و دقیق: از
             روش‌های مونته‌سوری، پیکلر و والدورف تا رشد حرکتی، بازی و ایمنی وسایل چوبی. روی هر واژه بزنید تا تعریف کامل،

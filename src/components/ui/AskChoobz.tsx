@@ -1,10 +1,9 @@
 import type { SiteSettings } from "@/db/queries/settings";
 import { cn } from "@/lib/utils";
-import { Bubble } from "./Bubble";
 import { Button } from "./Button";
 
 /*
- * «پرسش قبل از خرید» (DESIGN.md §4.12, §11.2 #18): a mint bubble that sends the mother straight to
+ * «پرسش قبل از خرید» (DESIGN.md §4.12, §11.2 #18): a quiet grey card that sends the mother straight to
  * the workshop on Bale (consult button) or Instagram DM (quiet). Each channel renders only when
  * its setting exists; with neither, nothing renders. Response hours are not in settings yet ⚑,
  * so they appear only when the caller passes them.
@@ -34,7 +33,7 @@ export function AskChoobz({ socials, compact, title, hours, className }: AskChoo
   const heading = title ?? "سؤالی داری؟ قبل از خرید از خودِ کارگاه بپرس";
 
   return (
-    <Bubble as="aside" size={compact ? "sm" : "lg"} className={className}>
+    <aside className={cn("rounded-[1.5rem] bg-surface", compact ? "p-4" : "p-6", className)}>
       <div className={cn("flex gap-3", compact ? "flex-wrap items-center justify-between" : "flex-col")}>
         <p className={cn("font-semibold text-ink", compact ? "text-sm" : "text-base")}>{heading}</p>
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
@@ -51,6 +50,6 @@ export function AskChoobz({ socials, compact, title, hours, className }: AskChoo
         </div>
         {hours && !compact ? <p className="text-xs text-muted">{hours}</p> : null}
       </div>
-    </Bubble>
+    </aside>
   );
 }

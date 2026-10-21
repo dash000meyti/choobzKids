@@ -32,7 +32,7 @@ const PATH = "/about";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("about");
-  if (!page) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!page) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   return pageMetadata({
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? page.excerpt ?? page.title,

@@ -30,94 +30,87 @@
   }
 }
 
-/* ---------- «خلاصه در یک نگاه» facts: flat paper slips inside the tray ---------- */
+/* ---------- «خلاصه در یک نگاه» facts: white cards on the grey summary ---------- */
 
 .fact {
   display: flex;
   flex-direction: column;
   gap: 0.1rem;
-  padding: 0.75rem 0.9rem;
-  border-radius: var(--radius-bit-sm);
-  background: color-mix(in oklab, var(--surface-raised) 82%, transparent);
+  padding: 0.9rem 1rem;
+  border-radius: 1rem;
+  background: var(--surface-raised);
 }
 
-/* ---------- FAQ drawers ---------- */
+/* ---------- FAQ accordion (Studio): hairlines, a «+» that turns into «×» ---------- */
 
-/* A drawer front is pressable (raised ply edge); the answer sits flat on paper inside. */
 .drawer {
-  border-radius: var(--radius-bit);
-  background-color: var(--surface-raised);
-  box-shadow: var(--shadow-ply);
+  border-block-end: 1px solid var(--line);
 }
+.drawer:first-child { border-block-start: 1px solid var(--line); }
 
 .front {
   display: flex;
   align-items: center;
   gap: 1rem;
   min-block-size: 3.5rem;
-  padding: 0.75rem 1.1rem;
-  border-radius: inherit;
-  color: var(--ink);
+  padding-block: 1.1rem;
   cursor: pointer;
   list-style: none;
-  transition: translate var(--dur-press) var(--ease-press);
+  -webkit-tap-highlight-color: transparent;
+}
+.front::-webkit-details-marker { display: none; }
+.front:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; border-radius: 8px; }
+
+.question {
+  flex: 1;
+  min-inline-size: 0;
+  font-size: var(--text-lead);
+  font-weight: 700;
+  line-height: 1.55;
+  color: var(--ink);
 }
 
-.front::-webkit-details-marker {
-  display: none;
-}
-
-.front:active {
-  translate: 0 1px;
-}
-
-/* The round wooden knob at inline-end; pulled out a little while the drawer is open. */
 .knob {
+  position: relative;
   flex: none;
-  inline-size: 1.15rem;
-  block-size: 1.15rem;
-  border-radius: 999px;
-  background: radial-gradient(circle at 38% 35%, var(--wood-top), var(--wood) 55%, var(--wood-side));
-  box-shadow:
-    0 1px 0 var(--ply-2),
-    0 2px 0 var(--ply-3),
-    0 4px 6px -3px rgb(var(--shadow-rgb) / 0.4);
-  transition:
-    translate var(--dur-gentle) var(--ease-settle),
-    box-shadow var(--dur-gentle) var(--ease-settle);
+  inline-size: 1.25rem;
+  block-size: 1.25rem;
+  color: var(--ink-muted);
+  transition: transform var(--dur-base) var(--ease-out-expo);
 }
-
-.drawer[open] .knob {
-  translate: 0 -1px;
-  box-shadow:
-    0 1px 0 var(--ply-2),
-    0 3px 0 var(--ply-3),
-    0 7px 9px -4px rgb(var(--shadow-rgb) / 0.45);
+.knob::before,
+.knob::after {
+  content: "";
+  position: absolute;
+  inset-inline: 0.15rem;
+  inset-block-start: calc(50% - 0.75px);
+  block-size: 1.5px;
+  border-radius: 1px;
+  background: currentColor;
 }
+.knob::after { transform: rotate(90deg); }
+.drawer[open] .knob { transform: rotate(45deg); }
 
-.drawer[open] {
-  box-shadow: var(--shadow-ply-lifted);
-}
-
-.inside {
-  margin-inline: 0.5rem;
-  margin-block-end: 0.5rem;
-  padding: 0.9rem 0.9rem 1rem;
-  border-radius: var(--radius-bit-sm);
-  background: var(--bg);
-  box-shadow: var(--inset-shadow-tray);
+.answer {
+  padding-block: 0 1.4rem;
+  max-inline-size: 48rem;
+  color: var(--ink-muted);
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  :root:not([data-motion="reduce"]):not([data-lite]) .drawer[open] .inside {
-    animation: drawer-out var(--dur-gentle) var(--ease-settle);
+  @supports (interpolate-size: allow-keywords) {
+    :root:not([data-motion="reduce"]):not([data-lite]) .drawer { interpolate-size: allow-keywords; }
+    :root:not([data-motion="reduce"]):not([data-lite]) .drawer::details-content {
+      block-size: 0;
+      overflow: clip;
+      transition: block-size var(--dur-base) var(--ease-out-expo), content-visibility var(--dur-base) allow-discrete;
+    }
+    :root:not([data-motion="reduce"]):not([data-lite]) .drawer[open]::details-content { block-size: auto; }
   }
 }
 
-/* The answer slides out of the cabinet: a short drop and fade, compositor only. */
-@keyframes drawer-out {
-  from {
-    translate: 0 -6px;
-    opacity: 0.001;
-  }
+.inside {
+  padding-block: 0 1.4rem;
+  max-inline-size: 48rem;
+  color: var(--ink-muted);
 }

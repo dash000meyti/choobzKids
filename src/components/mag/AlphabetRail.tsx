@@ -1,7 +1,5 @@
-import type { CSSProperties } from "react";
 import type { GlossaryLetter } from "@/db/queries/glossary";
 import { formatNumber } from "@/lib/format";
-import { grainStyle } from "@/lib/grain";
 import { cn } from "@/lib/utils";
 import styles from "./AlphabetRail.module.css";
 
@@ -32,13 +30,13 @@ function Letter({ letter }: { letter: string }) {
 export function AlphabetRail({ letters, className }: AlphabetRailProps) {
   return (
     <nav aria-label="فهرست الفبایی واژه‌ها" className={cn(styles.rail, className)}>
-      <ol className={styles.list} style={grainStyle("glossary-alphabet") as CSSProperties}>
+      <ol className={styles.list}>
         {letters.map(({ letter, anchor, count }) =>
           count ? (
             <li key={anchor}>
               <a
                 href={`#${anchor}`}
-                className={cn(styles.block, styles.painted, "grain")}
+                className={cn(styles.block, styles.painted)}
                 aria-label={`${letter}، ${formatNumber(count)} واژه`}
               >
                 <Letter letter={letter} />

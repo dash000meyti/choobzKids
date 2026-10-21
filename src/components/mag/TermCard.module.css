@@ -1,26 +1,14 @@
 /*
- * TermCard (DESIGN.md §4.11): the shared card face — raised paper on a ply edge, lifts on
- * hover, seats when the stretched link is pressed, rings the whole card on keyboard focus.
+ * TermCard: a quiet studio-grey card; the stretched link rings the whole card on keyboard focus.
  */
 
 .card {
-  background-color: var(--surface-raised);
-  box-shadow: var(--shadow-ply);
-  transition:
-    translate var(--dur-quick) var(--ease-wood),
-    box-shadow var(--dur-quick) var(--ease-wood);
+  background-color: var(--surface);
+  border-radius: 1.25rem;
+  transition: transform var(--dur-quick) var(--ease-wood);
 }
 @media (hover: hover) {
-  .card:hover {
-    translate: 0 -2px;
-    box-shadow: var(--shadow-ply-lifted);
-  }
-}
-.card:has(.link:active) {
-  translate: 0 2px;
-  box-shadow: var(--shadow-ply-pressed);
-  transition-duration: var(--dur-press);
-  transition-timing-function: linear;
+  .card:hover { transform: scale(1.01); }
 }
 .link::after {
   content: "";

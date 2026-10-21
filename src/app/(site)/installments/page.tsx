@@ -23,7 +23,7 @@ const PATH = "/installments";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("installments");
-  if (!page) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!page) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   return pageMetadata({
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? page.excerpt ?? page.title,
@@ -65,22 +65,17 @@ function Steps({ count }: { count: number }) {
   ];
   return (
     <section aria-labelledby="steps-title">
-      <h2 id="steps-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+      <h2 id="steps-title" className="headline text-2xl lg:text-[2.25rem]">
         خرید قسطی چطور انجام می‌شود؟
       </h2>
-      <ol className="mt-5 grid gap-3 sm:grid-cols-3">
+      <ol className="mt-6 grid gap-3 sm:grid-cols-3">
         {steps.map((step, index) => (
-          <li key={step.title} className="flex gap-3 rounded-bit bg-raised p-4 shadow-paper sm:flex-col">
-            <span
-              aria-hidden="true"
-              className="grid size-11 shrink-0 place-items-center rounded-full bg-wood text-base font-extrabold text-ink shadow-[inset_0_0_0_1.5px_var(--ply-2),inset_0_-3px_0_rgb(var(--shadow-rgb)/.12)]"
-            >
-              {toFaDigits(index + 1)}
+          <li key={step.title} className="flex flex-col rounded-[1.5rem] bg-surface p-6">
+            <span aria-hidden="true" className="text-sm font-bold tabular-nums text-muted">
+              {toFaDigits(String(index + 1).padStart(2, "0"))}
             </span>
-            <div>
-              <h3 className="text-base leading-snug font-bold text-ink">{step.title}</h3>
-              <p className="mt-1 text-sm text-muted">{step.body}</p>
-            </div>
+            <h3 className="mt-6 text-lg leading-snug font-extrabold text-ink">{step.title}</h3>
+            <p className="mt-1.5 text-sm text-muted">{step.body}</p>
           </li>
         ))}
       </ol>

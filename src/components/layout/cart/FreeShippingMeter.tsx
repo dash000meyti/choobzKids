@@ -20,7 +20,7 @@ type FreeShippingMeterProps = {
 function House() {
   return (
     <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" className={styles.house}>
-      <path d="M4.5 20.5V10.6L12 4l7.5 6.6v9.9z" fill="var(--wood)" stroke="var(--ink)" strokeWidth="1.5" strokeLinejoin="round" />
+      <path d="M4.5 20.5V10.6L12 4l7.5 6.6v9.9z" fill="var(--surface)" stroke="var(--ink)" strokeWidth="1.5" strokeLinejoin="round" />
       <path d="M10 20.5v-5h4v5" fill="var(--highlight)" stroke="var(--ink)" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );

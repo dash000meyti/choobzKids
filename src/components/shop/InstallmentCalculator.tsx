@@ -45,8 +45,8 @@ export function InstallmentCalculator({ options, snapppay, customAmount = 8_000_
   const eligible = options.filter((o) => installmentPlan(o.price, snapppay)).slice(0, MAX_OPTIONS);
 
   return (
-    <section aria-labelledby="calculator-title" className={cn(styles.calc, "sm:rounded-bit-xl sm:bg-surface sm:p-6", className)}>
-      <h2 id="calculator-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+    <section aria-labelledby="calculator-title" className={cn(styles.calc, "rounded-[1.75rem] bg-surface p-5 sm:p-8", className)}>
+      <h2 id="calculator-title" className="headline text-2xl lg:text-[2.25rem]">
         قسط هر محصول چقدر می‌شود؟
       </h2>
       <p className="mt-1.5 text-sm text-muted">
@@ -90,7 +90,7 @@ export function InstallmentCalculator({ options, snapppay, customAmount = 8_000_
         </div>
       </fieldset>
 
-      <div className="tray mt-5 px-3 py-4 sm:p-5">
+      <div className="mt-6 rounded-[1.5rem] bg-raised px-4 py-5 sm:p-6">
         {eligible.map((option, index) => (
           <div key={option.slug} data-option={index + 1} className={styles.panel}>
             <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -100,9 +100,9 @@ export function InstallmentCalculator({ options, snapppay, customAmount = 8_000_
             <InstallmentWheels total={option.price} snapppay={snapppay} wheelSize={40} caption={null} finePrint={false} className="mt-4" />
             <Link
               href={`/product/${option.slug}`}
-              className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-ink"
+              className="link-arrow mt-3 inline-flex min-h-11 items-center text-sm"
             >
-              <span className="link-mark">دیدن {option.name} ←</span>
+              دیدن {option.name}
             </Link>
           </div>
         ))}

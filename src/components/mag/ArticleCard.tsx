@@ -1,26 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ViewTransition, type CSSProperties, type ReactNode } from "react";
-import { illustrationSize } from "@/components/illustrations/sizes";
+import { ViewTransition, type ReactNode } from "react";
 import type { ArticleCardData, PostFormat } from "@/db/queries/cards";
+import { hasRender, Render } from "@/components/studio/Render";
 import { AgeBadge } from "@/components/ui/AgeBadge";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { IntentLink } from "@/components/ui/IntentLink";
-import { StampBadge } from "@/components/ui/StampBadge";
-import { grainStyle } from "@/lib/grain";
 import { toFaDigits } from "@/lib/format";
-import { cn, illustrationUrl, mediaUrl } from "@/lib/utils";
+import { cn, mediaUrl } from "@/lib/utils";
 import styles from "./ArticleCard.module.css";
 
 /*
- * ArticleCard (DESIGN.md §4.11). A raised paper card: an arch-masked cover (the cover photo, or
- * the post's manifest drawing standing on a grain board), the format's stationery as a corner
- * device plus a format chip, the question-form title as a stretched link, a 2-line excerpt and
- * a meta row «topic · age · ۷ دقیقه». The cover morphs into the article cover (`post-{id}`).
- *
- * Stationery: guide = kraft notebook with an elastic band · article = ruled paper ·
- * howto = blueprint grid · comparison = graph paper · checklist = pencil-ticked boxes ·
- * story = photo-album corners. All CSS, no images.
+ * ArticleCard (Studio): a grey tile with the cover (the cover photo, or the studio render of the
+ * post's product), the format line (plus «راهنمای کامل» for pillars), the question-form title as
+ * a stretched link, a 2-line excerpt and a meta row «topic · age · ۷ دقیقه». The cover morphs
+ * into the article cover (`post-{id}`).
  */
 
 type ArticleCardProps = {
@@ -51,25 +45,20 @@ export function ArticleCard({ post, size = "md", prefetch, className }: ArticleC
   const format = FORMAT_LABEL[post.format];
   return (
     <article
-      className={cn("@container relative h-full overflow-hidden rounded-bit", styles.card, className)}
+      className={cn("@container relative h-full overflow-hidden rounded-[1.75rem] bg-surface", styles.card, className)}
       data-format={post.format}
     >
       <div className={cn("flex h-full flex-col", large && "@xl:grid @xl:grid-cols-2")}>
-        <div className="relative p-3 pb-0 @xl:pb-3">
+        <div className="relative">
           <Cover post={post} sizes={COVER_SIZES[size]} />
-          {post.isPillar ? (
-            <StampBadge tone="success" className="absolute start-5 top-5">
-              راهنمای کامل
-            </StampBadge>
-          ) : null}
         </div>
 
-        <div className="flex flex-1 flex-col gap-1.5 px-4 pt-3 pb-4">
+        <div className="flex flex-1 flex-col gap-1.5 px-6 pt-2 pb-6 @xl:pt-6">
           <p className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted">
-            <Icon name={format.icon} className="size-4" />
+            {post.isPillar ? <span className="text-eyebrow">راهنمای کامل ·</span> : null}
             {format.label}
           </p>
-          <h3 className={cn("font-bold text-ink", large ? "text-xl" : "text-lg", "line-clamp-3")}>
+          <h3 className={cn("leading-snug font-extrabold text-ink", large ? "text-2xl" : "text-lg", "line-clamp-3")}>
             <CardLink href={`/mag/${post.slug}`} prefetch={prefetch} className={styles.link}>
               {post.title}
             </CardLink>
@@ -80,19 +69,16 @@ export function ArticleCard({ post, size = "md", prefetch, className }: ArticleC
           <Meta post={post} />
         </div>
       </div>
-      <Stationery format={post.format} />
     </article>
   );
 }
 
 function Cover({ post, sizes }: { post: ArticleCardData; sizes: string }) {
   const photo = post.cover?.width && post.cover.height ? { ...post.cover, width: post.cover.width, height: post.cover.height } : null;
+  const render = !photo && post.illustration && hasRender(post.illustration) ? post.illustration : null;
   return (
     <ViewTransition name={`post-${post.id}`} share="morph" default="none">
-      <div
-        className={cn("relative isolate aspect-[4/3] overflow-hidden rounded-arch bg-surface", !photo && "grain")}
-        style={photo ? undefined : (grainStyle(post.slug) as CSSProperties)}
-      >
+      <div className={cn("relative overflow-hidden", render ? "px-[14%] pt-[8%] pb-[2%]" : "aspect-[4/3]")}>
         {photo ? (
           <Image
             src={mediaUrl(photo.path)}
@@ -105,33 +91,12 @@ function Cover({ post, sizes }: { post: ArticleCardData; sizes: string }) {
             style={photo.dominantColor ? { backgroundColor: photo.dominantColor } : undefined}
             className="size-full object-cover"
           />
-        ) : post.illustration ? (
-          <>
-            <span aria-hidden="true" className="contact-shadow absolute inset-x-[24%] bottom-[5%] h-[8%] rounded-[50%]" />
-            <CoverDrawing illustration={post.illustration} />
-          </>
+        ) : render ? (
+          // The title says what the article is about; the render is decoration here.
+          <Render productKey={render} alt="" sizes={sizes} box="16 / 11" className={styles.render} />
         ) : null}
       </div>
     </ViewTransition>
-  );
-}
-
-function CoverDrawing({ illustration }: { illustration: string }) {
-  const { width, height } = illustrationSize(illustration, "assembled");
-  return (
-    <span className="absolute inset-x-[18%] top-[12%] bottom-[8%]">
-      {/* The title says what the article is about; the drawing is decoration here. */}
-      {/* eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3) */}
-      <img
-        src={illustrationUrl(illustration, "assembled")}
-        width={width}
-        height={height}
-        alt=""
-        loading="lazy"
-        decoding="async"
-        className="size-full object-contain object-bottom"
-      />
-    </span>
   );
 }
 
@@ -161,28 +126,6 @@ function Meta({ post }: { post: ArticleCardData }) {
         {toFaDigits(post.readingMinutes)} دقیقه
       </span>
     </p>
-  );
-}
-
-/** The corner device for the post's format (decorative). */
-function Stationery({ format }: { format: PostFormat }) {
-  return (
-    <span aria-hidden="true" className={cn(styles.stationery, styles[format])}>
-      <span className={styles.corner}>
-        {format === "checklist" ? (
-          <>
-            <span className={styles.tick}>
-              <Icon name="check" />
-            </span>
-            <span className={styles.tick}>
-              <Icon name="check" />
-            </span>
-          </>
-        ) : null}
-      </span>
-      {format === "guide" ? <span className={styles.band} /> : null}
-      {format === "story" ? <span className={styles.cornerOpposite} /> : null}
-    </span>
   );
 }
 

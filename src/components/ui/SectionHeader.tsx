@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { Button } from "./Button";
+import Link from "next/link";
 import type { DoodleName } from "./Doodle";
 import { Kicker } from "./Kicker";
 
@@ -31,7 +31,7 @@ type SectionHeaderProps = {
   className?: string;
 };
 
-const TITLE_SIZE = { home: "text-2xl", content: "text-xl" } as const;
+const TITLE_SIZE = { home: "text-2xl lg:text-[2.75rem]", content: "text-2xl lg:text-[2.25rem]" } as const;
 
 export function SectionHeader({
   title,
@@ -67,7 +67,7 @@ export function SectionHeader({
         <Heading
           id={id}
           className={cn(
-            "font-display",
+            "headline",
             // Ply type paints its own face colour and needs ≥ 40px to read as a cut edge.
             plyType ? "ply-type text-[length:max(2.5rem,var(--text-3xl))] leading-[1.3]" : cn("text-ink", TITLE_SIZE[size]),
             swash && "swash",
@@ -78,9 +78,9 @@ export function SectionHeader({
         {sub ? <p className={cn("max-w-prose text-lead text-muted", centered && "mx-auto")}>{sub}</p> : null}
       </div>
       {link ? (
-        <Button variant="quiet" size="sm" href={link.href} prefetch={link.prefetch} className="-mb-1">
+        <Link href={link.href} prefetch={link.prefetch} className="link-arrow text-sm">
           {link.label}
-        </Button>
+        </Link>
       ) : null}
     </header>
   );

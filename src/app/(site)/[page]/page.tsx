@@ -38,7 +38,7 @@ async function loadPage(slug: string): Promise<PageData | null> {
 export async function generateMetadata({ params }: PageProps<"/[page]">): Promise<Metadata> {
   const { page: slug } = await params;
   const page = await loadPage(slug);
-  if (!page) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!page) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   return pageMetadata({
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? page.excerpt ?? page.title,

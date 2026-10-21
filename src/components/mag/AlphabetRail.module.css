@@ -1,7 +1,6 @@
 /*
- * Alphabet rail (DESIGN.md §7.4): sticky under the header on its own strip of paper. Blocks are
- * cut birch: painted letters stand on a ply edge (tappable), bare ones are flat and faint.
- * The strip bleeds to the gutter so cards never show through beside it.
+ * Alphabet rail: sticky under the header. Letters with terms are round grey links; letters
+ * without terms are faint text. The strip bleeds to the gutter so cards never show beside it.
  */
 
 .rail {
@@ -17,8 +16,8 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: var(--paper-tile) 0 0 / 160px repeat, var(--bg);
-  box-shadow: 0 10px 18px -18px rgb(var(--shadow-rgb) / 0.6);
+  background: color-mix(in oklab, var(--bg) 94%, transparent);
+  border-block-end: 1px solid var(--line);
   pointer-events: none;
 }
 
@@ -48,9 +47,9 @@
   place-items: center;
   inline-size: 2.5rem;
   block-size: 2.5rem;
-  border-radius: var(--radius-bit-xs);
-  font-family: var(--font-display);
-  font-size: 1.3rem;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1rem;
   line-height: 1;
   user-select: none;
 }
@@ -61,25 +60,13 @@
 }
 
 .painted {
-  background-color: var(--wood);
+  background-color: var(--surface);
   color: var(--ink);
-  box-shadow: var(--shadow-ply);
   -webkit-tap-highlight-color: transparent;
-  transition:
-    translate var(--dur-quick) var(--ease-wood),
-    box-shadow var(--dur-quick) var(--ease-wood);
+  transition: background-color var(--dur-quick) var(--ease-wood), color var(--dur-quick) var(--ease-wood);
 }
 @media (hover: hover) {
-  .painted:hover {
-    translate: 0 -2px;
-    box-shadow: var(--shadow-ply-lifted);
-  }
-}
-.painted:active {
-  translate: 0 2px;
-  box-shadow: var(--shadow-ply-pressed);
-  transition-duration: var(--dur-press);
-  transition-timing-function: linear;
+  .painted:hover { background-color: var(--ink); color: var(--bg); }
 }
 .painted:focus-visible {
   outline: 3px solid var(--focus);
@@ -88,8 +75,7 @@
 
 /* Unpainted: the letter is only scored into raw wood. */
 .bare {
-  color: color-mix(in oklab, var(--ink-muted) 50%, transparent);
-  box-shadow: inset 0 0 0 1px var(--line);
+  color: color-mix(in oklab, var(--ink-muted) 45%, transparent);
 }
 
 @media (min-width: 64rem) {
@@ -105,9 +91,9 @@
   .list > li:last-child {
     padding-inline-end: 0;
   }
+  .list { justify-content: center; }
   .block {
-    inline-size: 2rem;
-    block-size: 2rem;
-    font-size: 1.15rem;
+    inline-size: 2.25rem;
+    block-size: 2.25rem;
   }
 }

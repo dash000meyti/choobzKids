@@ -4,9 +4,9 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ArticleCard } from "@/components/mag/ArticleCard";
 import { TermCard } from "@/components/mag/TermCard";
-import { CategoryCubby } from "@/components/shop/CategoryCubby";
 import { ProductCard } from "@/components/shop/ProductCard";
-import { Button } from "@/components/ui/Button";
+import { pill } from "@/components/studio/Actions";
+import { CategoryStrip } from "@/components/studio/CategoryStrip";
 import { Icon, type IconName } from "@/components/ui/Icon";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { getArticleCardsBySlugs, listTermCards } from "@/db/queries/cards";
@@ -44,7 +44,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
 
 export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
-    <div className="mx-auto max-w-page px-gutter pt-10 pb-section lg:pt-14">
+    <div className="mx-auto max-w-page px-gutter pt-12 pb-section lg:pt-20">
       {/* The shell (header + empty form) is static; the query and results stream in. */}
       <Suspense fallback={<SearchHeader query="" />}>
         <SearchContent searchParams={searchParams} />
@@ -89,8 +89,8 @@ async function SearchContent({ searchParams }: SearchPageProps) {
 
 function SearchHeader({ query, total }: { query: string; total?: number }) {
   return (
-    <header className="max-w-narrow">
-      <h1 className="text-3xl text-ink">
+    <header className="mx-auto flex max-w-2xl flex-col items-center text-center">
+      <h1 className="headline text-3xl lg:text-[3.5rem]">
         {query ? (
           <>
             جستجو برای «<bdi>{query}</bdi>»
@@ -108,12 +108,12 @@ function SearchHeader({ query, total }: { query: string; total?: number }) {
 function SearchForm({ query }: { query: string }) {
   return (
     // next/form: a plain GET form without JS, a client-side navigation with it.
-    <Form action="/search" role="search" className="mt-6 flex items-stretch gap-2">
+    <Form action="/search" role="search" className="mt-7 flex w-full items-stretch gap-2">
       <label htmlFor="search-q" className="sr-only">
         دنبال چی می‌گردی؟
       </label>
       <div className="relative min-w-0 flex-1">
-        <Icon name="search" className="pointer-events-none absolute inset-y-0 start-3.5 my-auto size-5 text-muted" />
+        <Icon name="search" className="pointer-events-none absolute inset-y-0 start-4 my-auto size-5 text-muted" />
         <input
           // Remount per query so the field shows the search being displayed after a navigation.
           key={query}
@@ -126,29 +126,29 @@ function SearchForm({ query }: { query: string }) {
           autoComplete="off"
           enterKeyHint="search"
           dir="rtl"
-          className="h-12 w-full rounded-bit-sm border-[1.5px] border-line-strong bg-sunken ps-11 pe-3.5 text-base text-ink inset-shadow-tray placeholder:text-muted focus-visible:border-focus"
+          className="h-12 w-full rounded-full bg-surface ps-12 pe-4 text-base text-ink placeholder:text-muted focus-visible:outline-3 focus-visible:outline-focus"
         />
       </div>
-      <Button variant="primary" size="md" type="submit">
+      <button type="submit" className={pill("primary", "lg")}>
         جستجو
-      </Button>
+      </button>
     </Form>
   );
 }
 
 function SuggestedQueries() {
   return (
-    <section aria-labelledby="search-suggested" className="mt-10">
-      <h2 id="search-suggested" className="text-base font-semibold text-muted">
+    <section aria-labelledby="search-suggested" className="mt-8 text-center">
+      <h2 id="search-suggested" className="text-sm font-semibold text-muted">
         شاید دنبال این‌ها باشی
       </h2>
-      <ul className="mt-3 flex flex-wrap gap-2">
+      <ul className="mt-3 flex flex-wrap justify-center gap-2">
         {SUGGESTED_QUERIES.map((q) => (
           <li key={q}>
             <Link
               href={`/search?q=${encodeURIComponent(q)}`}
               prefetch={false}
-              className="inline-flex h-10 items-center rounded-bead bg-wood px-4 text-sm font-semibold text-ink shadow-ply transition-[translate,box-shadow] duration-(--dur-press) active:translate-y-0.5 active:shadow-ply-pressed"
+              className="inline-flex h-10 items-center rounded-full px-4 text-sm font-semibold text-ink ring-1 ring-line ring-inset transition-colors hover:ring-muted"
             >
               {q}
             </Link>
@@ -241,7 +241,7 @@ function ResultGroup({ id, title, count, children }: { id: string; title: string
         size="content"
         title={
           <>
-            {title} <span className="font-body text-base text-muted">({formatNumber(count)})</span>
+            {title} <span className="text-base font-semibold text-muted">({formatNumber(count)})</span>
           </>
         }
       />
@@ -267,7 +267,7 @@ function Shortcuts({ hits }: { hits: SearchHit[] }) {
           <li key={`${hit.kind}:${hit.slug}`}>
             <Link
               href={hit.href}
-              className="ply inline-flex min-h-11 items-center gap-2 rounded-bead px-4 py-1.5 text-sm text-ink"
+              className="inline-flex min-h-11 items-center gap-2 rounded-full bg-surface px-4 py-1.5 text-sm text-ink transition-colors hover:bg-line"
             >
               <Icon name={shortcut.icon} className="size-5 text-muted" />
               <span className="text-muted">{shortcut.label}:</span>
@@ -292,13 +292,9 @@ async function Browse() {
       {stocked.length ? (
         <section aria-labelledby="browse-shop" className="mt-12">
           <SectionHeader id="browse-shop" size="content" title="دسته‌های فروشگاه" link={{ label: "همهٔ محصولات", href: "/shop" }} />
-          <ul className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-            {stocked.map((category) => (
-              <li key={category.slug}>
-                <CategoryCubby category={category} compact />
-              </li>
-            ))}
-          </ul>
+          <div className="mt-6">
+            <CategoryStrip categories={stocked} />
+          </div>
         </section>
       ) : null}
       {guides.length ? (

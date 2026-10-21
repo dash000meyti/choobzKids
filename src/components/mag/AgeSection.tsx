@@ -128,10 +128,10 @@ type FaqDrawersProps = {
 export function FaqDrawers({ faqs, openFirst = true, seed, className }: FaqDrawersProps) {
   if (!faqs.length) return null;
   return (
-    <div className={cn("flex flex-col gap-3", className)} style={grainStyle(seed) as CSSProperties}>
+    <div className={cn("flex flex-col", className)} style={grainStyle(seed) as CSSProperties}>
       {faqs.map((faq, i) => (
         <details key={faq.id} className={styles.drawer} open={openFirst && i === 0}>
-          <summary className={cn(styles.front, "grain")}>
+          <summary className={styles.front}>
             <h3 className={styles.question}>{faq.question}</h3>
             <span aria-hidden="true" className={styles.knob} />
           </summary>

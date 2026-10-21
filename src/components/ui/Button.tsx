@@ -74,7 +74,7 @@ const VARIANT: Record<Exclude<ButtonVariant, "icon">, string> = {
   ),
   wood: cn(
     "grain rounded-bit-sm bg-wood text-ink shadow-ply",
-    "not-aria-disabled:hover:bg-[color-mix(in_oklab,var(--wood),white_6%)]",
+    "not-aria-disabled:hover:bg-[color-mix(in_oklab,var(--surface),var(--ink)_5%)]",
     PRESS,
     DISABLED,
   ),
@@ -89,7 +89,7 @@ const VARIANT: Record<Exclude<ButtonVariant, "icon">, string> = {
 
 const ICON_TONE: Record<IconButtonTone, string> = {
   raised: "bg-raised text-ink not-aria-disabled:hover:bg-[color-mix(in_oklab,var(--surface-raised),white_6%)]",
-  wood: "bg-wood text-ink not-aria-disabled:hover:bg-[color-mix(in_oklab,var(--wood),white_6%)]",
+  wood: "bg-wood text-ink not-aria-disabled:hover:bg-[color-mix(in_oklab,var(--surface),var(--ink)_5%)]",
   accent:
     "bg-accent text-on-accent not-aria-disabled:hover:bg-[color-mix(in_oklab,var(--accent),white_6%)] not-aria-disabled:active:bg-accent-press",
 };

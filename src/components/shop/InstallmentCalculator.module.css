@@ -1,10 +1,10 @@
 /*
- * Installment calculator (DESIGN.md §8 /installments). Chips are wooden beads (raised, pressable);
- * the checked one is seated and turns pistachio. Panels pair with chips through `data-option`:
+ * Installment calculator (DESIGN.md §8 /installments). Chips are Studio pills; the checked one
+ * fills with ink. Panels pair with chips through `data-option`:
  * with :has() only the chosen panel shows; without it every panel shows, divided by a hairline.
  */
 
-/* ---------- Chips: a radio inside a bead (44px hit area around a 40px face) ---------- */
+/* ---------- Chips (Studio): hairline pills; the chosen one fills with ink ---------- */
 
 .chip {
   position: relative;
@@ -18,39 +18,30 @@
   align-items: center;
   gap: 0.375rem;
   min-block-size: 2.5rem;
-  padding-inline: 1rem;
+  padding-inline: 1.1rem;
   border-radius: 999px;
-  background-color: var(--wood);
+  background-color: var(--bg);
   color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--line);
   font-size: var(--text-sm);
   font-weight: 600;
   line-height: 1.4;
-  box-shadow: var(--shadow-ply);
   transition:
-    translate 330ms var(--ease-press),
-    box-shadow 330ms var(--ease-press),
-    background-color var(--dur-quick) var(--ease-wood),
-    color var(--dur-quick) var(--ease-wood);
+    background-color var(--dur-quick) ease,
+    color var(--dur-quick) ease,
+    box-shadow var(--dur-quick) ease;
 }
 
 @media (hover: hover) {
   .chip:hover input:not(:checked) + .face {
-    background-color: color-mix(in oklab, var(--wood), white 6%);
+    box-shadow: inset 0 0 0 1px var(--ink-muted);
   }
 }
 
-.chip:active .face {
-  translate: 0 2px;
-  box-shadow: var(--shadow-ply-pressed);
-  transition-duration: var(--dur-press);
-  transition-timing-function: linear;
-}
-
 .chip input:checked + .face {
-  translate: 0 2px;
-  background-color: var(--success);
-  color: var(--on-accent);
-  box-shadow: var(--shadow-ply-pressed);
+  background-color: var(--ink);
+  color: var(--bg);
+  box-shadow: none;
 }
 
 .chip input:focus-visible + .face {
@@ -75,7 +66,7 @@
 .panel + .panel {
   margin-block-start: 1.5rem;
   padding-block-start: 1.5rem;
-  border-block-start: 1px dashed var(--line-strong);
+  border-block-start: 1px solid var(--line);
 }
 
 @supports selector(:has(*)) {

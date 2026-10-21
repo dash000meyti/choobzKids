@@ -53,9 +53,8 @@
   -webkit-tap-highlight-color: transparent;
 }
 .view:has(:checked) {
-  background-color: var(--wood);
-  box-shadow: var(--shadow-ply-pressed);
-  translate: 0 2px;
+  background-color: var(--ink);
+  color: var(--bg);
   font-weight: 700;
 }
 .view:has(:focus-visible) {

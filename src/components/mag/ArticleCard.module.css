@@ -1,30 +1,23 @@
 /*
- * ArticleCard (DESIGN.md §4.11, §3.3). Card face as every card: raised paper on a ply edge,
- * lifts on hover, seats when the stretched title link is pressed, rings the card on focus.
- *
- * The stationery corner sits at the top inline-end corner (top-left in RTL) as a small
- * dog-ear of that paper. Lines and grids are CSS gradients on theme tokens, so they follow
- * «لالایی»: hairlines in --line, blueprint in --info (firuzeh) at low strength, kraft in --tag.
+ * ArticleCard (Studio): a grey tile that grows slightly on hover; the stretched title link
+ * covers the card and rings it on keyboard focus.
  */
 
 .card {
-  background-color: var(--surface-raised);
-  box-shadow: var(--shadow-ply);
-  transition:
-    translate var(--dur-quick) var(--ease-wood),
-    box-shadow var(--dur-quick) var(--ease-wood);
+  transition: transform 400ms var(--ease-out-expo);
 }
 @media (hover: hover) {
   .card:hover {
-    translate: 0 -2px;
-    box-shadow: var(--shadow-ply-lifted);
+    transform: scale(1.01);
   }
 }
-.card:has(.link:active) {
-  translate: 0 2px;
-  box-shadow: var(--shadow-ply-pressed);
-  transition-duration: var(--dur-press);
-  transition-timing-function: linear;
+.render {
+  transition: transform 600ms var(--ease-out-expo);
+}
+@media (hover: hover) {
+  .card:hover .render {
+    transform: scale(1.04);
+  }
 }
 .link::after {
   content: "";
@@ -38,116 +31,4 @@
 .card:has(.link:focus-visible) {
   outline: 3px solid var(--focus);
   outline-offset: 2px;
-}
-
-/* ---------- Stationery ---------- */
-
-.stationery {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-}
-
-.corner,
-.cornerOpposite {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-end: 0;
-  inline-size: 3.25rem;
-  block-size: 3.25rem;
-  /* Triangle in the inline-end top corner: top-left in RTL. */
-  clip-path: polygon(0 0, 100% 0, 0 100%);
-}
-.corner:dir(ltr) {
-  clip-path: polygon(0 0, 100% 0, 100% 100%);
-}
-
-/* guide — kraft notebook cover with an elastic band down its edge */
-.guide .corner {
-  background-color: var(--tag);
-}
-.band {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-end: 0.35rem;
-  inline-size: 4px;
-  border-radius: 2px;
-  background-color: color-mix(in srgb, var(--ink) 70%, transparent);
-}
-
-/* article — ruled paper with a margin rule */
-.article .corner {
-  background:
-    linear-gradient(to right, transparent 0 0.9rem, color-mix(in srgb, var(--accent) 45%, transparent) 0.9rem calc(0.9rem + 1px), transparent 0),
-    repeating-linear-gradient(to bottom, transparent 0 6px, color-mix(in srgb, var(--info) 38%, transparent) 6px 7px),
-    var(--surface-sunken);
-}
-
-/* howto — blueprint grid */
-.howto .corner {
-  background-color: color-mix(in srgb, var(--info) 14%, var(--surface-raised));
-  background-image:
-    linear-gradient(color-mix(in srgb, var(--info) 36%, transparent) 1px, transparent 1px),
-    linear-gradient(to right, color-mix(in srgb, var(--info) 36%, transparent) 1px, transparent 1px);
-  background-size: 8px 8px;
-}
-
-/* comparison — graph paper: fine squares with a heavier line every fourth */
-.comparison .corner {
-  background-color: var(--surface-sunken);
-  background-image:
-    linear-gradient(var(--line-strong) 1px, transparent 1px),
-    linear-gradient(to right, var(--line-strong) 1px, transparent 1px),
-    linear-gradient(var(--line) 1px, transparent 1px),
-    linear-gradient(to right, var(--line) 1px, transparent 1px);
-  background-size:
-    24px 24px,
-    24px 24px,
-    6px 6px,
-    6px 6px;
-}
-
-/* checklist — lined paper with two pencil-ticked boxes */
-.checklist .corner {
-  background:
-    repeating-linear-gradient(to bottom, transparent 0 12px, var(--line) 12px 13px),
-    var(--surface-sunken);
-}
-.tick {
-  position: absolute;
-  inset-inline-end: 0.45rem;
-  inline-size: 0.7rem;
-  block-size: 0.7rem;
-  border: 1.25px solid var(--ink-muted);
-  border-radius: 2px;
-  color: var(--ink);
-}
-.tick:first-child {
-  inset-block-start: 0.45rem;
-}
-.tick:last-child {
-  inset-block-start: 1.35rem;
-}
-.tick > svg {
-  position: absolute;
-  inset: -0.2rem -0.1rem auto auto;
-  inline-size: 0.95rem;
-  block-size: 0.95rem;
-}
-
-/* story — photo-album corner mounts on two opposite corners */
-.story .corner,
-.story .cornerOpposite {
-  inline-size: 1.9rem;
-  block-size: 1.9rem;
-  background-color: color-mix(in srgb, var(--ink) 78%, var(--tag));
-}
-.story .cornerOpposite {
-  inset-block: auto 0;
-  inset-inline: 0 auto;
-  /* Bottom inline-start corner: bottom-right in RTL. */
-  clip-path: polygon(100% 0, 100% 100%, 0 100%);
-}
-.story .cornerOpposite:dir(ltr) {
-  clip-path: polygon(0 0, 100% 100%, 0 100%);
 }

@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 /*
  * Skip links (DESIGN.md §5, §11.2): the first two stops for keyboard and switch users,
  * «رفتن به محتوای اصلی» and «مستقیم به فروشگاه». Hidden until focused, then a raised slip at
@@ -14,9 +16,9 @@ export function SkipLinks() {
       <a href="#main" className={LINK}>
         رفتن به محتوای اصلی
       </a>
-      <a href="/shop" className={LINK}>
+      <Link href="/shop" className={LINK}>
         مستقیم به فروشگاه
-      </a>
+      </Link>
     </div>
   );
 }

@@ -146,6 +146,15 @@
   --container-narrow: 61.25rem;    /* 980 — Apple's reading width */
   --container-page: 80rem;
   --container-wide: 90rem;
+  /* Tailwind's standard widths, kept for max-w-md / max-w-2xl etc. */
+  --container-xs: 20rem;
+  --container-sm: 24rem;
+  --container-md: 28rem;
+  --container-lg: 32rem;
+  --container-xl: 36rem;
+  --container-2xl: 42rem;
+  --container-3xl: 48rem;
+  --container-4xl: 56rem;
 }
 
 /* ---------- Semantic layer (theme-switchable) ---------- */
@@ -347,8 +356,8 @@
 }
 
 /* ---------- Utilities (names kept from the first design) ---------- */
-@utility ply {               /* a clean tappable card */
-  background-color: var(--surface-raised);
+@utility ply {               /* a clean tappable card: studio grey on the white page */
+  background-color: var(--surface);
   transition: transform var(--dur-quick) var(--ease-wood), box-shadow var(--dur-quick) var(--ease-wood);
   &:active { transform: scale(0.985); }
 }

@@ -57,7 +57,7 @@ function ldPerson(person: MagPerson | null): AuthorLdInput | null {
 export async function generateMetadata({ params }: PageProps<"/mag/[slug]">): Promise<Metadata> {
   const { slug } = await params;
   const data = await getArticle(slug);
-  if (!data) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!data) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   const { post, topic, author } = data;
   const named = author && !author.isPlaceholder ? author : null;
   return pageMetadata({

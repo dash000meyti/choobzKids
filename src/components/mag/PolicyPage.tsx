@@ -5,7 +5,6 @@ import { PageTurn } from "@/components/layout/PageTurn";
 import { AskChoobz } from "@/components/ui/AskChoobz";
 import { Icon } from "@/components/ui/Icon";
 import { Kicker } from "@/components/ui/Kicker";
-import { KraftTag } from "@/components/ui/KraftTag";
 import type { PageFaq } from "@/db/queries/pages";
 import type { SiteSettings } from "@/db/queries/settings";
 import type { BreadcrumbItem } from "@/lib/jsonld";
@@ -137,8 +136,10 @@ export function warrantyFact(months: { min: number; max: number } | null): Polic
 export function PolicySummary({ text, facts = [], className }: { text?: string | null; facts?: PolicyFact[]; className?: string }) {
   if (!text && !facts.length) return null;
   return (
-    <section aria-label="خلاصه در یک نگاه" className={cn("tray p-5 sm:p-6", className)}>
-      <KraftTag as="h2">خلاصه در یک نگاه</KraftTag>
+    <section aria-labelledby="summary-title" className={cn("rounded-[1.75rem] bg-surface p-5 sm:p-8", className)}>
+      <h2 id="summary-title" className="text-sm font-semibold text-muted">
+        خلاصه در یک نگاه
+      </h2>
       {text ? <p className="mt-4 text-base text-ink sm:text-lead">{text}</p> : null}
       {facts.length ? (
         <dl className={cn("mt-5 grid gap-2.5", facts.length > 1 && "grid-cols-2", facts.length > 2 && "sm:grid-cols-3")}>
@@ -193,7 +194,7 @@ export function PageFaqs({
   if (!faqs.length) return null;
   return (
     <section id="faq" aria-labelledby="faq-title" className={cn("scroll-mt-24", className)}>
-      <h2 id="faq-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+      <h2 id="faq-title" className="headline text-2xl lg:text-[2.25rem]">
         {title}
       </h2>
       <div className="mt-5 flex flex-col gap-3">
@@ -305,11 +306,11 @@ export function PolicyPage({
           <article className="min-w-0">
             <header className="mt-5 lg:mt-8">
               {kicker ? (
-                <Kicker decorative tone="success" className="mb-1">
+                <Kicker decorative className="mb-2">
                   {kicker}
                 </Kicker>
               ) : null}
-              <h1 className="text-3xl text-ink">{title}</h1>
+              <h1 className="headline text-3xl lg:text-[3.5rem]">{title}</h1>
               {intro ? <p className="mt-4 max-w-prose text-lead text-muted">{intro}</p> : null}
             </header>
 

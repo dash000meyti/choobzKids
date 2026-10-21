@@ -1,8 +1,6 @@
-import type { CSSProperties } from "react";
 import type { GlossaryGroup } from "@/db/queries/glossary";
 import { TermCard } from "@/components/mag/TermCard";
 import { formatNumber } from "@/lib/format";
-import { grainStyle } from "@/lib/grain";
 import { cn } from "@/lib/utils";
 import styles from "./GlossaryIndex.module.css";
 
@@ -27,11 +25,7 @@ export function GlossaryIndex({ groups, className }: GlossaryIndexProps) {
           <section key={group.anchor} id={group.anchor} aria-labelledby={titleId} className={styles.group}>
             <header className={styles.head}>
               <h2 id={titleId} className={styles.title}>
-                <span
-                  aria-hidden="true"
-                  className={cn(styles.letter, "grain")}
-                  style={grainStyle(group.anchor) as CSSProperties}
-                >
+                <span aria-hidden="true" className={styles.letter}>
                   {latin ? (
                     <bdi lang="en" dir="ltr">
                       {group.letter}

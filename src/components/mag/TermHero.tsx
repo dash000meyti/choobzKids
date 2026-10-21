@@ -1,8 +1,8 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { illustrationSize } from "@/components/illustrations/sizes";
+import { Render } from "@/components/studio/Render";
 import type { GlossaryTerm } from "@/db/queries/glossary";
-import { cn, illustrationUrl } from "@/lib/utils";
+import { cn } from "@/lib/utils";
 import styles from "./TermHero.module.css";
 
 /*
@@ -62,11 +62,11 @@ export function TermHero({ term, className }: TermHeroProps) {
     <header className={cn("grid gap-5", term.illustration && "sm:grid-cols-[minmax(0,1fr)_auto]", className)}>
       <div className="flex min-w-0 flex-col gap-3">
         <p className="text-sm text-muted">
-          <Link href={`/glossary#${term.letterAnchor}`} transitionTypes={["nav-back"]} className="link-mark text-ink">
+          <Link href={`/glossary#${term.letterAnchor}`} transitionTypes={["nav-back"]} className="eyebrow">
             واژه‌نامهٔ چوبز
           </Link>
         </p>
-        <h1 className="text-3xl text-ink">{term.term} چیست؟</h1>
+        <h1 className="headline text-3xl lg:text-[3.5rem]">{term.term} چیست؟</h1>
         {term.originalTerm ? (
           <p className="text-sm text-muted">
             نام اصلی:{" "}
@@ -92,18 +92,9 @@ export function TermHero({ term, className }: TermHeroProps) {
 }
 
 function TermDrawing({ illustration, name }: { illustration: string; name: string }) {
-  const { width, height } = illustrationSize(illustration, "assembled");
   return (
-    <figure className={cn("tray grid w-full max-w-72 place-items-center p-4 sm:w-52 sm:self-end", styles.drawing)}>
-      {/* eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3) */}
-      <img
-        src={illustrationUrl(illustration, "assembled")}
-        width={width}
-        height={height}
-        alt={`طرح ${name} چوبز`}
-        decoding="async"
-        className="h-full max-h-full w-full object-contain"
-      />
+    <figure className="w-full max-w-72 rounded-[1.5rem] bg-surface p-5 sm:w-60 sm:self-end">
+      <Render productKey={illustration} alt={`${name}، تصویر سه‌بعدی`} sizes="240px" box="4 / 5" />
     </figure>
   );
 }

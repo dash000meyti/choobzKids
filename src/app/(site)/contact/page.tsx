@@ -20,7 +20,7 @@ const PATH = "/contact";
 
 export async function generateMetadata(): Promise<Metadata> {
   const page = await getPage("contact");
-  if (!page) return { title: "صفحه پیدا نشد", robots: { index: false, follow: true } };
+  if (!page) return { title: "این صفحه پیدا نشد", robots: { index: false, follow: true } };
   return pageMetadata({
     title: page.seoTitle ?? page.title,
     description: page.seoDescription ?? page.excerpt ?? page.title,
@@ -40,7 +40,7 @@ function Channels({ settings }: { settings: SiteSettings }) {
 
   return (
     <section aria-labelledby="channels-title" className="flex flex-col gap-6">
-      <h2 id="channels-title" className="text-xl leading-[1.4] font-extrabold text-ink">
+      <h2 id="channels-title" className="headline text-2xl lg:text-[2.25rem]">
         از کجا با ما حرف بزنید؟
       </h2>
       <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
