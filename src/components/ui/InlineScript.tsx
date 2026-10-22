@@ -1,8 +1,13 @@
+"use client";
+
 /*
- * A classic inline <script> for pre-paint DOM fixes (Jalali month labels, `?age=` radios…),
+ * A classic inline <script> for pre-paint DOM fixes (theme, Jalali month labels, `?age=` radios…),
  * per Next's "preventing flash before hydration" guide. The browser runs it while parsing the
  * server HTML; on the client React renders it as inert `text/plain`, so it never runs twice and
- * React does not warn about rendering a script. Keep each script ≤ 150 bytes (DESIGN.md §10.2).
+ * React does not warn about rendering a script. It must be a Client Component: rendered as a
+ * Server Component, the `typeof window` check only ever ran on the server, so client renders
+ * (soft navigations, Strict Mode's dev remount of <head>) got an executable script and the
+ * «Encountered a script tag» warning. Keep each script small (DESIGN.md §10.2).
  *
  * `html` must be a constant authored in code. Never interpolate user or DB strings into it
  * without JSON.stringify.
