@@ -135,16 +135,22 @@ export function warrantyFact(months: { min: number; max: number } | null): Polic
 /** «خلاصه در یک نگاه»: the page's answer, then its key numbers as a definition list. */
 export function PolicySummary({ text, facts = [], className }: { text?: string | null; facts?: PolicyFact[]; className?: string }) {
   if (!text && !facts.length) return null;
+  // Frame system: the summary and its numbers as one cells panel (shared hairlines).
   return (
-    <section aria-labelledby="summary-title" className={cn("rounded-[1.75rem] bg-surface p-5 sm:p-8", className)}>
-      <h2 id="summary-title" className="text-sm font-semibold text-muted">
-        خلاصه در یک نگاه
-      </h2>
-      {text ? <p className="mt-4 text-base text-ink sm:text-lead">{text}</p> : null}
+    <section
+      aria-labelledby="summary-title"
+      className={cn("cells", facts.length > 1 && "grid-cols-2", facts.length > 2 && "sm:grid-cols-3", className)}
+    >
+      <div className="col-span-full p-6 sm:p-8">
+        <h2 id="summary-title" className="text-sm font-semibold text-muted">
+          خلاصه در یک نگاه
+        </h2>
+        {text ? <p className="mt-3 text-base leading-8 text-ink sm:text-[1.125rem]">{text}</p> : null}
+      </div>
       {facts.length ? (
-        <dl className={cn("mt-5 grid gap-2.5", facts.length > 1 && "grid-cols-2", facts.length > 2 && "sm:grid-cols-3")}>
+        <dl className="contents">
           {facts.map((fact) => (
-            <div key={fact.label} className={styles.fact}>
+            <div key={fact.label} className="flex flex-col gap-1 bg-bg p-5 sm:p-6">
               <dt className="text-xs text-muted">{fact.label}</dt>
               <dd className="flex flex-col">
                 <span className="text-base leading-snug font-bold text-ink sm:text-lg">{fact.value}</span>
@@ -300,21 +306,23 @@ export function PolicyPage({
   const links = related ?? relatedPolicies(slug);
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
-        <div className={styles.layout}>
+        <header className="page-head mt-5 pb-10 lg:mt-8 lg:pb-14">
+          <div>
+            {kicker ? (
+              <Kicker decorative className="mb-2">
+                {kicker}
+              </Kicker>
+            ) : null}
+            <h1 className="headline text-3xl lg:text-[3.5rem]">{title}</h1>
+          </div>
+          {intro ? <p className="text-lead text-muted">{intro}</p> : null}
+        </header>
+        {/* Frame system: a rail-to-rail rule, then the reading column beside a framed sidebar. */}
+        <div className={cn(styles.layout, "frame-rule-in pt-10 lg:pt-14")}>
           <article className="min-w-0">
-            <header className="mt-5 lg:mt-8">
-              {kicker ? (
-                <Kicker decorative className="mb-2">
-                  {kicker}
-                </Kicker>
-              ) : null}
-              <h1 className="headline text-3xl lg:text-[3.5rem]">{title}</h1>
-              {intro ? <p className="mt-4 max-w-prose text-lead text-muted">{intro}</p> : null}
-            </header>
-
-            {summary ? <PolicySummary text={summary.text} facts={summary.facts} className="mt-7" /> : null}
+            {summary ? <PolicySummary text={summary.text} facts={summary.facts} /> : null}
 
             {children ? <div className="mt-10 flex flex-col gap-12">{children}</div> : null}
 
@@ -324,10 +332,10 @@ export function PolicyPage({
 
             {after ? <div className="mt-12 flex flex-col gap-12">{after}</div> : null}
 
-            <PageFaqs faqs={faqs} name={`faq-${slug}`} className="mt-14" />
+            <PageFaqs faqs={faqs} name={`faq-${slug}`} className="rule-dash mt-14 pt-12" />
           </article>
 
-          <aside aria-label="دربارهٔ این صفحه" className={styles.aside}>
+          <aside aria-label="دربارهٔ این صفحه" className={cn(styles.aside, "frame-box p-6")}>
             <LastUpdated date={updatedAt} />
             <RelatedLinks links={links} />
             {ask ? <AskChoobz socials={socials} /> : null}

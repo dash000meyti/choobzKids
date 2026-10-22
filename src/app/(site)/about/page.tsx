@@ -225,14 +225,14 @@ export default async function AboutPage() {
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
-        <header className="mt-6 max-w-narrow lg:mt-10">
+        <header className="page-head mt-6 lg:mt-10">
           <h1 className="headline text-3xl lg:text-[4.5rem]">{page.title}</h1>
-          {page.excerpt ? <p className="mt-4 max-w-prose text-lead text-muted">{page.excerpt}</p> : null}
+          {page.excerpt ? <p className="text-lead text-muted">{page.excerpt}</p> : null}
         </header>
 
-        <div className="mt-10 flex flex-col gap-8 lg:mt-14 lg:gap-12">
+        <div className="frame-rule-in mt-10 flex flex-col gap-8 pt-10 lg:mt-14 lg:gap-12 lg:pt-14">
           <Spread
             id="spread-beginning"
             folio={1}
@@ -313,12 +313,13 @@ export default async function AboutPage() {
           </Spread>
         </div>
 
-        <div className="mx-auto mt-16 max-w-narrow lg:mt-24">
+        <div className="frame-rule-in frame-band">
+        <div className="mx-auto max-w-narrow">
           <Prose markdown={page.body} variant="page" slug={page.slug} glossaryLinks />
 
           <PageFaqs faqs={page.faqs} name="faq-about" className="mt-14" />
 
-          <section id="facts" aria-labelledby="facts-title" className={`${styles.facts} mt-14 rounded-bit-lg bg-raised p-5 shadow-paper sm:p-7`}>
+          <section id="facts" aria-labelledby="facts-title" className={`${styles.facts} frame-box mt-14 p-6 sm:p-8`}>
             <KraftTag as="h2">
               <span id="facts-title">چوبز در یک نگاه</span>
             </KraftTag>
@@ -339,6 +340,7 @@ export default async function AboutPage() {
           ) : null}
 
           <AskChoobz socials={settings.socials} className="mt-12" />
+        </div>
         </div>
       </div>
     </PageTurn>

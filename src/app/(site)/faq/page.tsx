@@ -4,7 +4,6 @@ import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { FaqDrawers } from "@/components/mag/AgeSection";
 import { AskChoobz } from "@/components/ui/AskChoobz";
-import { Kicker } from "@/components/ui/Kicker";
 import { PillChip } from "@/components/ui/PillChip";
 import { getFaqPage } from "@/db/queries/faq";
 import { getSettings } from "@/db/queries/settings";
@@ -40,61 +39,79 @@ export default async function FaqPage() {
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={TRAIL} />
 
-        <div className="mx-auto max-w-narrow">
-          <header className="mt-6 flex flex-col gap-3 lg:mt-8">
-            <Kicker tone="success" doodle="sprout" decorative>
-              قبل از خرید، این‌ها رو بدون
-            </Kicker>
-            <h1 className="text-3xl text-ink">سؤالات متداول</h1>
-            <p className="text-lead text-muted">
-              پاسخ کوتاه و روشن پرسش‌هایی که مامان‌ها و باباها بیشتر از همه از ما می‌پرسند: خرید، ارسال، خرید قسطی، بازگشت
-              کالا و ایمنی وسایل چوبز.
-            </p>
-          </header>
+        <header className="page-head mt-6 pb-10 lg:mt-8 lg:pb-14">
+          <div className="flex flex-col gap-3">
+            <p className="eyebrow">قبل از خرید، این‌ها رو بدون</p>
+            <h1 className="headline text-3xl lg:text-[3.5rem]">سؤالات متداول</h1>
+          </div>
+          <p className="text-lead text-muted">
+            پاسخ کوتاه و روشن پرسش‌هایی که مامان‌ها و باباها بیشتر از همه از ما می‌پرسند: خرید، ارسال، خرید قسطی، بازگشت
+            کالا و ایمنی وسایل چوبز.
+          </p>
+        </header>
 
-          {/* Sticky chip index: plain anchors, so it works with no JS and keeps the URL shareable. */}
-          <nav
-            aria-label="بخش‌های سؤالات متداول"
-            className="sticky top-header z-(--z-sticky) -mx-gutter mt-6 bg-bg px-gutter lg:top-header-lg"
-          >
-            <ul className="no-scrollbar flex gap-2 overflow-x-auto pt-2.5 pb-3.5">
-              {sections.map((section) => (
-                <li key={section.id} className="shrink-0">
-                  <PillChip href={`#${section.id}`} prefetch={false}>
-                    {section.label}
-                  </PillChip>
-                </li>
-              ))}
-            </ul>
+        {/* Frame system: a rule, then a framed sticky index beside the questions (wide screens). */}
+        <div className="frame-rule-in pt-10 lg:grid lg:grid-cols-[15rem_minmax(0,1fr)] lg:gap-16 lg:pt-14">
+          <nav aria-label="بخش‌های سؤالات متداول" className="hidden lg:block">
+            <div className="frame-box sticky top-[calc(var(--spacing-header-lg)+1.5rem)] p-5">
+              <p className="mb-3 text-sm font-bold text-muted">بخش‌ها</p>
+              <ul className="flex flex-col">
+                {sections.map((section) => (
+                  <li key={section.id}>
+                    <a href={`#${section.id}`} className="flex min-h-10 items-center text-sm text-ink hover:text-link">
+                      {section.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </nav>
 
-          <div className="mt-6 flex flex-col gap-14">
-            {sections.map((section, i) => (
-              <section
-                key={section.id}
-                id={section.id}
-                aria-labelledby={`${section.id}-title`}
-                className="scroll-mt-[calc(var(--spacing-header)+5rem)] lg:scroll-mt-[calc(var(--spacing-header-lg)+5.5rem)]"
-              >
-                <h2 id={`${section.id}-title`} className="font-display text-xl text-ink">
-                  {section.title}
-                </h2>
-                <FaqDrawers faqs={section.faqs} openFirst={i === 0} seed={`faq-${section.id}`} className="mt-5" />
-                {section.more ? (
-                  <p className="mt-4 text-sm">
-                    <Link href={section.more.href} className="link-mark font-semibold text-ink">
-                      {section.more.label} ←
-                    </Link>
-                  </p>
-                ) : null}
-              </section>
-            ))}
-          </div>
+          <div className="min-w-0">
+            {/* Phones: sticky chip index; plain anchors, so it works with no JS and keeps the URL shareable. */}
+            <nav
+              aria-label="بخش‌های سؤالات متداول"
+              className="sticky top-header z-(--z-sticky) -mx-gutter bg-bg px-gutter lg:hidden"
+            >
+              <ul className="no-scrollbar flex gap-2 overflow-x-auto pt-2.5 pb-3.5">
+                {sections.map((section) => (
+                  <li key={section.id} className="shrink-0">
+                    <PillChip href={`#${section.id}`} prefetch={false}>
+                      {section.label}
+                    </PillChip>
+                  </li>
+                ))}
+              </ul>
+            </nav>
 
-          <AskChoobz socials={socials} title="جواب سؤالت رو پیدا نکردی؟ از خودِ کارگاه بپرس" className="mt-14" />
+            <div className="mt-6 flex max-w-[52rem] flex-col lg:mt-0">
+              {sections.map((section, i) => (
+                <section
+                  key={section.id}
+                  id={section.id}
+                  aria-labelledby={`${section.id}-title`}
+                  className={`scroll-mt-[calc(var(--spacing-header)+5rem)] lg:scroll-mt-[calc(var(--spacing-header-lg)+2rem)] ${i ? "rule-dash mt-12 pt-12" : ""}`}
+                >
+                  <h2 id={`${section.id}-title`} className="headline text-2xl lg:text-[2rem]">
+                    {section.title}
+                  </h2>
+                  <FaqDrawers faqs={section.faqs} openFirst={i === 0} seed={`faq-${section.id}`} className="mt-5" />
+                  {section.more ? (
+                    <p className="mt-4 text-sm">
+                      <Link href={section.more.href} className="link-arrow">
+                        {section.more.label}
+                      </Link>
+                    </p>
+                  ) : null}
+                </section>
+              ))}
+            </div>
+
+            <AskChoobz socials={socials} title="جواب سؤالت رو پیدا نکردی؟ از خودِ کارگاه بپرس" className="mt-14 max-w-[52rem]" />
+          </div>
         </div>
       </div>
       <JsonLd data={ld} />

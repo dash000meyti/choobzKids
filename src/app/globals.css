@@ -143,6 +143,8 @@
   --spacing: 0.25rem;
   --spacing-gutter: clamp(1.25rem, 0.83rem + 1.85vw, 2.5rem);
   --spacing-section: clamp(5rem, 3.5rem + 6.67vw, 10rem);
+  /* Space on each side of a frame rule: tighter than a section, so ruled bands read as one page. */
+  --spacing-band: clamp(3rem, 2rem + 3.6vw, 5.5rem);
   --spacing-tap: 2.75rem;
   --spacing-header: 3rem;
   --spacing-header-lg: 3.25rem;
@@ -264,6 +266,12 @@
   --paper-tile: none;
   --header-bg: rgb(255 255 255 / 0.78);
   --spot: #FFFFFF;
+  /* Frame system: neutral greys that read on white and on black alike (rails cross every section). */
+  --frame-line: rgb(128 128 128 / 0.2);
+  --frame-mark: rgb(128 128 128 / 0.5);
+  --frame-dot: rgb(128 128 128 / 0.2);
+  /* Lines between cells, theme-aware. */
+  --cell-line: #E8E8ED;
   --ff-body: "IRANSansX";
   --ff-display: "Kalameh";
 
@@ -309,6 +317,7 @@
   --eyebrow: #FF8A3D;
   --header-bg: rgb(22 22 23 / 0.78);
   --spot: #2C2B2A;
+  --cell-line: #2C2C2E;
 }
 
 /* A section that is always dark (product "night" tiles, footer-adjacent bands) */
@@ -326,6 +335,7 @@
   --eyebrow: #FF8A3D;
   --success: #4CC47F;
   --spot: #2C2B2A;
+  --cell-line: #2C2C2E;
   background-color: var(--bg);
   color: var(--ink);
 }
@@ -513,4 +523,195 @@
 :root[data-theme-switch]::view-transition-new(root) {
   animation-duration: 450ms;
   animation-timing-function: var(--ease-out-expo);
+}
+
+/* ==================================================================
+   Frame system — Cloudflare-style structure with a Studio finish.
+   Faint rails mark the content edges for the whole page, dashed rules with «+» marks separate
+   sections where they meet the rails, a fine dot field fills the side margins, and content
+   grids sit in cells that share hairlines. Decorative only: never changes the content's layout.
+   ================================================================== */
+:root {
+  /* The framed column. Phones: the full width (no rails), content padded by the gutter.
+     From 768px: the page container inside the gutters, rails on both edges. */
+  --frame-w: 100%;
+  --frame-pad: var(--spacing-gutter);
+}
+@media (min-width: 48rem) {
+  :root {
+    --frame-w: min(calc(100% - 2 * var(--spacing-gutter)), var(--container-page));
+    --frame-pad: clamp(1.5rem, 3.2vw, 3rem);
+  }
+}
+
+/* The framed column itself (a direct child of a full-width parent: main, footer, a band). */
+@utility frame-col {
+  width: var(--frame-w);
+  margin-inline: auto;
+}
+/* Content inset from the rails inside a framed section. */
+@utility frame-pad {
+  padding-inline: var(--frame-pad);
+}
+
+/* Rails + margin dots: one fixed, click-through layer drawn by SiteShell. */
+.frame-rails {
+  position: fixed;
+  inset: 0;
+  z-index: 15;
+  pointer-events: none;
+  display: none;
+}
+@media (min-width: 48rem) {
+  .frame-rails {
+    display: block;
+    background:
+      linear-gradient(to bottom, var(--frame-line) 55%, transparent 55%) calc(50% - var(--frame-w) / 2) 0 / 1px 10px repeat-y,
+      linear-gradient(to bottom, var(--frame-line) 55%, transparent 55%) calc(50% + var(--frame-w) / 2) 0 / 1px 10px repeat-y;
+  }
+}
+@media (min-width: 64rem) {
+  .frame-rails::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, var(--frame-dot) 1px, transparent 1.4px) 0 0 / 16px 16px;
+    /* Only in the side margins, kept a little away from the rails. */
+    -webkit-mask: linear-gradient(to right, #000 calc(50% - var(--frame-w) / 2 - 14px), transparent calc(50% - var(--frame-w) / 2 - 14px), transparent calc(50% + var(--frame-w) / 2 + 14px), #000 calc(50% + var(--frame-w) / 2 + 14px));
+    mask: linear-gradient(to right, #000 calc(50% - var(--frame-w) / 2 - 14px), transparent calc(50% - var(--frame-w) / 2 - 14px), transparent calc(50% + var(--frame-w) / 2 + 14px), #000 calc(50% + var(--frame-w) / 2 + 14px));
+  }
+}
+
+/* A section's top rule (on a frame-col): dashed, rail to rail, a «+» where it meets each rail. */
+@utility frame-rule {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0;
+    inset-inline: 0;
+    height: 1px;
+    pointer-events: none;
+    background: repeating-linear-gradient(to right, var(--frame-line) 0 6px, transparent 6px 12px);
+  }
+  @media (min-width: 48rem) {
+    &::before {
+      inset-block-start: -5px;
+      inset-inline: -5px;
+      height: 11px;
+      background:
+        repeating-linear-gradient(to right, var(--frame-line) 0 6px, transparent 6px 12px) 5px 5px / calc(100% - 10px) 1px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) 0 5px / 11px 1px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) 5px 0 / 1px 11px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) 100% 5px / 11px 1px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) calc(100% - 5px) 0 / 1px 11px no-repeat;
+    }
+  }
+}
+
+/* The same rule for a block inside a `frame-pad` column: reaches out through the padding to the rails. */
+@utility frame-rule-in {
+  position: relative;
+  &::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset-block-start: 0;
+    inset-inline: calc(-1 * var(--frame-pad));
+    height: 1px;
+    pointer-events: none;
+    background: repeating-linear-gradient(to right, var(--frame-line) 0 6px, transparent 6px 12px);
+  }
+  @media (min-width: 48rem) {
+    &::before {
+      inset-block-start: -5px;
+      inset-inline: calc(-1 * var(--frame-pad) - 5px);
+      height: 11px;
+      background:
+        repeating-linear-gradient(to right, var(--frame-line) 0 6px, transparent 6px 12px) 5px 5px / calc(100% - 10px) 1px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) 0 5px / 11px 1px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) 5px 0 / 1px 11px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) 100% 5px / 11px 1px no-repeat,
+        linear-gradient(var(--frame-mark), var(--frame-mark)) calc(100% - 5px) 0 / 1px 11px no-repeat;
+    }
+  }
+}
+
+/* A dashed separator inside a column (where a rail-to-rail rule would not fit). */
+@utility rule-dash {
+  border-block-start: 1px dashed var(--cell-line);
+}
+
+/* Vertical rhythm of a ruled band: space above the rule and below it. */
+@utility frame-band {
+  margin-block-start: var(--spacing-band);
+  padding-block-start: var(--spacing-band);
+}
+
+/* Space before a ruled section that follows a panel. */
+@utility frame-gap {
+  margin-block-start: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+/* Page header, split on wide screens: the title block on the start side, the lead on the end
+   side, both resting on one line — instead of a lone narrow column with a void beside it. */
+@utility page-head {
+  display: grid;
+  gap: 1rem;
+  @media (min-width: 64rem) {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    column-gap: clamp(3rem, 6vw, 6rem);
+    align-items: end;
+  }
+}
+
+/* Content grids as cells: hairlines shared between cells, a softly rounded outer panel. */
+/* Each cell draws its own 1px outline into the 1px gap (neighbours' outlines overlap there), so a
+   short last row leaves a clean empty slot instead of a grey block; the outer outlines are clipped
+   under the panel's own border. */
+@utility cells {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--cell-line);
+  border-radius: 1.25rem;
+  background-color: var(--bg);
+  & > *:not(:focus-visible),
+  & > .contents > * {
+    outline: 1px solid var(--cell-line);
+  }
+}
+/* A cell that reacts to the pointer: a soft tint, no lift (the frame stays still). */
+@utility cell-hover {
+  transition: background-color var(--dur-base) var(--ease-out-expo);
+  &:hover {
+    background-color: color-mix(in oklab, var(--surface) 70%, var(--bg));
+  }
+}
+/* A bordered box (sidebars, contents lists): same hairline, no fill. */
+@utility frame-box {
+  border: 1px solid var(--cell-line);
+  border-radius: 1.25rem;
+}
+/* A label sitting on a section's top rule («۰۲ — مجله»). */
+@utility rule-label {
+  position: absolute;
+  z-index: 2;
+  inset-block-start: 0;
+  translate: 0 -50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  height: 1.75rem;
+  padding-inline: 0.75rem;
+  border: 1px solid var(--cell-line);
+  border-radius: 999px;
+  background-color: var(--bg);
+  color: var(--ink-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+@media print {
+  .frame-rails { display: none !important; }
 }

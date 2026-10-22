@@ -32,9 +32,9 @@ export function TopicRow({ topic, posts, className }: TopicRowProps) {
         title={topic.name}
         link={{ label: "همه ←", href: `/mag/topic/${topic.slug}` }}
       />
-      <ul className="no-scrollbar -mx-gutter flex snap-x snap-mandatory scroll-px-gutter gap-3 overflow-x-auto px-gutter pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:gap-4 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+      <ul className="cells sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
-          <li key={post.id} className="w-[82%] shrink-0 snap-start sm:w-auto">
+          <li key={post.id}>
             <ArticleCard post={post} />
           </li>
         ))}

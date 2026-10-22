@@ -1,14 +1,13 @@
 /*
- * TermCard: a quiet studio-grey card; the stretched link rings the whole card on keyboard focus.
+ * TermCard: a cell (see `cells`); the stretched link rings the whole card on keyboard focus.
  */
 
+/* Cell-ready: no own fill; inside a `cells` grid it shares hairlines and tints on hover. */
 .card {
-  background-color: var(--surface);
-  border-radius: 1.25rem;
-  transition: transform var(--dur-quick) var(--ease-wood);
+  transition: background-color var(--dur-base) var(--ease-out-expo);
 }
 @media (hover: hover) {
-  .card:hover { transform: scale(1.01); }
+  .card:hover { background-color: color-mix(in oklab, var(--surface) 70%, var(--bg)); }
 }
 .link::after {
   content: "";

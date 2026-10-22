@@ -106,7 +106,7 @@ export default async function AgeHubPage({ params }: PageProps<"/age/[range]">) 
   return (
     <PageTurn>
       {/* overflow-x-clip: a guard against card badges that outgrow a 2-column phone grid. */}
-      <div className="mx-auto max-w-page overflow-x-clip px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad overflow-x-clip pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
         <AgeHubHero hub={hub} className="mt-6 lg:mt-8" />
 
@@ -116,18 +116,18 @@ export default async function AgeHubPage({ params }: PageProps<"/age/[range]">) 
             intro={hub.intro}
             reviewer={hub.reviewer}
             sourceCount={hub.sources.length}
-            className="mt-section"
+            className="frame-rule-in frame-band"
           />
         ) : null}
 
-        <div className="mt-section flex flex-col gap-section">
-          {hub.sections.map((section) => (
-            <AgeSection key={section.anchor} section={section} noun={noun} fallbackTint={hub.tint} />
-          ))}
-        </div>
+        {hub.sections.map((section) => (
+          <div key={section.anchor} className="frame-rule-in frame-band">
+            <AgeSection section={section} noun={noun} fallbackTint={hub.tint} />
+          </div>
+        ))}
 
         {hub.faqs.length ? (
-          <section id="faq" aria-labelledby="age-faq-title" className="mt-section max-w-narrow">
+          <section id="faq" aria-labelledby="age-faq-title" className="frame-rule-in frame-band">
             <h2 id="age-faq-title" className="font-display text-xl text-ink">
               پرسش‌های پرتکرار
             </h2>
@@ -135,9 +135,10 @@ export default async function AgeHubPage({ params }: PageProps<"/age/[range]">) 
           </section>
         ) : null}
 
-        <AskChoobz socials={socials} title="برای سنِ بچه‌ت چی بگیری؟ قبل از خرید از خودِ کارگاه بپرس" className="mt-12 max-w-narrow" />
-
-        <HubSources sources={hub.sources} className="mt-12" />
+        <div className="frame-rule-in frame-band grid gap-12 lg:grid-cols-2">
+          <AskChoobz socials={socials} title="برای سنِ بچه‌ت چی بگیری؟ قبل از خرید از خودِ کارگاه بپرس" className="self-start" />
+          <HubSources sources={hub.sources} />
+        </div>
       </div>
       <JsonLd data={ld} />
     </PageTurn>

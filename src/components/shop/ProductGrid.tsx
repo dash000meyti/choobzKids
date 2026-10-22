@@ -123,7 +123,7 @@ export function ProductGrid({ groups, rooms = [], interludeEvery = 8, className 
                 {group.srTitle ?? "محصولات"}
               </h2>
             )}
-            <ul className="grid grid-flow-dense grid-cols-2 gap-3 @min-[36rem]:grid-cols-3 @min-[36rem]:gap-4 @min-[56rem]:grid-cols-4 @min-[56rem]:gap-5">
+            <ul className="cells grid-flow-dense grid-cols-2 @min-[36rem]:grid-cols-3 @min-[56rem]:grid-cols-4">
               {laidOut[g].map((cell) =>
                 cell.kind === "product" ? (
                   <li key={cell.product.id} data-slot="" data-new={cell.product.isNew || undefined}>

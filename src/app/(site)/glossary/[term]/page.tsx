@@ -92,7 +92,7 @@ export default async function GlossaryTermPage({ params }: PageProps<"/glossary/
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
 
         <div className="mt-6 max-w-narrow lg:mt-8">
@@ -123,9 +123,9 @@ export default async function GlossaryTermPage({ params }: PageProps<"/glossary/
         </div>
 
         {term.products.length ? (
-          <section aria-labelledby="term-products" className="mt-section">
+          <section aria-labelledby="term-products" className="frame-rule-in frame-band">
             <SectionHeader id="term-products" size="content" title="وسایل مرتبط در فروشگاه چوبز" />
-            <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <ul className="cells mt-6 grid-cols-2 lg:grid-cols-4">
               {term.products.map((product, i) => (
                 <li key={product.id}>
                   <ProductCard product={product} prefetch={i < 4} />
@@ -136,9 +136,9 @@ export default async function GlossaryTermPage({ params }: PageProps<"/glossary/
         ) : null}
 
         {guides.length ? (
-          <section aria-labelledby="term-guides" className="mt-section">
+          <section aria-labelledby="term-guides" className="frame-rule-in frame-band">
             <SectionHeader id="term-guides" size="content" title="راهنماهای مرتبط در مجلهٔ چوبز" />
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
               {guides.map((post, i) => (
                 <li key={post.id}>
                   <ArticleCard post={post} prefetch={i < 3} />
@@ -149,9 +149,9 @@ export default async function GlossaryTermPage({ params }: PageProps<"/glossary/
         ) : null}
 
         {term.relatedTerms.length ? (
-          <section aria-labelledby="term-neighbours" className="mt-section">
+          <section aria-labelledby="term-neighbours" className="frame-rule-in frame-band">
             <SectionHeader id="term-neighbours" size="content" title="واژه‌های نزدیک" />
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-4">
               {term.relatedTerms.map((t) => (
                 <li key={t.id}>
                   <TermCard term={t} />
@@ -161,7 +161,7 @@ export default async function GlossaryTermPage({ params }: PageProps<"/glossary/
           </section>
         ) : null}
 
-        <p className="mt-section">
+        <p className="frame-rule-in frame-band">
           <Button href={`/glossary#${term.letterAnchor}`} variant="quiet" iconEnd="arrow-end" transitionTypes={["nav-back"]}>
             همهٔ واژه‌های واژه‌نامه
           </Button>

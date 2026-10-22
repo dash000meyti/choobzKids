@@ -26,7 +26,7 @@ export function AuthorCard({ member, as: Heading = "h2", className }: AuthorCard
     member.reviewedCount ? `${formatNumber(member.reviewedCount)} بازبینی` : null,
   ].filter(Boolean);
   return (
-    <article className={cn("relative flex h-full gap-4 rounded-bit p-4 sm:p-5", styles.card, className)}>
+    <article className={cn("relative flex h-full gap-5 p-6 lg:p-7", styles.card, className)}>
       <AuthorPortrait name={member.name} slug={member.slug} avatar={member.avatar} size={72} />
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <Heading className="text-lg font-bold text-ink">

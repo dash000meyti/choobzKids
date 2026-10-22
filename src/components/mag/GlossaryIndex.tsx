@@ -22,7 +22,7 @@ export function GlossaryIndex({ groups, className }: GlossaryIndexProps) {
         const titleId = `${group.anchor}-title`;
         const latin = /[A-Za-z]/.test(group.letter);
         return (
-          <section key={group.anchor} id={group.anchor} aria-labelledby={titleId} className={styles.group}>
+          <section key={group.anchor} id={group.anchor} aria-labelledby={titleId} className={cn(styles.group, "frame-rule-in")}>
             <header className={styles.head}>
               <h2 id={titleId} className={styles.title}>
                 <span aria-hidden="true" className={styles.letter}>
@@ -38,7 +38,7 @@ export function GlossaryIndex({ groups, className }: GlossaryIndexProps) {
               </h2>
               <p className="text-xs text-muted">{formatNumber(group.count)} واژه</p>
             </header>
-            <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+            <ul className="cells sm:grid-cols-2 xl:grid-cols-3">
               {group.terms.map((term) => (
                 <li key={term.id}>
                   <TermCard term={term} />

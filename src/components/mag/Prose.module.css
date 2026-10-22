@@ -61,6 +61,13 @@
   margin-block-start: 0;
 }
 
+/* Page bodies (policies, about, workshop): a dashed hairline between H2 sections frames each one. */
+.page > * + section {
+  margin-block-start: 2.5em;
+  padding-block-start: 2.5em;
+  border-block-start: 1px dashed var(--cell-line);
+}
+
 /* Blocks (callouts, tables, embeds, steps…) mark themselves with data-block. */
 .prose [data-block] {
   margin-block: 1.75em;

@@ -17,7 +17,7 @@ export async function NotFoundPage() {
   const [categories, mag] = await Promise.all([listCategories(), getMagHome()]);
   const stocked = categories.filter((category) => category.productCount > 0);
   return (
-    <div className="page-404 mx-auto max-w-page px-gutter pb-section">
+    <div className="page-404 frame-col frame-pad pb-band">
       <header className="mx-auto flex max-w-2xl flex-col items-center pt-12 text-center lg:pt-20">
         <div className="w-56 lg:w-72" aria-hidden="true">
           <Render productKey="duck-pull-toy" angle="hero" alt="" sizes="288px" box="4 / 3" priority />
@@ -55,9 +55,10 @@ export async function NotFoundPage() {
       </header>
 
       {/* Plain text links: this tree is part of every page's payload (it is the not-found boundary). */}
-      <div className="mx-auto mt-16 grid max-w-3xl gap-10 sm:grid-cols-2">
+      <div className="frame-rule-in frame-band">
+      <div className="cells mx-auto max-w-3xl sm:grid-cols-2">
         {stocked.length ? (
-          <nav aria-labelledby="nf-shop">
+          <nav aria-labelledby="nf-shop" className="p-6 lg:p-7">
             <h2 id="nf-shop" className="text-sm font-semibold text-muted">
               دسته‌های فروشگاه
             </h2>
@@ -73,7 +74,7 @@ export async function NotFoundPage() {
           </nav>
         ) : null}
         {mag.pillars.length ? (
-          <nav aria-labelledby="nf-guides">
+          <nav aria-labelledby="nf-guides" className="p-6 lg:p-7">
             <h2 id="nf-guides" className="text-sm font-semibold text-muted">
               راهنماهای کامل
             </h2>
@@ -88,6 +89,7 @@ export async function NotFoundPage() {
             </ul>
           </nav>
         ) : null}
+      </div>
       </div>
     </div>
   );

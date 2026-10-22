@@ -133,7 +133,7 @@ export default async function CategoryShopPage({ params }: PageProps<"/shop/[cat
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-5 pb-section lg:pt-8">
+      <div className="frame-col frame-pad pt-5 pb-band lg:pt-8">
         <header className="pb-8 pt-4 lg:pb-10 lg:pt-10">
           <Breadcrumbs items={trail} />
           {/* The H1 is the plain category name; the tagline sits under it as a quieter line, not as
@@ -149,7 +149,9 @@ export default async function CategoryShopPage({ params }: PageProps<"/shop/[cat
           </div>
         </header>
 
-        <CategoryStrip categories={page.categories} current={category.slug} />
+        <div className="frame-rule-in pt-8">
+          <CategoryStrip categories={page.categories} current={category.slug} />
+        </div>
 
         {guide ? <GuideLink guide={guide} className="mt-6 lg:mt-8" /> : null}
 
@@ -165,7 +167,7 @@ export default async function CategoryShopPage({ params }: PageProps<"/shop/[cat
 
         {guide && guide.tldr.length ? <GuideExcerpt guide={guide} className="mt-16 lg:mt-24" /> : null}
 
-        <div className="mt-16 grid gap-10 lg:mt-24 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+        <div className="frame-rule-in frame-band grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
           <div className="flex max-w-prose flex-col gap-12">
             {faqs.length ? <CategoryFaq name={category.name} faqs={faqs} /> : null}
             {terms.length ? <Terms terms={terms} /> : null}

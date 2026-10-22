@@ -23,6 +23,9 @@ import { shortTitle } from "@/db/queries/nav";
 import { getSettings } from "@/db/queries/settings";
 import { articleNodes, graph, JsonLd, type AuthorLdInput } from "@/lib/jsonld";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
+import Link from "@/components/ui/Link";
+import { hasRender, Render } from "@/components/studio/Render";
+import { formatAgeRange, formatJalali, formatToman, toFaDigits } from "@/lib/format";
 import { cn } from "@/lib/utils";
 
 /*
@@ -143,7 +146,7 @@ export default async function ArticlePage({ params }: PageProps<"/mag/[slug]">) 
 
   return (
     <PageTurn>
-      <article className={cn("mx-auto max-w-page px-gutter pt-3 pb-section", hasToc && tocScope)}>
+      <article className={cn("frame-col frame-pad pt-3 pb-band", hasToc && tocScope)}>
         <Breadcrumbs items={trail} className="mb-5" />
 
         <div className="lg:grid lg:grid-cols-[minmax(11rem,15rem)_minmax(0,38rem)_minmax(0,1fr)] lg:gap-x-10 xl:gap-x-14">
@@ -152,6 +155,10 @@ export default async function ArticlePage({ params }: PageProps<"/mag/[slug]">) 
               <TocAside items={toc} />
             </aside>
           ) : null}
+
+          <aside aria-label="این مطلب در یک نگاه" className="hidden lg:col-start-3 lg:row-start-1 lg:block">
+            <ArticleRail data={data} />
+          </aside>
 
           <div className="flex min-w-0 flex-col gap-7 lg:col-start-2 lg:row-start-1">
             <ArticleHeader
@@ -188,13 +195,13 @@ export default async function ArticlePage({ params }: PageProps<"/mag/[slug]">) 
           </div>
         </div>
 
-        <div className="mt-section flex flex-col gap-section [content-visibility:auto] [contain-intrinsic-size:auto_1600px]">
+        <div className="mt-band flex flex-col [content-visibility:auto] [contain-intrinsic-size:auto_1600px]">
           {seen.length ? (
-            <section aria-labelledby="seen-products" className="flex flex-col gap-5">
+            <section aria-labelledby="seen-products" className="frame-rule-in flex flex-col gap-6 py-band">
               <h2 id="seen-products" className="font-display text-xl text-ink">
                 وسایلی که در این مطلب دیدید
               </h2>
-              <ul className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:max-w-[60rem]">
+              <ul className="cells grid-cols-2 md:grid-cols-3 lg:max-w-[60rem]">
                 {seen.map((product, index) => (
                   <li key={product.id}>
                     <ProductCard product={product} prefetch={index < 4} />
@@ -205,13 +212,13 @@ export default async function ArticlePage({ params }: PageProps<"/mag/[slug]">) 
           ) : null}
 
           {next || related.length ? (
-            <div className="flex flex-col gap-12">
+            <div className="frame-rule-in flex flex-col gap-12 py-band">
               <NextInPath post={next} className="lg:max-w-[60rem]" />
               <RelatedPosts posts={related} topic={topic} />
             </div>
           ) : null}
 
-          <div className="flex flex-col gap-8 lg:max-w-[48rem]">
+          <div className="frame-rule-in flex flex-col gap-8 pt-band lg:max-w-none">
             <ShareRow url={absoluteUrl(path)} title={post.title} />
             {products.length ? <AskChoobz socials={settings.socials} /> : null}
             <p className="font-accent text-lead text-muted">قصهٔ این مطلب همین‌جا تموم شد؛ قصهٔ بچه‌ت تازه شروع شده.</p>
@@ -227,5 +234,58 @@ export default async function ArticlePage({ params }: PageProps<"/mag/[slug]">) 
       </article>
       <JsonLd data={jsonLd} />
     </PageTurn>
+  );
+}
+
+/**
+ * The article's third column (wide screens): a framed «در یک نگاه» box — topic, reading time,
+ * age, last update — and the products the article features, so the margin carries structure
+ * instead of empty space (frame system).
+ */
+function ArticleRail({ data }: { data: ArticleData }) {
+  const { post, topic, products } = data;
+  const age = formatAgeRange(post.ageMinMonths, post.ageMaxMonths);
+  const rows = [
+    topic ? { label: "موضوع", value: topic.name, href: `/mag/topic/${topic.slug}` } : null,
+    { label: "زمان مطالعه", value: `${toFaDigits(post.readingMinutes)} دقیقه` },
+    age ? { label: "مناسب برای", value: age } : null,
+    post.contentUpdatedAt ? { label: "به‌روزرسانی", value: formatJalali(new Date(post.contentUpdatedAt)) } : null,
+  ].filter((r): r is { label: string; value: string; href?: string } => !!r);
+  const featured = products.filter((p) => hasRender(p.illustration ?? p.slug)).slice(0, 2);
+  return (
+    <div className="sticky top-[calc(var(--spacing-header-lg)+1.5rem)] flex flex-col gap-3">
+      <dl className="cells grid-cols-1">
+        {rows.map((r) => (
+          <div key={r.label} className="flex items-baseline justify-between gap-3 px-5 py-3.5 text-sm">
+            <dt className="text-muted">{r.label}</dt>
+            <dd className="font-semibold text-ink">
+              {r.href ? (
+                <Link href={r.href} className="hover:underline">
+                  {r.value}
+                </Link>
+              ) : (
+                r.value
+              )}
+            </dd>
+          </div>
+        ))}
+      </dl>
+      {featured.length ? (
+        <div className="cells grid-cols-1">
+          <p className="px-5 pt-4 pb-1 text-xs font-semibold text-muted">وسایل این مطلب</p>
+          {featured.map((p) => (
+            <Link key={p.id} href={`/product/${p.slug}`} className="cell-hover flex items-center gap-4 p-4">
+              <span className="w-16 shrink-0 overflow-hidden rounded-[0.75rem] bg-surface p-1.5">
+                <Render productKey={p.illustration ?? p.slug} alt="" sizes="64px" box="1 / 1" />
+              </span>
+              <span className="flex min-w-0 flex-col">
+                <span className="truncate text-sm font-bold text-ink">{p.name}</span>
+                <span className="text-xs text-muted">{formatToman(p.price)}</span>
+              </span>
+            </Link>
+          ))}
+        </div>
+      ) : null}
+    </div>
   );
 }

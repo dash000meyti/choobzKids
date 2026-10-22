@@ -35,21 +35,32 @@ export default async function MagPage() {
 
   return (
     <PageTurn>
-      <div className="mx-auto flex max-w-page flex-col px-gutter pt-3 pb-section">
+      {/* Framed column: each block is a band with its own rule reaching the rails. */}
+      <div className="frame-col frame-pad flex flex-col pt-3 pb-band">
         <Breadcrumbs items={trail} className="mb-4" />
         <MagHero />
         <AgeTabs className="mb-8 md:mb-12" />
-        <QuestionOfDay item={question} className="mb-section" />
-        <PillarShelf pillars={home.pillars} className="mb-section" />
-        <div className="mb-section flex flex-col gap-12">
-          <TopicIndex topics={home.topics} />
-          {home.topicRows.map((row) => (
-            <TopicRow key={row.topic.slug} topic={row.topic} posts={row.posts} />
-          ))}
+        <QuestionOfDay item={question} className="mb-band" />
+        <div className="frame-rule-in py-band">
+          <PillarShelf pillars={home.pillars} />
         </div>
-        <LatestList page={home.latest} className="mb-section" />
-        <GlossaryTeaser letters={home.letters} termCount={home.termCount} terms={home.terms} className="mb-section" />
-        <ExpertsRow experts={home.experts} />
+        <div className="frame-rule-in py-band">
+          <TopicIndex topics={home.topics} />
+        </div>
+        {home.topicRows.map((row) => (
+          <div key={row.topic.slug} className="frame-rule-in py-band">
+            <TopicRow topic={row.topic} posts={row.posts} />
+          </div>
+        ))}
+        <div className="frame-rule-in py-band">
+          <LatestList page={home.latest} />
+        </div>
+        <div className="frame-rule-in py-band">
+          <GlossaryTeaser letters={home.letters} termCount={home.termCount} terms={home.terms} />
+        </div>
+        <div className="frame-rule-in pt-band">
+          <ExpertsRow experts={home.experts} />
+        </div>
       </div>
       <JsonLd
         data={graph(

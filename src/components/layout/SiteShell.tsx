@@ -36,6 +36,8 @@ export async function SiteShell({ children }: { children: ReactNode }) {
   return (
     <CartProvider config={cartConfig(nav)}>
       <SkipLinks />
+      {/* Frame rails + margin dots (globals.css «Frame system»): decorative, click-through. */}
+      <div aria-hidden="true" className="frame-rails" />
       <GlobalNav nav={nav} />
       <main id="main" tabIndex={-1} className="outline-none">
         {children}

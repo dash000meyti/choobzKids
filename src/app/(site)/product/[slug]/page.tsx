@@ -136,7 +136,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
         />
 
         {/* Hero */}
-        <section id="overview" aria-labelledby="product-title" className="spotlight">
+        <section id="overview" aria-labelledby="product-title" className="spotlight frame-col overflow-clip md:mt-3 md:rounded-[2rem]">
           <div className="mx-auto max-w-[75rem] px-gutter pt-6">
             <Breadcrumbs items={trail} />
           </div>
@@ -186,7 +186,11 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
           const angle = angles[i % angles.length];
           const night = i === 1;
           return (
-            <section key={h} aria-label={h} className={night ? "theme-night" : i % 2 ? "bg-bg" : "bg-surface"}>
+            <section
+              key={h}
+              aria-label={h}
+              className={`frame-col mt-3 overflow-clip md:rounded-[2rem] ${night ? "theme-night" : i % 2 ? "border border-[var(--cell-line)] bg-bg" : "bg-surface"}`}
+            >
               <div className="mx-auto grid max-w-[75rem] items-center gap-10 px-gutter py-section lg:grid-cols-2">
                 <div className={`reveal ${i % 2 ? "lg:order-2" : ""}`}>
                   <p className="text-eyebrow text-[1.0625rem] font-semibold tabular-nums" aria-hidden="true">
@@ -203,7 +207,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
         })}
 
         {/* Live 3D */}
-        <section aria-labelledby="viewer-title" className="mx-auto max-w-[75rem] px-gutter py-section text-center">
+        <section aria-labelledby="viewer-title" className="frame-col frame-pad frame-rule frame-gap py-band text-center">
           <h2 id="viewer-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
             از هر زاویه ببینید.
           </h2>
@@ -265,7 +269,7 @@ function Overview({ data }: { data: ProductPageData }) {
   const facts = factsOf(product);
   if (!product.summary && !facts.length) return null;
   return (
-    <section aria-labelledby="glance-title" className="mx-auto max-w-[75rem] px-gutter py-section">
+    <section aria-labelledby="glance-title" className="frame-col frame-pad frame-rule frame-gap py-band">
       <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-20">
         {product.summary ? (
           <div className="reveal">
@@ -278,9 +282,9 @@ function Overview({ data }: { data: ProductPageData }) {
           </div>
         ) : null}
         {facts.length ? (
-          <dl className="grid grid-cols-2 gap-3">
+          <dl className="reveal cells grid-cols-2">
             {facts.map((f) => (
-              <div key={f.label} className="reveal flex flex-col justify-between gap-6 rounded-[1.5rem] bg-surface p-6 lg:p-7">
+              <div key={f.label} className="flex flex-col justify-between gap-8 p-6 lg:p-8">
                 <dt className="text-sm text-muted">{f.label}</dt>
                 <dd className="flex flex-wrap items-baseline gap-x-1.5">
                   <span className={`font-display leading-tight ${f.unit ? "text-[2.5rem] lg:text-[3rem]" : "text-[1.5rem] lg:text-[1.75rem]"}`}>
@@ -304,7 +308,7 @@ function Dimensions({ data }: { data: ProductPageData }) {
   const size = illustrationSize(key, "ortho");
   const d = product.dimensions;
   return (
-    <section id="dimensions" aria-labelledby="dimensions-title" className="bg-surface">
+    <section id="dimensions" aria-labelledby="dimensions-title" className="frame-col bg-surface overflow-clip md:rounded-[2rem]">
       <div className="mx-auto max-w-[61.25rem] px-gutter py-section text-center">
         <h2 id="dimensions-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
           ابعاد دقیق.
@@ -350,8 +354,8 @@ function BuySection({ data, offers, settings, age }: { data: ProductPageData; of
     : settings.socials.instagram;
   const shipping = settings.shippingPolicy;
   return (
-    <section id="buy" aria-labelledby="buy-title">
-      <div className="mx-auto grid max-w-[75rem] gap-10 px-gutter py-section lg:grid-cols-[1.15fr_1fr]">
+    <section id="buy" aria-labelledby="buy-title" className="frame-col frame-pad frame-rule frame-gap">
+      <div className="grid gap-10 py-band lg:grid-cols-[1.15fr_1fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-[2rem] bg-surface p-8">
             <Render productKey={key} alt={product.name} sizes="(min-width: 1024px) 560px, 90vw" box="1 / 1" />
@@ -485,7 +489,7 @@ function Specs({ data, age }: { data: ProductPageData; age: string | null }) {
   const seen = new Set<string>();
   const unique = rows.filter((r) => (seen.has(r.label) ? false : (seen.add(r.label), true)));
   return (
-    <section id="specs" aria-labelledby="specs-title" className="bg-surface">
+    <section id="specs" aria-labelledby="specs-title" className="frame-col bg-surface overflow-clip md:rounded-[2rem]">
       <div className="mx-auto max-w-[61.25rem] px-gutter py-section">
         <h2 id="specs-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
           مشخصات فنی
@@ -511,7 +515,7 @@ function InTheBox({ data }: { data: ProductPageData }) {
     <>
       {/* Safety: one rule per line, its key phrase in bold — not a paragraph to wade through. */}
       {rules.length > 0 && (
-        <section aria-labelledby="safety-title" className="theme-night">
+        <section aria-labelledby="safety-title" className="theme-night frame-col mt-3 overflow-clip md:rounded-[2rem]">
           <div className="mx-auto max-w-[75rem] px-gutter py-section">
             <div className="reveal max-w-[40rem]">
               <p className="eyebrow">پیش از اولین بازی</p>
@@ -538,9 +542,10 @@ function InTheBox({ data }: { data: ProductPageData }) {
         </section>
       )}
       {(product.inTheBox.length > 0 || product.careNotes) && (
-        <section aria-label="جعبه و نگهداری" className="mx-auto grid max-w-[75rem] gap-4 px-gutter py-section md:grid-cols-2">
+        <section aria-label="جعبه و نگهداری" className="frame-col frame-pad frame-rule frame-gap py-band">
+          <div className="reveal cells md:grid-cols-2">
           {product.inTheBox.length > 0 && (
-            <div className="reveal rounded-[1.75rem] bg-surface p-8 lg:p-10">
+            <div className="p-8 lg:p-10">
               <h2 className="text-[1.375rem] font-bold">توی جعبه چی هست؟</h2>
               <ul className="mt-6 divide-y divide-line">
                 {product.inTheBox.map((x) => (
@@ -553,7 +558,7 @@ function InTheBox({ data }: { data: ProductPageData }) {
             </div>
           )}
           {product.careNotes && (
-            <div className="reveal rounded-[1.75rem] bg-surface p-8 lg:p-10">
+            <div className="p-8 lg:p-10">
               <h2 className="text-[1.375rem] font-bold">نگهداری</h2>
               <ul className="mt-6 space-y-4">
                 {sentences(product.careNotes).map((x) => (
@@ -564,6 +569,7 @@ function InTheBox({ data }: { data: ProductPageData }) {
               </ul>
             </div>
           )}
+          </div>
         </section>
       )}
     </>
@@ -573,7 +579,8 @@ function InTheBox({ data }: { data: ProductPageData }) {
 function Faq({ data }: { data: ProductPageData }) {
   if (!data.faqs.length) return null;
   return (
-    <section id="faq" aria-labelledby="faq-title" className="mx-auto max-w-[61.25rem] px-gutter pb-section">
+    <section id="faq" aria-labelledby="faq-title" className="frame-col frame-pad frame-rule frame-gap py-band">
+      <div className="mx-auto max-w-[61.25rem]">
       <h2 id="faq-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
         پرسش‌های پرتکرار
       </h2>
@@ -590,6 +597,7 @@ function Faq({ data }: { data: ProductPageData }) {
           </details>
         ))}
       </div>
+      </div>
     </section>
   );
 }
@@ -599,15 +607,15 @@ function Related({ data, snapppay }: { data: ProductPageData; snapppay: SiteSett
   return (
     <>
       {data.guides.length > 0 && (
-        <section aria-labelledby="guides-title" className="bg-surface">
-          <div className="mx-auto max-w-[75rem] px-gutter py-section">
+        <section aria-labelledby="guides-title" className="frame-col frame-pad frame-rule frame-gap">
+          <div className="py-band">
             <h2 id="guides-title" className="headline reveal text-[2rem] lg:text-[3rem]">
               قبل از خرید بخوانید.
             </h2>
-            <ul className="mt-8 grid gap-3 md:grid-cols-3">
+            <ul className="reveal cells mt-8 md:grid-cols-3">
               {data.guides.slice(0, 3).map((g) => (
                 <li key={g.id}>
-                  <Link href={`/mag/${g.slug}`} className="flex h-full flex-col rounded-[1.75rem] bg-bg p-7">
+                  <Link href={`/mag/${g.slug}`} className="cell-hover flex h-full flex-col p-7">
                     <p className="text-xs font-semibold text-muted">
                       {g.topic?.name} · {toFaDigits(g.readingMinutes)} دقیقه
                     </p>
@@ -622,15 +630,15 @@ function Related({ data, snapppay }: { data: ProductPageData; snapppay: SiteSett
         </section>
       )}
       {related.length > 0 && (
-        <section aria-labelledby="related-title" className="mx-auto max-w-[75rem] px-gutter py-section">
+        <section aria-labelledby="related-title" className="frame-col frame-pad frame-rule frame-gap py-band">
           <h2 id="related-title" className="headline reveal text-[2rem] lg:text-[3rem]">
             کنارش خوب می‌نشیند.
           </h2>
-          <ul className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <ul className="reveal cells mt-8 grid-cols-2 lg:grid-cols-4">
             {related.map((p) => (
               <li key={p.id}>
-                <Link href={`/product/${p.slug}`} className="group flex h-full flex-col items-center rounded-[1.75rem] bg-surface p-6 text-center">
-                  <div className="w-full transition-transform duration-500 group-hover:scale-[1.03]">
+                <Link href={`/product/${p.slug}`} className="cell-hover group flex h-full flex-col items-center p-4 pb-6 text-center">
+                  <div className="w-full overflow-hidden rounded-[1rem] bg-surface p-4 transition-transform duration-500 group-hover:scale-[1.02]">
                     <Render productKey={p.illustration ?? p.slug} alt="" sizes="(min-width: 1024px) 260px, 44vw" box="1 / 1" />
                   </div>
                   <h3 className="mt-4 font-bold">{p.name}</h3>

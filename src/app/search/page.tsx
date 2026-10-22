@@ -44,7 +44,7 @@ export async function generateMetadata({ searchParams }: SearchPageProps): Promi
 
 export default function SearchPage({ searchParams }: SearchPageProps) {
   return (
-    <div className="mx-auto max-w-page px-gutter pt-12 pb-section lg:pt-20">
+    <div className="frame-col frame-pad pt-12 pb-band lg:pt-20">
       {/* The shell (header + empty form) is static; the query and results stream in. */}
       <Suspense fallback={<SearchHeader query="" />}>
         <SearchContent searchParams={searchParams} />
@@ -192,7 +192,7 @@ async function ResultGroups({ results }: { results: SearchResults }) {
         <ResultGroup id="results-products" title="محصولات" count={products.length + shopShortcuts.length}>
           <Shortcuts hits={shopShortcuts} />
           {products.length ? (
-            <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+            <ul className="cells mt-6 grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
               {products.map((product, i) => (
                 <li key={product.id}>
                   <ProductCard product={product} prefetch={i < 4} showCategory />
@@ -207,7 +207,7 @@ async function ResultGroups({ results }: { results: SearchResults }) {
         <ResultGroup id="results-guides" title="راهنماها" count={posts.length + topicShortcuts.length}>
           <Shortcuts hits={topicShortcuts} />
           {posts.length ? (
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
               {posts.map((post, i) => (
                 <li key={post.slug}>
                   <ArticleCard post={post} prefetch={i < 3} />
@@ -220,7 +220,7 @@ async function ResultGroups({ results }: { results: SearchResults }) {
 
       {terms.length ? (
         <ResultGroup id="results-terms" title="واژه‌ها" count={terms.length}>
-          <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
             {terms.map((term) => (
               <li key={term.slug}>
                 <TermCard term={term} />
@@ -235,7 +235,7 @@ async function ResultGroups({ results }: { results: SearchResults }) {
 
 function ResultGroup({ id, title, count, children }: { id: string; title: string; count: number; children: ReactNode }) {
   return (
-    <section aria-labelledby={id} className="mt-12">
+    <section aria-labelledby={id} className="frame-rule-in frame-band">
       <SectionHeader
         id={id}
         size="content"
@@ -290,7 +290,7 @@ async function Browse() {
   return (
     <>
       {stocked.length ? (
-        <section aria-labelledby="browse-shop" className="mt-12">
+        <section aria-labelledby="browse-shop" className="frame-rule-in frame-band">
           <SectionHeader id="browse-shop" size="content" title="دسته‌های فروشگاه" link={{ label: "همهٔ محصولات", href: "/shop" }} />
           <div className="mt-6">
             <CategoryStrip categories={stocked} />
@@ -298,9 +298,9 @@ async function Browse() {
         </section>
       ) : null}
       {guides.length ? (
-        <section aria-labelledby="browse-guides" className="mt-12">
+        <section aria-labelledby="browse-guides" className="frame-rule-in frame-band">
           <SectionHeader id="browse-guides" size="content" title="راهنماهای اصلی مجله" link={{ label: "مجله چوبز", href: "/mag" }} />
-          <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
             {guides.map((post) => (
               <li key={post.slug}>
                 <ArticleCard post={post} />

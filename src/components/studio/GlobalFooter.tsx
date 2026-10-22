@@ -10,8 +10,8 @@ import { toFaDigits } from "@/lib/format";
 export function GlobalFooter({ nav }: { nav: NavData }) {
   const { settings } = nav;
   return (
-    <footer className="bg-surface text-xs leading-6 text-muted">
-      <div className="mx-auto max-w-[61.25rem] px-gutter pb-6 pt-10">
+    <footer className="text-xs leading-6 text-muted">
+      <div className="frame-col frame-rule frame-pad pb-8 pt-12">
         <div className="space-y-2 border-b border-line pb-5">
           <p>{settings.org.description}</p>
           {settings.snapppay?.enabled && (
@@ -22,9 +22,9 @@ export function GlobalFooter({ nav }: { nav: NavData }) {
           )}
         </div>
 
-        <nav aria-label="پیوندهای پانویس" className="grid grid-cols-2 gap-x-6 gap-y-6 py-6 md:grid-cols-4">
+        <nav aria-label="پیوندهای پانویس" className="cells my-6 grid-cols-2 md:grid-cols-4">
           {nav.footer.map((group) => (
-            <div key={group.title}>
+            <div key={group.title} className="p-5 lg:p-6">
               <h2 className="mb-2 text-xs font-bold text-ink">{group.title}</h2>
               <ul className="space-y-1.5">
                 {group.links.map((l) => (

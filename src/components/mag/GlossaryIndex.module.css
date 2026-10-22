@@ -9,9 +9,7 @@
   padding-block: 1.75rem;
   scroll-margin-block-start: calc(var(--spacing-header) + 4.5rem);
 }
-.group + .group {
-  border-block-start: 1px solid var(--line);
-}
+/* Groups are separated by rail-to-rail rules (frame-rule-in on the section). */
 
 .head {
   display: flex;
@@ -27,6 +25,7 @@
 .letter {
   display: block;
   color: var(--ink);
+  font-family: var(--font-display);
   font-weight: 700;
   font-size: clamp(2.25rem, 1.8rem + 2vw, 3.25rem);
   line-height: 1.1;
@@ -54,4 +53,9 @@
     gap: 0.5rem;
   }
 
+}
+
+/* The alphabet rail's bottom edge is the first rule; no second one right under it. */
+.group:first-child::before {
+  content: none;
 }

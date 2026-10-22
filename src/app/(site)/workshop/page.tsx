@@ -100,7 +100,7 @@ export default async function WorkshopPage() {
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
         <header className="mx-auto mt-8 max-w-[48rem] text-center lg:mt-12">
           <Kicker decorative tone="success" className="mb-1">
@@ -131,7 +131,8 @@ export default async function WorkshopPage() {
           </section>
         ) : null}
 
-        <div className="mx-auto mt-16 max-w-narrow lg:mt-24">
+        <div className="frame-rule-in frame-band">
+        <div className="mx-auto max-w-narrow">
           <Prose markdown={page.body} variant="page" slug={page.slug} glossaryLinks />
           <WorkshopLog entries={log} />
           <PageFaqs faqs={page.faqs} name="faq-workshop" className="mt-14" />
@@ -150,6 +151,7 @@ export default async function WorkshopPage() {
             </div>
             <AskChoobz socials={settings.socials} />
           </div>
+        </div>
         </div>
       </div>
     </PageTurn>

@@ -1,14 +1,14 @@
 /*
  * Alphabet rail: sticky under the header. Letters with terms are round grey links; letters
- * without terms are faint text. The strip bleeds to the gutter so cards never show beside it.
+ * without terms are faint text. The strip bleeds to the frame rails so cards never show beside it.
  */
 
 .rail {
   position: sticky;
   inset-block-start: var(--spacing-header);
   z-index: var(--z-sticky);
-  margin-inline: calc(-1 * var(--spacing-gutter));
-  padding-inline: var(--spacing-gutter);
+  margin-inline: calc(-1 * var(--frame-pad));
+  padding-inline: var(--frame-pad);
   isolation: isolate;
 }
 .rail::before {
@@ -16,8 +16,10 @@
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: color-mix(in oklab, var(--bg) 94%, transparent);
-  border-block-end: 1px solid var(--line);
+  /* Its bottom edge is the page's first frame rule (dashed, edge to edge of the frame). */
+  background:
+    repeating-linear-gradient(to right, var(--frame-line) 0 6px, transparent 6px 12px) bottom / 100% 1px no-repeat,
+    color-mix(in oklab, var(--bg) 94%, transparent);
   pointer-events: none;
 }
 

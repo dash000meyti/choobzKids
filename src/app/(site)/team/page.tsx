@@ -38,11 +38,11 @@ export default async function TeamPage() {
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={TRAIL} />
 
-        <header className="mt-6 flex max-w-prose flex-col gap-3 lg:mt-8">
-          <h1 className="text-3xl text-ink">{HEADING}</h1>
+        <header className="page-head mt-6 pb-10 lg:mt-8 lg:pb-14">
+          <h1 className="headline text-3xl lg:text-[3.5rem]">{HEADING}</h1>
           <p className="text-lead text-muted">
             مطالب مجله را تحریریهٔ چوبز می‌نویسد و هر عدد یا توصیهٔ سلامت را به منبعی معتبر ارجاع می‌دهد؛ تجربهٔ کار با چوب
             از خود کارگاه می‌آید. اینجا می‌بینید هر مطلب را چه کسی نوشته و چه کسی بازبینی کرده است.
@@ -50,16 +50,18 @@ export default async function TeamPage() {
         </header>
 
         {members.length ? (
-          <ul className="mt-10 grid gap-4 md:grid-cols-2">
-            {members.map((member) => (
-              <li key={member.id}>
-                <AuthorCard member={member} />
-              </li>
-            ))}
-          </ul>
+          <div className="frame-rule-in pt-10 lg:pt-14">
+            <ul className="cells md:grid-cols-2">
+              {members.map((member) => (
+                <li key={member.id}>
+                  <AuthorCard member={member} />
+                </li>
+              ))}
+            </ul>
+          </div>
         ) : null}
 
-        <p className="mt-12">
+        <p className="mt-8">
           <Button href="/editorial-policy" variant="quiet" iconEnd="arrow-end">
             ما چطور می‌نویسیم و بازبینی می‌کنیم
           </Button>

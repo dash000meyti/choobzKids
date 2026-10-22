@@ -12,7 +12,7 @@ import { getSettings } from "@/db/queries/settings";
 import { breadcrumbNode, graph, ids, JsonLd, ref, webPageNode } from "@/lib/jsonld";
 import { absoluteUrl, pageMetadata } from "@/lib/seo";
 import type { ImageObject } from "schema-dts";
-import { mediaUrl } from "@/lib/utils";
+import { cn, mediaUrl } from "@/lib/utils";
 
 /*
  * /gallery «عکس‌های شما» (DESIGN.md §8, SEO.md §1.2, §3.5.10): families' photos with the products,
@@ -126,7 +126,7 @@ export default async function GalleryPage() {
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
         <header className="mx-auto mt-8 flex max-w-2xl flex-col items-center text-center lg:mt-12">
           <p className="eyebrow">از خونه‌های شما</p>
@@ -142,14 +142,14 @@ export default async function GalleryPage() {
           ) : null}
         </header>
 
-        <ul className={photos.length ? "mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-3" : "mx-auto mt-12 grid max-w-md"}>
+        <ul className={cn("frame-rule-in mt-12 grid gap-4 pt-12", photos.length ? "sm:grid-cols-2 lg:grid-cols-3" : "mx-auto max-w-md")}>
           {photos.map((photo, i) => (
             <li key={photo.id}>
               <Frame photo={photo} priority={i === 0} />
             </li>
           ))}
           <li>
-            <div className="flex h-full min-h-72 flex-col items-center justify-center gap-4 rounded-[1.75rem] p-8 text-center ring-1 ring-line ring-inset">
+            <div className="flex h-full min-h-72 flex-col items-center justify-center gap-4 rounded-[1.75rem] border border-dashed border-[var(--cell-line)] p-8 text-center">
               <p className="text-xl font-bold text-ink">این قاب، منتظر شماست.</p>
               <p className="text-sm text-muted">با اجازهٔ خودتون و فقط با نام کوچک بچه و شهر منتشرش می‌کنیم.</p>
               {send ? (
@@ -161,7 +161,7 @@ export default async function GalleryPage() {
           </li>
         </ul>
 
-        <nav aria-label="بیشتر از خانواده‌ها" className="mt-14 flex flex-wrap justify-center gap-x-8 gap-y-2">
+        <nav aria-label="بیشتر از خانواده‌ها" className="frame-rule-in frame-band flex flex-wrap justify-center gap-x-8 gap-y-2">
           <Link href="/reviews" className="link-arrow text-base">
             رضایت شما
           </Link>

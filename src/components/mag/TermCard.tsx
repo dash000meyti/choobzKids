@@ -17,7 +17,7 @@ type TermCardProps = {
 
 export function TermCard({ term, className }: TermCardProps) {
   return (
-    <article className={cn("relative flex h-full items-start gap-3 p-5", styles.card, className)}>
+    <article className={cn("relative flex h-full items-start gap-4 p-6", styles.card, className)}>
       {term.illustration ? <TermDrawing illustration={term.illustration} /> : null}
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
         <h3 className="text-lg font-bold text-ink">
@@ -41,7 +41,7 @@ export function TermCard({ term, className }: TermCardProps) {
 function TermDrawing({ illustration }: { illustration: string }) {
   const { width, height } = illustrationSize(illustration, "assembled");
   return (
-    <span aria-hidden="true" className="relative grid size-16 shrink-0 place-items-end rounded-xl bg-bg p-1.5">
+    <span aria-hidden="true" className="relative grid size-16 shrink-0 place-items-end rounded-xl bg-surface p-1.5">
       {/* eslint-disable-next-line @next/next/no-img-element -- static manifest SVG (DESIGN.md §10.3) */}
       <img
         src={illustrationUrl(illustration, "assembled")}

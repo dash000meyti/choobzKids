@@ -34,7 +34,7 @@ export function LatestList({ page, title = "تازه‌ترین مطالب", cla
       className={cn("flex flex-col gap-6", className)}
     >
       {title ? <SectionHeader id="latest-posts" kicker="تازه نوشتیم" title={title} /> : null}
-      <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+      <ul className="cells sm:grid-cols-2 lg:grid-cols-3">
         {page.posts.map((post, index) => (
           <li key={post.id}>
             <ArticleCard post={post} prefetch={index < PREFETCH_FIRST} />

@@ -27,7 +27,7 @@ export function RelatedGuides({ guides, className }: RelatedGuidesProps) {
         title="قبل از خرید بخوانید"
         link={{ label: "همهٔ راهنماها ←", href: "/mag" }}
       />
-      <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="cells sm:grid-cols-2 lg:grid-cols-3">
         {guides.map((post) => (
           <li key={post.id}>
             <ArticleCard post={post} />

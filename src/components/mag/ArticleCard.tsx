@@ -45,11 +45,11 @@ export function ArticleCard({ post, size = "md", prefetch, className }: ArticleC
   const format = FORMAT_LABEL[post.format];
   return (
     <article
-      className={cn("@container relative h-full overflow-hidden rounded-[1.75rem] bg-surface", styles.card, className)}
+      className={cn("@container relative h-full overflow-hidden", styles.card, className)}
       data-format={post.format}
     >
       <div className={cn("flex h-full flex-col", large && "@xl:grid @xl:grid-cols-2")}>
-        <div className="relative">
+        <div className="relative m-2 overflow-hidden rounded-[1rem] bg-surface">
           <Cover post={post} sizes={COVER_SIZES[size]} />
         </div>
 

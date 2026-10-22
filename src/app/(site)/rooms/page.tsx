@@ -45,13 +45,15 @@ export default async function RoomsPage() {
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={TRAIL} />
 
-        <header className="mt-6 flex max-w-3xl flex-col gap-3">
-          <Kicker decorative>اتاقش رو بچین</Kicker>
-          <h1 className="text-3xl text-ink">{TITLE}</h1>
-          <div className="flex max-w-prose flex-col gap-3 text-lead text-muted">
+        <header className="page-head mt-6">
+          <div className="flex flex-col gap-3">
+            <Kicker decorative>اتاقش رو بچین</Kicker>
+            <h1 className="headline text-3xl lg:text-[3.5rem]">{TITLE}</h1>
+          </div>
+          <div className="flex flex-col gap-3 text-[1.0625rem] leading-8 text-muted">
             <p>
               هر سن، اتاق خودش را می‌خواهد. این‌جا {toFaDigits(rooms.length)} چیدمان آماده را می‌بینید که با وسایل چوبی
               چوبز کنار هم چیده شده‌اند: از قفسهٔ کوتاه و کتابخانهٔ روبه‌رو برای ماه‌های اول، تا مثلث پیکلر برای بالا
@@ -75,7 +77,7 @@ export default async function RoomsPage() {
         </header>
 
         <h2 className="sr-only">چیدمان‌ها</h2>
-        <ul role="list" className="mt-10 grid gap-5 md:grid-cols-2 lg:mt-14 lg:gap-6">
+        <ul role="list" className="frame-rule-in mt-10 grid gap-5 pt-10 md:grid-cols-2 lg:mt-14 lg:gap-6 lg:pt-14">
           {rooms.map((room) => (
             <li key={room.id}>
               <RoomCard room={room} />
@@ -83,7 +85,7 @@ export default async function RoomsPage() {
           ))}
         </ul>
 
-        <div className="mt-14 flex flex-col gap-8 lg:mt-20 lg:flex-row lg:items-start lg:justify-between">
+        <div className="frame-rule-in frame-band flex flex-col gap-8 lg:flex-row lg:items-start lg:justify-between">
           <p className="max-w-prose text-base text-muted">
             دنبال وسایلِ یک سن خاص هستید؟ بازی‌ها و وسایل هر دوره را در{" "}
             <Link href="/age" className="link-mark text-ink">

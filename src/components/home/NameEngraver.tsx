@@ -136,7 +136,7 @@ export async function NameEngraver() {
 
   return (
     <section aria-labelledby={TITLE_ID} className="paper">
-      <div className={cn("mx-auto max-w-page px-gutter py-section", styles.spread)}>
+      <div className={cn("frame-col frame-pad py-section", styles.spread)}>
         <SectionHeader
           id={TITLE_ID}
           kicker="حالا نوبت شماست"

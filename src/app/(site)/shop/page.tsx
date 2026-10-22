@@ -60,7 +60,7 @@ export default async function ShopPage() {
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-5 pb-section lg:pt-8">
+      <div className="frame-col frame-pad pt-5 pb-band lg:pt-8">
         <header className="pb-8 pt-4 lg:pb-12 lg:pt-10">
           <Breadcrumbs items={TRAIL} />
           <div className="mt-6 flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
@@ -72,7 +72,9 @@ export default async function ShopPage() {
           {shop.intro ? <LeadText text={shop.intro} className="mt-5 max-w-[46rem]" /> : null}
         </header>
 
-        <CategoryStrip categories={shop.categories} />
+        <div className="frame-rule-in pt-8">
+          <CategoryStrip categories={shop.categories} />
+        </div>
 
         <div className="mt-6 lg:mt-10">
           <FilterBar facets={shop.facets} total={shop.products.length}>
@@ -88,7 +90,7 @@ export default async function ShopPage() {
           </FilterBar>
         </div>
 
-        <div className="mt-16 grid gap-10 lg:mt-24 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+        <div className="frame-rule-in frame-band grid gap-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
           {shop.faqs.length ? <BuyingFaq faqs={shop.faqs} /> : null}
           <AskChoobz socials={settings.socials} className="self-start lg:sticky lg:top-[calc(var(--spacing-header-lg)+1.5rem)]" />
         </div>

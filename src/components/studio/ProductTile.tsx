@@ -48,7 +48,7 @@ export function ProductTile({
         "group relative flex flex-col items-center overflow-hidden text-center",
         tone === "night" ? "theme-night" : tone === "white" ? "bg-bg" : hero ? "spotlight" : "bg-surface",
         hero
-          ? "px-gutter pt-14 lg:min-h-[calc(100svh-var(--spacing-header-lg))] lg:justify-center lg:pt-16"
+          ? "px-gutter pt-14 md:rounded-[2rem] lg:min-h-[calc(100svh-var(--spacing-header-lg)-0.75rem)] lg:justify-center lg:pt-16"
           : "reveal rounded-none px-6 pt-14 md:rounded-[1.75rem] lg:pt-16",
       )}
     >

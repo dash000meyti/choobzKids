@@ -65,7 +65,7 @@ export default async function ReviewsPage() {
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
         <header className="mx-auto mt-8 flex max-w-2xl flex-col items-center text-center lg:mt-12">
           <p className="eyebrow">از خونه‌های شما</p>
@@ -93,7 +93,8 @@ export default async function ReviewsPage() {
           </ul>
         ) : null}
 
-        <div className="mx-auto mt-14 grid max-w-narrow gap-8">
+        <div className="frame-rule-in frame-band">
+        <div className="mx-auto grid max-w-narrow gap-8">
           <AskChoobz
             socials={settings.socials}
             title="تجربه‌تون از وسایل چوبز رو برامون بنویسید؛ با اجازهٔ خودتون این‌جا می‌ذاریمش."
@@ -106,6 +107,7 @@ export default async function ReviewsPage() {
               همهٔ محصولات
             </Link>
           </nav>
+        </div>
         </div>
       </div>
     </PageTurn>

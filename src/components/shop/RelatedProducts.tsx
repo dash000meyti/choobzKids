@@ -21,7 +21,7 @@ export function RelatedProducts({ products, className }: RelatedProductsProps) {
   return (
     <section aria-labelledby="related-title" className={cn("flex flex-col gap-6", className)}>
       <SectionHeader id="related-title" size="content" title="شاید این‌ها هم" link={{ label: "همهٔ وسایل ←", href: "/shop" }} />
-      <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+      <ul className="cells grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
         {products.slice(0, LIMIT).map((card) => (
           <li key={card.id}>
             <ProductCard product={card} showCategory />

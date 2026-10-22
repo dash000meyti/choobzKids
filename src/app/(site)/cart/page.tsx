@@ -21,7 +21,7 @@ const TRAIL = crumbTrail({ name: "سبد خرید", path: "/cart" });
 export default function CartPage() {
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={TRAIL} />
         <h1 className="mt-4 text-3xl text-ink">سبد خرید</h1>
         <CartPageClient siteUrl={SITE.url} />

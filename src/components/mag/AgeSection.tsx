@@ -66,7 +66,7 @@ export function AgeSection({ section, noun, fallbackTint, className }: AgeSectio
         <div className="mt-10">
           <h3 className="text-lg font-bold text-ink">وسایل چوبی مناسب {section.label}</h3>
           {section.products.length ? (
-            <ul className="mt-4 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+            <ul className="cells mt-4 grid-cols-2 lg:grid-cols-4">
               {section.products.map((product, i) => (
                 <li key={product.id}>
                   <ProductCard product={product} prefetch={i < PREFETCHED} />
@@ -100,7 +100,7 @@ export function AgeSection({ section, noun, fallbackTint, className }: AgeSectio
       {section.posts.length ? (
         <div className="mt-10">
           <h3 className="text-lg font-bold text-ink">راهنماهای این سن در مجلهٔ چوبز</h3>
-          <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <ul className="cells mt-4 sm:grid-cols-2 lg:grid-cols-3">
             {section.posts.map((post) => (
               <li key={post.id}>
                 <ArticleCard post={post} />

@@ -41,7 +41,7 @@ export function CompleteTheRoom({ productName, rooms, bundle, className }: Compl
         </ul>
       ) : null}
       {bundle.length ? (
-        <ul className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+        <ul className="cells grid-cols-2 md:grid-cols-3 xl:grid-cols-4">
           {bundle.map((card) => (
             <li key={card.id}>
               <ProductCard product={card} />

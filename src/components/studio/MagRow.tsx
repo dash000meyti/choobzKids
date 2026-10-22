@@ -7,7 +7,7 @@ import { Render } from "./Render";
 export function MagRow({ posts }: { posts: ArticleCardData[] }) {
   if (!posts.length) return null;
   return (
-    <section aria-labelledby="mag-title" className="mx-auto max-w-[75rem] px-gutter pb-section">
+    <section aria-labelledby="mag-title" className="frame-col frame-rule frame-pad py-band">
       <div className="reveal flex items-end justify-between gap-4">
         <div>
           <p className="eyebrow">مجله چوبز</p>
@@ -19,10 +19,10 @@ export function MagRow({ posts }: { posts: ArticleCardData[] }) {
           همهٔ مطالب
         </Link>
       </div>
-      <ul className="mt-10 grid gap-4 md:grid-cols-3">
+      <ul className="reveal cells mt-10 md:grid-cols-3">
         {posts.map((p) => (
-          <li key={p.id} className="reveal">
-            <Link href={`/mag/${p.slug}`} className="group flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-surface transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:shadow-[0_24px_48px_-28px_rgb(0_0_0/0.25)]">
+          <li key={p.id}>
+            <Link href={`/mag/${p.slug}`} className="cell-hover group flex h-full flex-col overflow-hidden">
               <div className="mx-auto w-3/5 pt-6 transition-transform duration-500 group-hover:scale-[1.03]">
                 {p.illustration && <Render productKey={p.illustration} alt="" sizes="(min-width: 768px) 220px, 55vw" box="4 / 3" />}
               </div>

@@ -1,14 +1,15 @@
 /*
- * ArticleCard (Studio): a grey tile that grows slightly on hover; the stretched title link
+ * ArticleCard: a cell (see `cells`) with its cover in a grey well; the stretched title link
  * covers the card and rings it on keyboard focus.
  */
 
+/* Cell-ready: no own fill; inside a `cells` grid it shares hairlines and tints on hover. */
 .card {
-  transition: transform 400ms var(--ease-out-expo);
+  transition: background-color var(--dur-base) var(--ease-out-expo);
 }
 @media (hover: hover) {
   .card:hover {
-    transform: scale(1.01);
+    background-color: color-mix(in oklab, var(--surface) 70%, var(--bg));
   }
 }
 .render {

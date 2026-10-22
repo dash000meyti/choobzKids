@@ -19,7 +19,9 @@ const NUMBERS = ["۰۱", "۰۲", "۰۳", "۰۴"];
 
 export function AssemblyStory() {
   return (
-    <section aria-labelledby="assembly-title" className="theme-night">
+    <section aria-labelledby="assembly-title" className="frame-col frame-rule mt-3 pt-3 md:mt-[clamp(3rem,6vw,5rem)] md:pt-[clamp(3rem,6vw,5rem)]">
+      {/* overflow-clip, not hidden: the sticky 3D stage inside must still stick to the viewport. */}
+      <div className="theme-night overflow-clip md:rounded-[2rem]">
       <div className="reveal mx-auto max-w-[61.25rem] px-gutter pt-section text-center">
         <p className="eyebrow">ساخت کارگاه چوبز</p>
         <h2 id="assembly-title" className="headline text-gradient-wood mt-2 text-[2.5rem] lg:text-[4.5rem]">
@@ -57,6 +59,7 @@ export function AssemblyStory() {
             </li>
           ))}
         </ol>
+      </div>
       </div>
     </section>
   );

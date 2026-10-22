@@ -1,26 +1,14 @@
 /*
- * Team card: raised paper on a ply edge (the card is a link), the same face as TermCard.
+ * Team card: a cell (see `cells`), the same face as TermCard; the whole card is a link.
  * A carved initial sits a little into the birch, like a letter cut with a router.
  */
 
+/* Cell-ready: no own fill; inside a `cells` grid it shares hairlines and tints on hover. */
 .card {
-  background-color: var(--surface-raised);
-  box-shadow: var(--shadow-ply);
-  transition:
-    translate var(--dur-quick) var(--ease-wood),
-    box-shadow var(--dur-quick) var(--ease-wood);
+  transition: background-color var(--dur-base) var(--ease-out-expo);
 }
 @media (hover: hover) {
-  .card:hover {
-    translate: 0 -2px;
-    box-shadow: var(--shadow-ply-lifted);
-  }
-}
-.card:has(.link:active) {
-  translate: 0 2px;
-  box-shadow: var(--shadow-ply-pressed);
-  transition-duration: var(--dur-press);
-  transition-timing-function: linear;
+  .card:hover { background-color: color-mix(in oklab, var(--surface) 70%, var(--bg)); }
 }
 .link::after {
   content: "";

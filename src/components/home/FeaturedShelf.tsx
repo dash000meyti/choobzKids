@@ -26,7 +26,7 @@ export async function FeaturedShelf() {
 
   return (
     <section aria-labelledby={TITLE_ID}>
-      <div className="mx-auto max-w-page px-gutter py-section">
+      <div className="frame-col frame-pad py-band">
         <SectionHeader
           id={TITLE_ID}
           title="پیشنهادهای کارگاه"

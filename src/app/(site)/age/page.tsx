@@ -39,7 +39,7 @@ export default async function AgeIndexPage() {
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={TRAIL} />
 
         <header className="mt-6 grid gap-8 lg:mt-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:items-center lg:gap-12">
@@ -61,7 +61,7 @@ export default async function AgeIndexPage() {
           </figure>
         </header>
 
-        <section aria-label="سه بازهٔ سنی" className="mt-section">
+        <section aria-label="سه بازهٔ سنی" className="frame-rule-in frame-band">
           <ul className="grid gap-6 md:grid-cols-3 md:gap-5">
             {hubs.map((hub) => (
               <li key={hub.slug} className="grid">

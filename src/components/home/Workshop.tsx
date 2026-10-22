@@ -135,7 +135,7 @@ export async function Workshop() {
 
   return (
     <section aria-labelledby={TITLE_ID} className={styles.section}>
-      <div className="mx-auto max-w-page px-gutter py-section">
+      <div className="frame-col frame-pad py-band">
         <SectionHeader
           id={TITLE_ID}
           kicker="فصل سوم · رشد"

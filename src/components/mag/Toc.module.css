@@ -76,8 +76,11 @@
   max-block-size: calc(100dvh - var(--spacing-header-lg) - 3rem);
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-block-end: 1rem;
   scrollbar-width: thin;
+  /* Framed box (frame system): a hairline, no fill. */
+  padding: 1.25rem 1.25rem 1rem;
+  border: 1px solid var(--cell-line);
+  border-radius: 1.25rem;
 }
 
 /* ---------- Phones: <details> under the TL;DR ---------- */

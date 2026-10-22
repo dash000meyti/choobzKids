@@ -46,6 +46,29 @@ Large type is for short lines. Longer copy from the database is shaped, never sh
 - Index numbers («۰۱») are IRANSansX semibold in the eyebrow colour (Kalameh digits are too
   thin at that size).
 
+## Frame system
+
+Persian copy runs ragged and leaves uneven white space, so every page sits in a faint frame (the
+Cloudflare idea): structure you notice only as order, never as decoration on the content.
+
+- **Rails** (`.frame-rails`, in `SiteShell`, ≥48rem): two dashed vertical lines at the frame
+  edges, fixed, under the content; from 64rem a faint dot field fills the side margins.
+- **Columns**: `frame-col` (the frame's width, aligned to the rails) + `frame-pad` (inner padding).
+  Panels (heroes, dark bands) are `frame-col` with `md:rounded-[2rem]`, edge to edge of the rails.
+- **Rules**: `frame-rule` on a `frame-col` section, `frame-rule-in` inside a padded column (it
+  reaches out to the rails). A dashed line with «+» marks where it meets the rails. Spacing on each
+  side: `frame-band` (margin + padding of `--spacing-band`) or `py-band`; `frame-gap` after a panel.
+  Never put a rule on an element with `overflow: hidden` (the line is clipped) — wrap it.
+- **Cells** (`cells` + `cell-hover`): card grids share 1px hairlines inside one rounded panel; a
+  short last row leaves a clean empty slot. Cards are cell-ready (no own fill or shadow; images sit
+  in an inset `bg-surface` well). Put `reveal` on the grid, not on single cells.
+- **Boxes**: `frame-box` (hairline border, 1.25rem radius) for sidebars, indexes and long text that
+  would otherwise float in a wide column (age-hub milestones); `rule-dash` between blocks inside a
+  narrow column; page-variant prose puts a dashed hairline between H2 sections.
+- **Headers**: `page-head` splits a title and its lead into two columns on wide screens, so no
+  title sits beside a void.
+- Tokens: `--frame-line`, `--frame-mark`, `--frame-dot`, `--cell-line` (light/dark/`theme-night`).
+
 ## Motion and light
 
 - `spotlight`: soft studio light behind a hero product (bright centre, studio-grey edges; a faint
@@ -55,7 +78,7 @@ Large type is for short lines. Longer copy from the database is shaped, never sh
 - `reveal` / `reveal-zoom`: scroll-driven (CSS `animation-timeline: view()`), no JS; sections,
   cards and feature renders. Off for reduced motion and the lite tier.
 - `text-gradient-wood`: birch-to-walnut gradient text (not `text-wood`: that name is the theme colour utility) for one headline per page at most (assembly story).
-- Cards lift 4px with a soft long shadow on hover; renders zoom ~3–4% over 900ms.
+- Cells tint on hover (no lift); tile renders zoom ~3–4% over 900ms.
 
 ## Imagery pipeline
 
@@ -87,9 +110,10 @@ Large type is for short lines. Longer copy from the database is shaped, never sh
 - **Shop / category**: large headline + category strip with renders → product tiles + filters.
 - **Footer**: quiet grey band, fine print first, dense link columns, legal line.
 - **Content and policy pages** (glossary, FAQ, workshop, installments, policies, reviews, gallery,
-  topic hubs, search): centred or start-aligned `headline` H1 with an `eyebrow` above; grey
-  `bg-surface` cards (1.5–1.75rem radius) instead of paper, kraft or sticky-note surfaces; FAQ
-  as a hairline accordion; chips are hairline pills that fill with ink when chosen.
+  topic hubs, search): a `page-head` or centred `headline` H1 with an `eyebrow` above, then ruled
+  bands (frame system) with cells and framed boxes instead of paper, kraft or sticky-note
+  surfaces; FAQ as a hairline accordion beside a framed section index; chips are hairline pills
+  that fill with ink when chosen.
 - **404**: `app/(site)/not-found.tsx` (inside the site layout) and `app/global-not-found.tsx` (URLs
   that match no route, with its own chrome). Keep the shared `NotFoundPage` light: Next embeds the
   not-found tree in every page's RSC payload.

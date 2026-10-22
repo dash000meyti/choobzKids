@@ -26,7 +26,7 @@
     position: sticky;
     inset-block-start: calc(var(--spacing-header-lg) + 2rem);
     align-self: start;
-    margin-block-start: 8.5rem;
+    margin-block-start: 0;
   }
 }
 

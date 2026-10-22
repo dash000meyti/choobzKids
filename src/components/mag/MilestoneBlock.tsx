@@ -63,8 +63,8 @@ export function MilestoneBlock({ title, intro, reviewer, sourceCount, className 
         ) : null}
         <MedicalNote className="mt-6" />
       </div>
-      <div className="max-w-prose text-muted [&_strong]:text-ink">
-        <Prose markdown={emphasizeOpening(intro)} variant="page" glossaryLinks />
+      <div className="frame-box p-7 text-muted lg:p-10 [&_strong]:text-ink">
+        <Prose markdown={emphasizeOpening(intro)} variant="page" glossaryLinks className="max-w-prose" />
       </div>
     </section>
   );

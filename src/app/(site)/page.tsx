@@ -45,7 +45,8 @@ export default async function HomePage() {
       <JsonLd data={graph(webPageNode({ path: "/", name: TITLE, description: DESCRIPTION }))} />
       <h1 className="sr-only">چوبز کیدز؛ اسباب‌بازی و وسایل چوبی مونته‌سوری، ساخت کارگاه چوبز</h1>
 
-      <div className="flex flex-col gap-3 md:pb-3">
+      {/* Every section sits in the framed column (rails); tiles are panels inside it. */}
+      <div className="frame-col flex flex-col gap-3 md:pt-3">
         {tower && (
           <ProductTile
             product={tower}
@@ -68,7 +69,7 @@ export default async function HomePage() {
             snapppay={settings.snapppay}
           />
         )}
-        <div className="grid gap-3 md:grid-cols-2 md:px-3">
+        <div className="grid gap-3 md:grid-cols-2">
           {TILES.map((t) => {
             const product = bySlug.get(t.slug);
             return product ? (

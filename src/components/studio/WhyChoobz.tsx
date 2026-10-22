@@ -69,19 +69,19 @@ const ITEMS = [
 
 export function WhyChoobz() {
   return (
-    <section aria-labelledby="why-title" className="mx-auto max-w-[75rem] px-gutter py-section">
+    <section aria-labelledby="why-title" className="frame-col frame-rule frame-pad py-band">
       <div className="reveal text-center">
         <p className="eyebrow">خرید با خیال راحت</p>
         <h2 id="why-title" className="headline mt-2 text-[2.25rem] lg:text-[3.5rem]">
           چرا چوبز؟
         </h2>
       </div>
-      <ul className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="reveal cells mt-12 sm:grid-cols-2 lg:grid-cols-4">
         {ITEMS.map((it) => (
-          <li key={it.title} className="reveal">
+          <li key={it.title}>
             <Link
               href={it.href}
-              className="group flex h-full flex-col rounded-[1.75rem] bg-surface p-8 transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:shadow-[0_24px_48px_-28px_rgb(0_0_0/0.28)]"
+              className="cell-hover group flex h-full flex-col p-8 lg:p-9"
             >
               {it.icon}
               <h3 className="mt-8 text-[1.375rem] leading-snug font-bold">{it.title}</h3>

@@ -24,13 +24,13 @@ export function PillarShelf({ pillars, className }: PillarShelfProps) {
         </h2>
         <p className="mt-2 text-muted">هر موضوع یک راهنمای جامع دارد؛ از همین‌جا شروع کنید و قدم‌به‌قدم جلو بروید.</p>
       </div>
-      <ul className="no-scrollbar -mx-gutter flex snap-x gap-3 overflow-x-auto px-gutter pb-2 lg:mx-0 lg:grid lg:grid-cols-3 lg:overflow-visible lg:px-0">
+      <ul className="cells sm:grid-cols-2 lg:grid-cols-3">
         {pillars.map((pillar, i) => (
-          <li key={pillar.id} className="w-[72vw] max-w-[20rem] shrink-0 snap-start lg:w-auto lg:max-w-none">
+          <li key={pillar.id}>
             <Link
               href={`/mag/${pillar.slug}`}
               transitionTypes={["nav-forward"]}
-              className="flex h-full flex-col rounded-[1.5rem] bg-surface p-6 transition-transform duration-300 hover:scale-[1.01]"
+              className="cell-hover flex h-full flex-col p-6 lg:p-7"
             >
               <span className="text-sm font-bold tabular-nums text-muted">{toFaDigits(String(i + 1).padStart(2, "0"))}</span>
               {pillar.topic ? <span className="mt-4 text-xs font-semibold text-muted">{pillar.topic.name}</span> : null}

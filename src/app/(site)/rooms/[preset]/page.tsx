@@ -103,12 +103,14 @@ export default async function RoomPresetPage({ params }: PageProps<"/rooms/[pres
   return (
     <PageTurn>
       <JsonLd data={jsonLd} />
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
 
-        <header className="mt-6 flex max-w-3xl flex-col gap-3">
-          {room.tagline ? <Kicker decorative>{room.tagline}</Kicker> : null}
-          <h1 className="text-3xl text-ink">{title}</h1>
+        <header className="page-head mt-6">
+          <div className="flex flex-col gap-3">
+            {room.tagline ? <Kicker decorative>{room.tagline}</Kicker> : null}
+            <h1 className="headline text-3xl lg:text-[3.5rem]">{title}</h1>
+          </div>
           <p className="text-lead text-muted">
             {toFaDigits(room.pieceCount)} وسیلهٔ چوبی
             {stage ? `، برای ${stage.label}` : ""}
@@ -117,7 +119,7 @@ export default async function RoomPresetPage({ params }: PageProps<"/rooms/[pres
           </p>
         </header>
 
-        <div className="mt-8 grid gap-8 lg:mt-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start lg:gap-12">
+        <div className="frame-rule-in mt-8 grid gap-8 pt-8 lg:mt-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:items-start lg:gap-12 lg:pt-10">
           <div className="flex flex-col gap-4 lg:sticky lg:top-[calc(var(--spacing-header-lg)+1.5rem)]">
             <figure className="flex flex-col gap-3">
               <RoomScene room={room} roomKey={room.slug} childCm={stage?.medianCm} eyeLine />
@@ -155,7 +157,7 @@ export default async function RoomPresetPage({ params }: PageProps<"/rooms/[pres
           </section>
         </div>
 
-        <div className="mt-16 grid gap-12 lg:mt-24 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
+        <div className="frame-rule-in frame-band grid gap-12 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-16">
           <div className="flex min-w-0 flex-col gap-14">
             {room.description ? (
               <Prose markdown={room.description} variant="page" slug={`room-${room.slug}`} className="max-w-prose" />

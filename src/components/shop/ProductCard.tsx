@@ -99,7 +99,8 @@ function ProductCardView({
     <>
       <article
         className={cn(
-          "group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-surface text-center transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:shadow-[0_28px_56px_-32px_rgb(0_0_0/0.3)]",
+          // Cell-ready: no own fill or radius; inside a `cells` grid it shares hairlines.
+          "cell-hover group relative flex h-full flex-col overflow-hidden text-center",
           className,
         )}
         data-product={product.id}
@@ -111,7 +112,8 @@ function ProductCardView({
         data-order={product.sortOrder}
         data-published={product.publishedAt ?? undefined}
       >
-        <div className="relative px-6 pt-8 transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]">
+        <div className="relative m-2 overflow-hidden rounded-[1rem] bg-surface px-5 pt-6 pb-1">
+          <div className="transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]">
           {stage && stage.media.kind !== "illustration" ? (
             <Stage {...stage.media} alt={stage.alt} slug={product.slug} priority={priority} vtName={`product-${product.id}`} />
           ) : (
@@ -123,6 +125,7 @@ function ProductCardView({
               box="1 / 1"
             />
           )}
+          </div>
         </div>
 
         <div className="flex flex-1 flex-col items-center gap-1 px-5 pb-6 pt-4">

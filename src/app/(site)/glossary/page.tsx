@@ -46,7 +46,7 @@ export default async function GlossaryPage() {
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={TRAIL} />
 
         <header className="mx-auto mt-8 flex max-w-[48rem] flex-col items-center gap-3 pb-6 text-center lg:mt-12">
@@ -60,7 +60,7 @@ export default async function GlossaryPage() {
         </header>
 
         <AlphabetRail letters={letters} className="mt-6" />
-        <GlossaryIndex groups={groups} className="mt-2" />
+        <GlossaryIndex groups={groups} className="mt-8" />
       </div>
       <JsonLd data={ld} />
     </PageTurn>

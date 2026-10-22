@@ -79,7 +79,7 @@ export default async function TopicHubPage({ params }: PageProps<"/mag/topic/[to
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
 
         <header className="mt-6 grid items-center gap-8 lg:mt-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,26rem)]">
@@ -107,15 +107,17 @@ export default async function TopicHubPage({ params }: PageProps<"/mag/topic/[to
         </header>
 
         {topic.description ? (
-          <section aria-label={`دربارهٔ ${topic.name}`} className="mt-section max-w-prose">
+          <section aria-label={`دربارهٔ ${topic.name}`} className="frame-rule-in frame-band">
+            <div className="max-w-prose">
             <Prose markdown={topic.description} variant="page" slug={`topic-${topic.slug}`} glossaryLinks />
+            </div>
           </section>
         ) : null}
 
         {rest.length ? (
-          <section aria-labelledby="topic-posts" className="mt-section">
+          <section aria-labelledby="topic-posts" className="frame-rule-in frame-band">
             <SectionHeader id="topic-posts" title={`همهٔ مطالب ${topic.name}`} />
-            <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
               {rest.map((post, i) => (
                 <li key={post.id}>
                   <ArticleCard post={post} prefetch={i < 3} />
@@ -126,9 +128,9 @@ export default async function TopicHubPage({ params }: PageProps<"/mag/topic/[to
         ) : null}
 
         {products.length ? (
-          <section aria-labelledby="topic-products" className="mt-section">
+          <section aria-labelledby="topic-products" className="frame-rule-in frame-band">
             <SectionHeader id="topic-products" title="وسایل مرتبط" link={{ label: "همهٔ محصولات", href: "/shop" }} />
-            <ul className="mt-6 grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+            <ul className="cells mt-6 grid-cols-2 md:grid-cols-3">
               {products.map((product) => (
                 <li key={product.id}>
                   <ProductCard product={product} showCategory />
@@ -139,9 +141,9 @@ export default async function TopicHubPage({ params }: PageProps<"/mag/topic/[to
         ) : null}
 
         {terms.length ? (
-          <section aria-labelledby="topic-terms" className="mt-section">
+          <section aria-labelledby="topic-terms" className="frame-rule-in frame-band">
             <SectionHeader id="topic-terms" title="واژه‌های کلیدی" link={{ label: "واژه‌نامه", href: "/glossary" }} />
-            <ul className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
               {terms.map((term) => (
                 <li key={term.slug}>
                   <TermCard term={term} />
@@ -151,7 +153,9 @@ export default async function TopicHubPage({ params }: PageProps<"/mag/topic/[to
           </section>
         ) : null}
 
-        <AskChoobz socials={socials} className="mt-section max-w-narrow" />
+        <div className="frame-rule-in frame-band">
+          <AskChoobz socials={socials} className="max-w-narrow" />
+        </div>
       </div>
       <JsonLd data={graph(page, list, breadcrumbNode(trail))} />
     </PageTurn>

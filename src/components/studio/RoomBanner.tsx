@@ -7,8 +7,8 @@ import { Render } from "./Render";
 /* A full room in one purchase: the staged room set with its price and installments. */
 export function RoomBanner({ fromToman, snapppay }: { fromToman: number | null; snapppay: SiteSettings["snapppay"] }) {
   return (
-    <section aria-labelledby="room-title" className="mx-auto max-w-[75rem] px-gutter py-section">
-      <div className="overflow-hidden rounded-[2rem] bg-surface">
+    <section aria-labelledby="room-title" className="frame-col frame-rule py-band">
+      <div className="overflow-hidden bg-surface md:rounded-[2rem]">
         <div className="reveal px-6 pt-16 text-center">
           <p className="eyebrow">چیدمان کامل اتاق</p>
           <h2 id="room-title" className="headline mt-2 text-[2.25rem] lg:text-[3.5rem]">

@@ -109,7 +109,7 @@ export default async function TeamProfilePage({ params }: PageProps<"/team/[slug
 
   return (
     <PageTurn>
-      <div className="mx-auto max-w-page px-gutter pt-6 pb-section lg:pt-10">
+      <div className="frame-col frame-pad pt-6 pb-band lg:pt-10">
         <Breadcrumbs items={trail} />
 
         <header className="mt-6 grid max-w-narrow gap-6 sm:grid-cols-[auto_minmax(0,1fr)] sm:items-start lg:mt-8">
@@ -200,9 +200,9 @@ export default async function TeamProfilePage({ params }: PageProps<"/team/[slug
 
 function PostShelf({ id, title, count, posts }: { id: string; title: string; count: number; posts: TeamProfile["authored"] }) {
   return (
-    <section aria-labelledby={`${id}-title`} className="mt-section">
+    <section aria-labelledby={`${id}-title`} className="frame-rule-in frame-band">
       <SectionHeader id={`${id}-title`} size="content" title={title} sub={`${formatNumber(count)} مطلب در مجلهٔ چوبز`} />
-      <ul className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <ul className="cells mt-6 sm:grid-cols-2 lg:grid-cols-3">
         {posts.map((post, i) => (
           <li key={post.id}>
             <ArticleCard post={post} prefetch={i < 3} />

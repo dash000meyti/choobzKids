@@ -56,9 +56,9 @@ export function GlossaryTeaser({ letters, termCount, terms, className }: Glossar
         </ol>
       </nav>
       {terms.length ? (
-        <ul className="no-scrollbar -mx-gutter flex snap-x snap-mandatory scroll-px-gutter gap-3 overflow-x-auto px-gutter pb-2 sm:mx-0 sm:grid sm:grid-cols-2 sm:overflow-visible sm:px-0 lg:grid-cols-3">
+        <ul className="cells sm:grid-cols-2 lg:grid-cols-3">
           {terms.map((term) => (
-            <li key={term.id} className="w-[78%] shrink-0 snap-start sm:w-auto">
+            <li key={term.id}>
               <TermCard term={term} />
             </li>
           ))}
