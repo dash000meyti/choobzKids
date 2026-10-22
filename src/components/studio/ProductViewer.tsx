@@ -118,11 +118,15 @@ export function ProductViewer({
         if (Math.abs(target - explode) > 0.001) {
           explode += (target - explode) * (reduce ? 1 : 0.12);
           model!.setExplode(explode);
+          studio.shadowsChanged();
           // The contact shadow reads pixels back from the GPU: refresh it when the parts come to rest.
           if (Math.abs(target - explode) <= 0.001) void studio.updateShadow().then(kick);
         }
         studio.render();
-        if (visible && (controls.autoRotate || moving || Math.abs(target - explode) > 0.001)) raf = requestAnimationFrame(tick);
+        // Through kick() so at most one frame is ever queued: controls.update() above fires
+        // "change" (→ kick) while auto-rotating, and scheduling here as well doubled the frames
+        // queued every frame (1, 2, 4, 8…) until the page froze and the GPU dropped the context.
+        if (visible && (controls.autoRotate || moving || Math.abs(target - explode) > 0.001)) kick();
       };
       const kick = () => {
         if (!raf) raf = requestAnimationFrame(tick);

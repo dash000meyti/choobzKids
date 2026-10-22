@@ -123,6 +123,7 @@ export function AssemblyCanvas({ productKey, children, exploded }: Props) {
         const t = Math.min(1, Math.max(0, (p - 0.05) / 0.55));
         model.setExplode(1 - (1 - Math.pow(1 - t, 3)));
         model.root.rotation.y = (0.5 - p) * 0.6;
+        studio.shadowsChanged();
         studio.render();
         // The contact shadow reads pixels back from the GPU: refresh it once scrolling settles.
         clearTimeout(settle);

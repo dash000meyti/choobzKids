@@ -38,6 +38,8 @@ export type Studio = {
   frame: (object: THREE.Object3D, angle?: Angle | { az: number; el: number }, padding?: number) => void;
   /** Re-prints the contact shadow; resolves once it is ready to render (async readback in live mode). */
   updateShadow: () => Promise<void>;
+  /** The model moved (explode, turn, finish): redraw the shadow map on the next render. */
+  shadowsChanged: () => void;
   /** Compiles every shader (scene, contact shadow, shadow map) ahead of the first visible frame. */
   compile: () => Promise<void>;
   render: () => void;
@@ -65,11 +67,11 @@ export function createStudio(
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.16;
-  // The shadow map is identical in live and studio mode: every lighter variant we tried (no shadow
-  // map, a smaller map, fewer blur samples, manual updates) made Chrome's GPU process (ANGLE/Metal)
-  // drop the WebGL context once the parts were exploded.
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.VSMShadowMap;
+  // Live views orbit the camera around a still model and light, so the shadow map is redrawn only
+  // when the model moves (shadowsChanged), not on every frame of a turn.
+  renderer.shadowMap.autoUpdate = !live;
   renderer.setClearColor(0x000000, 0);
 
   const scene = new THREE.Scene();
@@ -212,6 +214,7 @@ export function createStudio(
     blur(9);
     blur(5);
     blur(2);
+    renderer.shadowMap.needsUpdate = true;
     // Live views read the pixels back asynchronously (PBO + fence), so the main thread never waits
     // for the GPU; the offline bench reads synchronously and renders straight after.
     const readback = live ? renderer.readRenderTargetPixelsAsync(contact.rt, 0, 0, RES, RES, shadowPixels) : null;
@@ -253,6 +256,9 @@ export function createStudio(
     stage,
     frame,
     updateShadow,
+    shadowsChanged: () => {
+      renderer.shadowMap.needsUpdate = true;
+    },
     compile: async () => {
       // Scene materials, then the contact-shadow pipeline (depth override + both blur passes), all
       // through KHR_parallel_shader_compile where available, so the first frame compiles nothing.
@@ -264,6 +270,7 @@ export function createStudio(
       quad.dispose();
       // The shadow map's own programs only compile when it first renders: do that in a frame of its own.
       await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      renderer.shadowMap.needsUpdate = true;
       renderer.render(scene, camera);
     },
     render: () => (postFx ? postFx.render() : renderer.render(scene, camera)),
