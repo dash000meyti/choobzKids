@@ -67,7 +67,7 @@ export function ProductTile({
       </Heading>
       <p
         {...rise(160)}
-        className={cn("mt-3 text-muted", hero ? "text-lead lg:text-[1.875rem] lg:leading-snug" : "text-lead", rise(160).className)}
+        className={cn("text-muted", hero ? "mt-4 text-lead lg:mt-6 lg:text-[1.875rem] lg:leading-snug" : "mt-3 text-lead", rise(160).className)}
       >
         {tagline}
       </p>

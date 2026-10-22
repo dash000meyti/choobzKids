@@ -101,6 +101,11 @@ const nextConfig: NextConfig = {
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=2592000" }],
       },
       {
+        // Font files never change in place: a new font version gets a new file name.
+        source: "/fonts/:path*.woff2",
+        headers: [{ key: "Cache-Control", value: "public, max-age=31536000, immutable" }],
+      },
+      {
         source: "/(marks|icons|endpaper).svg",
         headers: [{ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=2592000" }],
       },

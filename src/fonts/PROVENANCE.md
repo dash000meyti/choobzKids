@@ -1,11 +1,17 @@
 # Font provenance
 
-Built by `scripts/fonts/build.sh` (fontTools 4.60.2 subset: Persian core + basic Latin, all GSUB features, no hinting, woff2).
+## Site fonts (proprietary, Fontiran — licensed by the owner)
+
+| File | Family | Edition | Notes |
+|---|---|---|---|
+| `public/fonts/iransansx/IRANSansXFaNum-{Regular,DemiBold,Bold}.woff2` | IRANSansX Pro | Persian numerals, webfont (2023) | text and UI |
+| `public/fonts/kalameh/KalamehWebFaNum-Bold.woff2` | Kalameh Eco | Persian numerals, webfont (2022) | large headlines |
+
+Used exactly as delivered (no subsetting or conversion). Each folder carries Fontiran's
+`FontLicense.txt`: write the 6-digit license code in place of `(.....)` before going live.
+
+## Share-card font (open)
 
 | File | Upstream | Version | License |
 |---|---|---|---|
-| `vazirmatn/vazirmatn-fa-wght.woff2` | npm `vazirmatn` (github.com/rastikerdar/vazirmatn) — `fonts/variable/Vazirmatn[wght].ttf`, sha256 `696249a2…2fd49dca` | 33.0.3 | OFL-1.1 |
-| `assets/og/Vazirmatn-Bold.ttf` (share cards, plain TTF) | same package — `fonts/ttf/Vazirmatn-Bold.ttf`, sha256 `f635fdbe…2b2ae723` | 33.0.3 | OFL-1.1 |
-
-License text is in `LICENSES/`. Subsets are Modified Versions under the OFL; Vazirmatn has no Reserved Font Name.
-Earlier builds used Estedad, Ario and Mikhak (see git history); the Studio redesign sets everything in Vazirmatn.
+| `assets/og/Vazirmatn-Bold.ttf` (sharp/Pango share cards) | npm `vazirmatn` — `fonts/ttf/Vazirmatn-Bold.ttf`, subset by `scripts/fonts/build.sh` | 33.0.3 | OFL-1.1 (`src/fonts/LICENSES/Vazirmatn-OFL.txt`) |

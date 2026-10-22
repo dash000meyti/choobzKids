@@ -16,8 +16,13 @@ black tiles. Big, heavy, tight Persian headlines; one line of copy; two actions.
 - Neutrals: page `#FFFFFF`, tiles `#F5F5F7`, ink `#1D1D1F`, secondary `#6E6E73`, hairline `#D2D2D7`.
 - Night tiles/sections: `.theme-night` (black, `#F5F5F7` text, `#86868B` secondary).
 - Links `--link` walnut `#8A5A2B`; eyebrow «جدید/محبوب» `--eyebrow` `#B64400`; installments `--success`.
-- Type: **Vazirmatn only** (self-hosted variable, OFL) — 400 text, 500–600 UI, **700 headlines**
-  (`headline` utility). Never 800/900: heavy Persian reads loud, not luxurious. Never tracked.
+- Type (Fontiran, licensed; files + license notes in `public/fonts`, used as delivered, no subsetting):
+  - **Kalameh Bold** for large headlines only: h1, h2 and the `headline` utility (section titles,
+    product statements). One file; every heading weight maps to it.
+  - **IRANSansX** (Persian-numeral edition) for everything else: body 400, UI 500, buttons and
+    eyebrows 500–600 (one DemiBold file), small titles (h3, cards, prices) 700. Never tracked.
+  - Only IRANSansX Regular and Kalameh Bold are preloaded (`FontPreloads` in the root layout).
+  - Share cards (`src/lib/og.ts`) keep Vazirmatn Bold (open licence) for server-side rendering.
 - Pills (44px, weight 500): primary = ink fill; ghost = a hairline ring in the text colour, so it
   reads on white, grey and black alike. `pill()` in `components/studio/Actions`.
 - Radii: tiles 1.75rem, cards 1.5rem, buttons full pills. Shadows: none (renders carry their own).

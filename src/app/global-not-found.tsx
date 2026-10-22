@@ -1,6 +1,6 @@
 import type { Metadata, Viewport } from "next";
-import { fontVariables } from "./fonts";
 import { NotFoundPage } from "@/components/layout/NotFoundPage";
+import { FontPreloads } from "@/lib/fonts";
 import { SiteShell } from "@/components/layout/SiteShell";
 import { ThemeScript } from "@/components/layout/ThemeScript";
 import { SITE_URL } from "@/lib/env";
@@ -26,8 +26,9 @@ export const viewport: Viewport = {
 
 export default function GlobalNotFound() {
   return (
-    <html lang="fa-IR" dir="rtl" className={fontVariables} suppressHydrationWarning>
+    <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
       <head>
+        <FontPreloads />
         <ThemeScript />
       </head>
       <body>

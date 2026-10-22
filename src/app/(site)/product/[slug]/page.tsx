@@ -149,7 +149,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
               {product.name}
             </h1>
             {product.subtitle && (
-              <p style={{ "--rise-delay": "160ms" } as React.CSSProperties} className="rise mt-4 max-w-[44rem] text-lead text-muted lg:text-[1.625rem] lg:leading-snug">
+              <p style={{ "--rise-delay": "160ms" } as React.CSSProperties} className="rise mt-4 max-w-[44rem] text-lead text-muted lg:mt-6 lg:text-[1.625rem] lg:leading-snug">
                 {product.subtitle}
               </p>
             )}

@@ -8,6 +8,41 @@
 /* Scan only the source tree: docs and seed JSON are full of class-like words. */
 @import "tailwindcss" source("..");
 
+/* ---------- Fonts (Fontiran, licensed; files and license notes in public/fonts) ----------
+   IRANSansX (Persian numerals) for text and UI, Kalameh Bold for large headlines only.
+   Static files, used as delivered (no subsetting); the root layout preloads Regular + Kalameh. */
+@font-face {
+  font-family: "IRANSansX";
+  src: url("/fonts/iransansx/IRANSansXFaNum-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  /* 500 and 600 share DemiBold: one file fewer on every page, no visible loss at UI sizes. */
+  src: url("/fonts/iransansx/IRANSansXFaNum-DemiBold.woff2") format("woff2");
+  font-weight: 500 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "IRANSansX";
+  /* 700–900 share the Bold file, so a stray heavier weight never falls back to faux bold. */
+  src: url("/fonts/iransansx/IRANSansXFaNum-Bold.woff2") format("woff2");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Kalameh";
+  /* One display weight: every headline weight maps to Kalameh Bold. */
+  src: url("/fonts/kalameh/KalamehWebFaNum-Bold.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------- Variants ---------- */
 /* `dark:` applies only when the visitor picked dark: the site never follows the OS on its own. */
 @custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
@@ -182,7 +217,7 @@
   --color-eyebrow: var(--eyebrow);
 
   --font-body: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
-  --font-display: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
+  --font-display: var(--ff-display), var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
   --font-accent: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
   --font-sans: var(--ff-body), system-ui, "Segoe UI", Tahoma, sans-serif;
 
@@ -229,6 +264,8 @@
   --paper-tile: none;
   --header-bg: rgb(255 255 255 / 0.78);
   --spot: #FFFFFF;
+  --ff-body: "IRANSansX";
+  --ff-display: "Kalameh";
 
   --dur-press: 120ms;
   --dur-quick: 200ms;
@@ -314,8 +351,8 @@
   }
   h1, h2, h3, h4 { text-wrap: balance; }
   p, li, dd, figcaption { text-wrap: pretty; }
-  h1, .font-display { font-family: var(--font-display); font-weight: 700; line-height: 1.2; }
-  h2 { font-weight: 700; }
+  /* Kalameh for page titles and section headings; h3 and smaller stay in IRANSansX. */
+  h1, h2, .font-display { font-family: var(--font-display); font-weight: 700; line-height: 1.25; }
   h3 { font-weight: 700; }
   strong, b { font-weight: 700; }
   .swash { font-feature-settings: normal; }
@@ -375,8 +412,9 @@
 }
 /* Headlines: Vazirmatn Bold, tight but never cramped (Persian needs ≥ 1.2). */
 @utility headline {
+  font-family: var(--font-display);
   font-weight: 700;
-  line-height: 1.2;
+  line-height: 1.25;
   text-wrap: balance;
 }
 /* A warm birch-to-walnut gradient for the few headlines that deserve a moment. */

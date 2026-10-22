@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { fontVariables } from "./fonts";
+import { FontPreloads } from "@/lib/fonts";
 import { ThemeScript } from "@/components/layout/ThemeScript";
 import { getSettings } from "@/db/queries/settings";
 import { SITE_URL } from "@/lib/env";
@@ -34,8 +34,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // reference these @ids. A cached query, so it is part of every prerendered shell.
   const settings = await getSettings();
   return (
-    <html lang="fa-IR" dir="rtl" className={fontVariables} suppressHydrationWarning>
+    <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
       <head>
+        <FontPreloads />
         <ThemeScript />
       </head>
       <body>
