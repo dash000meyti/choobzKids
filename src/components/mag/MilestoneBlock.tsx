@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Prose } from "@/components/mag/Prose";
 import { Icon } from "@/components/ui/Icon";
 import type { AgeReviewer } from "@/db/queries/age";

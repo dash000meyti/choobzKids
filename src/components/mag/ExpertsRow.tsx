@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { MagPerson } from "@/db/queries/mag";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { cn, mediaUrl } from "@/lib/utils";

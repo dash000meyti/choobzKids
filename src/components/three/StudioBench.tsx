@@ -5,6 +5,7 @@ import { getManifest } from "@/components/illustrations/manifests";
 import type { Finish } from "./materials";
 import { buildCatalogModel, type ProductModel } from "./model";
 import { createStudio, type Angle, type Studio } from "./studio";
+import { aoPost } from "./studio-ao";
 
 /*
  * Dev-only render bench (/studio). Renders a product at catalogue resolution with a transparent
@@ -26,7 +27,7 @@ export function StudioBench({ keys }: { keys: string[] }) {
   const [log, setLog] = useState<string[]>([]);
 
   useEffect(() => {
-    const studio = createStudio(canvasRef.current!, { pixelRatio: 1, preserveDrawingBuffer: true, ao: true });
+    const studio = createStudio(canvasRef.current!, { quality: "studio", pixelRatio: 1, preserveDrawingBuffer: true, post: aoPost });
     studio.resize(W, H);
     studioRef.current = studio;
     (window as unknown as { __studio: Studio }).__studio = studio;

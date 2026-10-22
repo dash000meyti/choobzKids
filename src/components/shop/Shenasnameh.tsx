@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ReactNode } from "react";
 import { orthoLabels } from "@/components/illustrations/sizes";
 import type { ProductPageData } from "@/db/queries/product";

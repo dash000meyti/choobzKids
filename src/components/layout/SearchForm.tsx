@@ -19,7 +19,7 @@ type SearchFormProps = {
 
 export function SearchForm({ id, layout = "popup", autoFocus, className }: SearchFormProps) {
   return (
-    <Form action="/search" role="search" aria-label="جستجو در سایت" className={cn("relative flex items-start", className)}>
+    <Form action="/search" prefetch={false} role="search" aria-label="جستجو در سایت" className={cn("relative flex items-start", className)}>
       <SearchInput id={id} layout={layout} autoFocus={autoFocus} />
       <button
         type="submit"

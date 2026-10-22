@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { EnamadBadge } from "@/components/ui/EnamadBadge";
 import type { NavData } from "@/db/queries/nav";
 import { toFaDigits } from "@/lib/format";

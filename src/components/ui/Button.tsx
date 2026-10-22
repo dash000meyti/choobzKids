@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ButtonHTMLAttributes, ComponentProps, CSSProperties, ReactNode } from "react";
 import { grainStyle } from "@/lib/grain";
 import { cn } from "@/lib/utils";

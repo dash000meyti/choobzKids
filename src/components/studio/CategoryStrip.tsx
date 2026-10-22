@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { CategorySummary } from "@/db/queries/catalog";
 import { cn } from "@/lib/utils";
 import { Render } from "./Render";

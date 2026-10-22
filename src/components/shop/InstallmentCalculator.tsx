@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Icon } from "@/components/ui/Icon";
 import { InstallmentWheels } from "@/components/ui/InstallmentWheels";
 import { installmentPlan, type SnappPaySettings } from "@/components/ui/installments";

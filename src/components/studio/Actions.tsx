@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { cn } from "@/lib/utils";
 
 /** The pair of calls to action under every product headline: «بیشتر بدانید ‹» and a «خرید» pill. */

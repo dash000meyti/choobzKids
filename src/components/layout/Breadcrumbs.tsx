@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { BreadcrumbItem } from "@/lib/jsonld";
 import { cn } from "@/lib/utils";
 import styles from "./Breadcrumbs.module.css";

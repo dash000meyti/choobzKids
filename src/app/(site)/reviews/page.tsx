@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { AskChoobz } from "@/components/ui/AskChoobz";

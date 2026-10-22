@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { DoodleName } from "./Doodle";
 import { Kicker } from "./Kicker";
 

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { RoomCardData } from "@/db/queries/cards";
 import { getSettings } from "@/db/queries/settings";
 import { Render } from "@/components/studio/Render";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ProductCardData } from "@/db/queries/catalog";
 import type { RoomCardData } from "@/db/queries/cards";
 import type { ShopGuide } from "@/db/queries/shop";

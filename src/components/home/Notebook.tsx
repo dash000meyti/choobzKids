@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { CSSProperties } from "react";
 import { HexLink } from "@/components/layout/HexLink";
 import { ArticleCard } from "@/components/mag/ArticleCard";

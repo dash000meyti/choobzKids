@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { startTransition, useEffect, useId, useRef, useState, type ReactNode } from "react";
 import type { FacetOption, FilterFacets } from "@/db/queries/shop";
 import { Button, buttonClasses } from "@/components/ui/Button";

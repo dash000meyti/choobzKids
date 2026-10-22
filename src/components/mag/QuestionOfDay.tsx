@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { DailyQuestion } from "@/db/queries/mag";
 import { Bubble } from "@/components/ui/Bubble";
 import { Kicker } from "@/components/ui/Kicker";

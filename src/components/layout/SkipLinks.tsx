@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 
 /*
  * Skip links (DESIGN.md §5, §11.2): the first two stops for keyboard and switch users,

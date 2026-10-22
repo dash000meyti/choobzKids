@@ -28,7 +28,7 @@ export function MagHero({ className }: MagHeroProps) {
         راهنماهای ساده و منبع‌دار برای پدر و مادرها؛ از مونته‌سوری و پیکلر تا چیدمان اتاق، بازی آزاد و هدیهٔ کودک ۰ تا ۶
         سال.
       </p>
-      <Form action="/search" role="search" aria-label="جستجو در مجله" className="mx-auto mt-8 flex max-w-[34rem] items-center gap-2">
+      <Form action="/search" prefetch={false} role="search" aria-label="جستجو در مجله" className="mx-auto mt-8 flex max-w-[34rem] items-center gap-2">
         <label htmlFor="mag-ask" className="sr-only">
           سؤالتان را بپرسید
         </label>

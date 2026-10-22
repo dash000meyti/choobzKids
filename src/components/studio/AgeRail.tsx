@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { AGE_HUBS } from "@/lib/ages";
 import { Render } from "./Render";
 

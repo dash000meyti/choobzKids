@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { MouseEvent } from "react";
 import { openCart } from "@/components/layout/cart/CartProvider";
 import { useCart } from "@/components/layout/cart/store";

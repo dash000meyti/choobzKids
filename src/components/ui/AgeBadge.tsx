@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { formatAgeMonths, formatAgeRange } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { AGE_TINT, ageHubFor, ageStageFor } from "./tints";

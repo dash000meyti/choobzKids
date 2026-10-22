@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { formatNumber, toFaDigits } from "@/lib/format";
 import { cn } from "@/lib/utils";
 import { INSTALLMENTS_HREF, installmentPlan, type SnappPaySettings } from "./installments";

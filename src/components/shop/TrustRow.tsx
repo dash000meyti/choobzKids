@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { SiteSettings } from "@/db/queries/settings";
 import { EnamadBadge } from "@/components/ui/EnamadBadge";
 import { Icon, type IconName } from "@/components/ui/Icon";

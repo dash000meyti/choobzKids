@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { MagPerson } from "@/db/queries/mag";
 import { Icon } from "@/components/ui/Icon";
 import { formatJalali, toFaDigits } from "@/lib/format";

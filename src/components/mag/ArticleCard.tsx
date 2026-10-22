@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { ViewTransition, type ReactNode } from "react";
 import type { ArticleCardData, PostFormat } from "@/db/queries/cards";
 import { hasRender, Render } from "@/components/studio/Render";

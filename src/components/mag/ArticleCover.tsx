@@ -1,5 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { ViewTransition } from "react";
 import { illustrationSource } from "@/components/illustrations/sizes";
 import { Render } from "@/components/studio/Render";

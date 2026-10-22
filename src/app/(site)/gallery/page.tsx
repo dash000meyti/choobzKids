@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { socialLinks } from "@/components/layout/socials";

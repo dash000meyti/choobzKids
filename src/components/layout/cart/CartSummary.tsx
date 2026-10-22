@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { EnamadBadge } from "@/components/ui/EnamadBadge";
 import { Icon } from "@/components/ui/Icon";
 import { InstallmentLine } from "@/components/ui/InstallmentLine";

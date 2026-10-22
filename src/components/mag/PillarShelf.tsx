@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { PillarGuide } from "@/db/queries/mag";
 import { toFaDigits } from "@/lib/format";
 import { cn } from "@/lib/utils";

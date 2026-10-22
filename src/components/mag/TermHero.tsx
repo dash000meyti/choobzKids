@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ReactNode } from "react";
 import { Render } from "@/components/studio/Render";
 import type { GlossaryTerm } from "@/db/queries/glossary";

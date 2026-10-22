@@ -1,12 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { canAutoRunLive3D, nextFrame, whenIdle } from "@/components/three/capable";
 
 /*
  * «از هر زاویه» — an interactive 3D view of the product built from its manifest: drag to turn,
- * buttons for the assembled / exploded state and the finish. three.js loads only when the viewer
- * nears the viewport; the server-rendered still (children) is the poster and the fallback.
+ * buttons for the assembled / exploded state and the finish. The server-rendered still (children)
+ * is the poster. three.js (~180 KB gzip) loads only when the visitor taps «نمای سه‌بعدی», or by
+ * itself on desktop-class machines once the viewer is on screen; hovering the button warms it.
  */
+
+const warm = () => Promise.all([import("three"), import("@/components/three/studio"), import("@/components/three/model")]);
 
 type Finish = "natural" | "white";
 
@@ -23,14 +27,32 @@ export function ProductViewer({
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const api = useRef<{ setExplode: (v: boolean) => void; setFinish: (f: Finish) => void } | null>(null);
   const [live, setLive] = useState(false);
+  const [requested, setRequested] = useState(false);
+  const [failed, setFailed] = useState(false);
   const [exploded, setExploded] = useState(false);
   const [finish, setFinish] = useState<Finish>("natural");
+
+  // Desktop-class machines start by themselves once the viewer is actually on screen.
+  useEffect(() => {
+    const host = hostRef.current;
+    if (!host || requested || !canAutoRunLive3D()) return;
+    let cancelIdle = () => {};
+    const io = new IntersectionObserver((entries) => {
+      if (!entries.some((e) => e.isIntersecting)) return;
+      io.disconnect();
+      cancelIdle = whenIdle(() => setRequested(true));
+    });
+    io.observe(host);
+    return () => {
+      io.disconnect();
+      cancelIdle();
+    };
+  }, [requested]);
 
   useEffect(() => {
     const host = hostRef.current;
     const canvas = canvasRef.current;
-    if (!host || !canvas) return;
-    if ("lite" in document.documentElement.dataset) return;
+    if (!host || !canvas || !requested) return;
 
     let disposed = false;
     let cleanup = () => {};
@@ -44,10 +66,17 @@ export function ProductViewer({
         import("@/components/illustrations/manifests"),
       ]);
       if (disposed) return;
+      // Each step gets a frame of its own, so start-up never blocks scrolling for long.
+      await nextFrame();
+      if (disposed) return;
       const studio = createStudio(canvas);
       const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      let model = buildCatalogModel(productKey, getManifest);
-      if (!model) return;
+      await nextFrame();
+      let model = disposed ? null : buildCatalogModel(productKey, getManifest);
+      if (!model) {
+        studio.dispose();
+        return;
+      }
       studio.stage.add(model.root);
       model.setExplode(1);
       const size = () => {
@@ -57,7 +86,13 @@ export function ProductViewer({
       size();
       studio.frame(model.root, "hero", 1.0);
       model.setExplode(0);
-      studio.updateShadow();
+      await studio.compile();
+      await studio.updateShadow();
+      if (disposed) {
+        model.dispose();
+        studio.dispose();
+        return;
+      }
 
       const controls = new OrbitControls(studio.camera, canvas);
       controls.target.copy(new THREE.Box3().setFromObject(model.root).getCenter(new THREE.Vector3()));
@@ -70,6 +105,8 @@ export function ProductViewer({
       controls.autoRotateSpeed = 0.6;
       controls.update();
       controls.addEventListener("start", () => (controls.autoRotate = false));
+      // One slow turn to show it is alive, then rest: no rendering while nobody touches it.
+      const stopSpin = setTimeout(() => (controls.autoRotate = false), 9000);
 
       let explode = 0;
       let target = 0;
@@ -81,7 +118,8 @@ export function ProductViewer({
         if (Math.abs(target - explode) > 0.001) {
           explode += (target - explode) * (reduce ? 1 : 0.12);
           model!.setExplode(explode);
-          studio.updateShadow();
+          // The contact shadow reads pixels back from the GPU: refresh it when the parts come to rest.
+          if (Math.abs(target - explode) <= 0.001) void studio.updateShadow().then(kick);
         }
         studio.render();
         if (visible && (controls.autoRotate || moving || Math.abs(target - explode) > 0.001)) raf = requestAnimationFrame(tick);
@@ -112,8 +150,7 @@ export function ProductViewer({
           model.dispose();
           model = next;
           studio.stage.add(model.root);
-          studio.updateShadow();
-          kick();
+          void studio.updateShadow().then(kick);
         },
       };
 
@@ -123,6 +160,7 @@ export function ProductViewer({
       };
       window.addEventListener("resize", onResize);
       cleanup = () => {
+        clearTimeout(stopSpin);
         window.removeEventListener("resize", onResize);
         io.disconnect();
         cancelAnimationFrame(raf);
@@ -132,22 +170,19 @@ export function ProductViewer({
       };
     };
 
-    const io = new IntersectionObserver(
-      (entries) => {
-        if (entries.some((e) => e.isIntersecting)) {
-          io.disconnect();
-          void start();
-        }
-      },
-      { rootMargin: "400px 0px" },
-    );
-    io.observe(host);
+    // A GPU that drops the context (or refuses one) leaves the still in place instead of a blank box.
+    const onLost = () => {
+      setLive(false);
+      setFailed(true);
+    };
+    canvas.addEventListener("webglcontextlost", onLost);
+    start().catch(onLost);
     return () => {
       disposed = true;
-      io.disconnect();
+      canvas.removeEventListener("webglcontextlost", onLost);
       cleanup();
     };
-  }, [productKey]);
+  }, [productKey, requested]);
 
   const segment = "h-9 rounded-full px-4 text-sm font-semibold transition-colors";
   return (
@@ -156,6 +191,23 @@ export function ProductViewer({
         <div className="absolute inset-0 grid place-items-center transition-opacity duration-500" style={{ opacity: live ? 0 : 1 }}>
           {children}
         </div>
+        {!live && !failed ? (
+          <button
+            type="button"
+            onClick={() => setRequested(true)}
+            onPointerEnter={() => void warm()}
+            onFocus={() => void warm()}
+            onTouchStart={() => void warm()}
+            disabled={requested}
+            className="absolute inset-x-0 bottom-2 mx-auto flex h-11 w-fit items-center gap-2 rounded-full bg-ink px-5 text-sm font-semibold text-bg transition-opacity disabled:opacity-60"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" className="size-5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M12 3 4 7.5v9L12 21l8-4.5v-9L12 3Z" />
+              <path d="M4 7.5 12 12l8-4.5M12 12v9" />
+            </svg>
+            {requested ? "در حال آماده‌سازی…" : "نمای سه‌بعدی"}
+          </button>
+        ) : null}
         <canvas
           ref={canvasRef}
           aria-label="نمای سه‌بعدی؛ برای چرخاندن بکشید"

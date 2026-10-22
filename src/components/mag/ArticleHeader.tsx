@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ReactNode } from "react";
 import type { PostFormat } from "@/db/queries/cards";
 import { AgeBadge } from "@/components/ui/AgeBadge";

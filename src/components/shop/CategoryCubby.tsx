@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { ViewTransition } from "react";
 import { illustrationSize } from "@/components/illustrations/sizes";
 import type { CategorySummary } from "@/db/queries/catalog";

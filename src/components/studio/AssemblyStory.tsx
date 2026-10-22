@@ -3,8 +3,9 @@ import { Render } from "./Render";
 import styles from "./AssemblyStory.module.css";
 
 /*
- * «از ورق تخته، تا اتاق کودک»: the learning tower's real CNC-cut parts fly together in 3D while
- * the four making steps scroll past. The assembled still is the poster and the no-JS frame.
+ * «از ورق تخته، تا اتاق کودک»: the learning tower's real CNC-cut parts come together while the
+ * four making steps scroll past — live 3D on desktop-class machines, a crossfade of the exploded
+ * and assembled stills elsewhere. The assembled still is the poster and the no-JS frame.
  */
 
 const STEPS = [
@@ -30,7 +31,14 @@ export function AssemblyStory() {
       </div>
       <div className={`${styles.section} mx-auto grid max-w-[75rem] gap-x-10 px-gutter pb-section lg:grid-cols-2`}>
         <div className={styles.stage}>
-          <AssemblyCanvas productKey="learning-tower">
+          <AssemblyCanvas
+            productKey="learning-tower"
+            exploded={
+              <div className="w-[min(100%,30rem)]">
+                <Render productKey="learning-tower" angle="hero-exploded" alt="" sizes="(min-width: 1024px) 480px, 88vw" />
+              </div>
+            }
+          >
             <div className="w-[min(100%,30rem)]">
               <Render productKey="learning-tower" alt="برج یادگیری مونته‌سوری چوبز، مونتاژشده" sizes="(min-width: 1024px) 480px, 88vw" />
             </div>

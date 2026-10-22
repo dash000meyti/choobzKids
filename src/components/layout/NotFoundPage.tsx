@@ -1,5 +1,5 @@
 import Form from "next/form";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { pill } from "@/components/studio/Actions";
 import { Render } from "@/components/studio/Render";
 import { Icon } from "@/components/ui/Icon";
@@ -26,7 +26,7 @@ export async function NotFoundPage() {
         <h1 className="headline mt-1 text-3xl lg:text-[4rem]">این صفحه پیدا نشد</h1>
         <p className="mt-3 text-lead text-muted">نخ از دستمون در رفت! شاید آدرس عوض شده باشد؛ از این‌جا راه را پیدا کنیم.</p>
 
-        <Form action="/search" role="search" className="mt-8 flex w-full max-w-lg items-stretch gap-2">
+        <Form action="/search" prefetch={false} role="search" className="mt-8 flex w-full max-w-lg items-stretch gap-2">
           <label htmlFor="nf-q" className="sr-only">
             دنبال چی می‌گردی؟
           </label>

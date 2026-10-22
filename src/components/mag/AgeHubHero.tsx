@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { ViewTransition, type CSSProperties } from "react";
 import { pegDollWidthCm, PegDoll } from "@/components/illustrations/PegDoll";
 import { DOOR_MARKS, ROOM_VIEWBOX, RoomBackdrop } from "@/components/illustrations/RoomKit";

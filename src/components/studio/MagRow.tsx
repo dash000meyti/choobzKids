@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ArticleCardData } from "@/db/queries/cards";
 import { toFaDigits } from "@/lib/format";
 import { Render } from "./Render";

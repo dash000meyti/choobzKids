@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useEffect, useEffectEvent, useRef, useState, type PointerEvent } from "react";
 import { AddToCartButton } from "@/components/shop/AddToCartButton";
 import { Button } from "@/components/ui/Button";

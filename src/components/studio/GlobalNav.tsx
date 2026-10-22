@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Wordmark } from "@/components/illustrations/Wordmark";
 import { SEARCH_DIALOG_ID } from "@/components/layout/SearchDialog";
 import { sheetInvokerProps } from "@/components/ui/Sheet";

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { useId, type CSSProperties, type ReactNode } from "react";
 import type { ProductCardData } from "@/db/queries/catalog";
 import { listVariantOptions, type VariantOption } from "@/db/queries/cards";

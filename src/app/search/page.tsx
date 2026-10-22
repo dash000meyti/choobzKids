@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Form from "next/form";
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { Suspense, type ReactNode } from "react";
 import { ArticleCard } from "@/components/mag/ArticleCard";
 import { TermCard } from "@/components/mag/TermCard";
@@ -108,7 +108,7 @@ function SearchHeader({ query, total }: { query: string; total?: number }) {
 function SearchForm({ query }: { query: string }) {
   return (
     // next/form: a plain GET form without JS, a client-side navigation with it.
-    <Form action="/search" role="search" className="mt-7 flex w-full items-stretch gap-2">
+    <Form action="/search" prefetch={false} role="search" className="mt-7 flex w-full items-stretch gap-2">
       <label htmlFor="search-q" className="sr-only">
         دنبال چی می‌گردی؟
       </label>

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import { illustrationSize } from "@/components/illustrations/sizes";
 import type { TermCardData } from "@/db/queries/cards";
 import { cn, illustrationUrl } from "@/lib/utils";

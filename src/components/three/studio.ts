@@ -2,16 +2,23 @@ import * as THREE from "three";
 import { RoomEnvironment } from "three/examples/jsm/environments/RoomEnvironment.js";
 import { HorizontalBlurShader } from "three/examples/jsm/shaders/HorizontalBlurShader.js";
 import { VerticalBlurShader } from "three/examples/jsm/shaders/VerticalBlurShader.js";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer.js";
-import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass.js";
-import { GTAOPass } from "three/examples/jsm/postprocessing/GTAOPass.js";
-import { OutputPass } from "three/examples/jsm/postprocessing/OutputPass.js";
 
 /*
  * A product photo studio: soft image-based light, a key light from the upper right, a blurred
- * contact shadow on an invisible floor, transparent background. Used by the live viewer and by
+ * contact shadow on an invisible floor, transparent background. Used by the live viewers and by
  * the offline render page that produces the catalogue shots.
+ *
+ * `quality: "live"` (the default) is what a phone can afford: a smaller contact-shadow texture read
+ * back asynchronously, and pixel ratio ≤ 1.5. `"studio"` is the offline catalogue rig. Post-processing (ambient
+ * occlusion) is passed in by the offline bench (./studio-ao), so live pages never download it.
  */
+
+/** Post-processing for offline renders (see ./studio-ao). */
+export type PostFactory = (
+  renderer: THREE.WebGLRenderer,
+  scene: THREE.Scene,
+  camera: THREE.PerspectiveCamera,
+) => { render: () => void; setSize: (w: number, h: number) => void; reframe: (radius: number) => void };
 
 export type Angle = "hero" | "front" | "side" | "top" | "low";
 
@@ -29,7 +36,10 @@ export type Studio = {
   camera: THREE.PerspectiveCamera;
   stage: THREE.Group;
   frame: (object: THREE.Object3D, angle?: Angle | { az: number; el: number }, padding?: number) => void;
-  updateShadow: () => void;
+  /** Re-prints the contact shadow; resolves once it is ready to render (async readback in live mode). */
+  updateShadow: () => Promise<void>;
+  /** Compiles every shader (scene, contact shadow, shadow map) ahead of the first visible frame. */
+  compile: () => Promise<void>;
   render: () => void;
   resize: (w: number, h: number) => void;
   dispose: () => void;
@@ -38,17 +48,26 @@ export type Studio = {
 export function createStudio(
   canvas: HTMLCanvasElement,
   {
-    pixelRatio = Math.min(window.devicePixelRatio, 2),
+    quality = "live",
+    pixelRatio = Math.min(window.devicePixelRatio, quality === "live" ? 1.5 : 2),
     preserveDrawingBuffer = false,
-    /** Ground-truth ambient occlusion (offline catalogue renders; too heavy for the live viewer on phones). */
-    ao = false,
+    post,
+  }: {
+    quality?: "live" | "studio";
+    pixelRatio?: number;
+    preserveDrawingBuffer?: boolean;
+    post?: PostFactory;
   } = {},
 ): Studio {
-  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer });
+  const live = quality === "live";
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer, powerPreference: live ? "default" : "high-performance" });
   renderer.setPixelRatio(pixelRatio);
   renderer.outputColorSpace = THREE.SRGBColorSpace;
   renderer.toneMapping = THREE.NeutralToneMapping;
   renderer.toneMappingExposure = 1.16;
+  // The shadow map is identical in live and studio mode: every lighter variant we tried (no shadow
+  // map, a smaller map, fewer blur samples, manual updates) made Chrome's GPU process (ANGLE/Metal)
+  // drop the WebGL context once the parts were exploded.
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.VSMShadowMap;
   renderer.setClearColor(0x000000, 0);
@@ -86,7 +105,7 @@ export function createStudio(
   scene.add(floorShadow);
 
   // Contact shadow: depth from below, blurred twice, printed on a plane (after drei's ContactShadows).
-  const RES = 512;
+  const RES = live ? 256 : 512;
   const contact = {
     rt: new THREE.WebGLRenderTarget(RES, RES),
     blurRt: new THREE.WebGLRenderTarget(RES, RES),
@@ -144,7 +163,7 @@ export function createStudio(
     contact.blurPlane.visible = false;
   };
 
-  const updateShadow = () => {
+  const updateShadow = async () => {
     const box = new THREE.Box3().setFromObject(stage);
     if (box.isEmpty()) return;
     const size = box.getSize(new THREE.Vector3());
@@ -193,18 +212,20 @@ export function createStudio(
     blur(9);
     blur(5);
     blur(2);
-    renderer.readRenderTargetPixels(contact.rt, 0, 0, RES, RES, shadowPixels);
-    shadowTex.needsUpdate = true;
+    // Live views read the pixels back asynchronously (PBO + fence), so the main thread never waits
+    // for the GPU; the offline bench reads synchronously and renders straight after.
+    const readback = live ? renderer.readRenderTargetPixelsAsync(contact.rt, 0, 0, RES, RES, shadowPixels) : null;
+    if (!live) renderer.readRenderTargetPixels(contact.rt, 0, 0, RES, RES, shadowPixels);
     renderer.setRenderTarget(null);
     renderer.setClearAlpha(clear);
     contact.plane.visible = visible;
     floorShadow.visible = true;
     scene.background = bg;
+    if (readback) await readback;
+    shadowTex.needsUpdate = true;
   };
 
   const frame: Studio["frame"] = (object, angle = "hero", padding = 1.12) => {
-    const reframed = () => gtao?.updateGtaoMaterial({ radius: sphereRadius() * 0.12, distanceExponent: 1.4, thickness: 1.2, scale: 1 });
-    const sphereRadius = () => new THREE.Box3().setFromObject(object).getBoundingSphere(new THREE.Sphere()).radius;
     const a = typeof angle === "string" ? ANGLES[angle] : angle;
     const box = new THREE.Box3().setFromObject(object);
     const center = box.getCenter(new THREE.Vector3());
@@ -220,20 +241,10 @@ export function createStudio(
     camera.near = dist / 50;
     camera.far = dist * 4;
     camera.updateProjectionMatrix();
-    reframed();
+    postFx?.reframe(sphere.radius);
   };
 
-  let composer: EffectComposer | null = null;
-  let gtao: GTAOPass | null = null;
-  if (ao) {
-    const target = new THREE.WebGLRenderTarget(1, 1, { type: THREE.HalfFloatType, samples: 4 });
-    composer = new EffectComposer(renderer, target);
-    composer.addPass(new RenderPass(scene, camera, undefined, new THREE.Color(0x000000), 0));
-    gtao = new GTAOPass(scene, camera, 1, 1);
-    gtao.blendIntensity = 0.9;
-    composer.addPass(gtao);
-    composer.addPass(new OutputPass());
-  }
+  const postFx = post ? post(renderer, scene, camera) : null;
 
   return {
     renderer,
@@ -242,10 +253,23 @@ export function createStudio(
     stage,
     frame,
     updateShadow,
-    render: () => (composer ? composer.render() : renderer.render(scene, camera)),
+    compile: async () => {
+      // Scene materials, then the contact-shadow pipeline (depth override + both blur passes), all
+      // through KHR_parallel_shader_compile where available, so the first frame compiles nothing.
+      await renderer.compileAsync(scene, camera);
+      const helper = new THREE.Scene();
+      const quad = new THREE.PlaneGeometry(1, 1);
+      helper.add(new THREE.Mesh(quad, contact.depthMat), new THREE.Mesh(quad, contact.hBlur), new THREE.Mesh(quad, contact.vBlur));
+      await renderer.compileAsync(helper, contact.cam);
+      quad.dispose();
+      // The shadow map's own programs only compile when it first renders: do that in a frame of its own.
+      await new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
+      renderer.render(scene, camera);
+    },
+    render: () => (postFx ? postFx.render() : renderer.render(scene, camera)),
     resize(w, h) {
       renderer.setSize(w, h, false);
-      composer?.setSize(w, h);
+      postFx?.setSize(w, h);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
     },

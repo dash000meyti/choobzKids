@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { SiteSettings } from "@/db/queries/settings";
 import { formatToman, installments, toFaDigits } from "@/lib/format";
 import { pill } from "./Actions";

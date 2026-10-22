@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/ui/Link";
 import type { ProductCardData } from "@/db/queries/catalog";
 import type { SiteSettings } from "@/db/queries/settings";
 import { cn } from "@/lib/utils";
