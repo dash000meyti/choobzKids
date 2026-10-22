@@ -30,6 +30,13 @@ import { torobMeta } from "@/lib/torob";
  * the 3D viewer and add-to-cart.
  */
 
+/*
+ * `params` is awaited before any Suspense so an unknown product is a real 404 (TECH.md §2.5). Every
+ * one is prerendered by generateStaticParams, so navigations land on a complete static page;
+ * the dev-only instant-shell validation (which assumes an unlisted param) is off here.
+ */
+export const instant = false;
+
 export async function generateStaticParams() {
   const slugs = await listProductSlugs();
   return slugs.map((slug) => ({ slug }));

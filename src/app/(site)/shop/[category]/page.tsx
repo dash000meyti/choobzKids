@@ -33,6 +33,13 @@ import { cn } from "@/lib/utils";
 /** Filters earn their space from this many products; below it the whole shelf fits on a screen. */
 const FILTER_MIN_PRODUCTS = 4;
 
+/*
+ * `params` is awaited before any Suspense so an unknown category is a real 404 (TECH.md §2.5). Every
+ * one is prerendered by generateStaticParams, so navigations land on a complete static page;
+ * the dev-only instant-shell validation (which assumes an unlisted param) is off here.
+ */
+export const instant = false;
+
 export async function generateStaticParams() {
   return (await listCategorySlugs()).map((category) => ({ category }));
 }

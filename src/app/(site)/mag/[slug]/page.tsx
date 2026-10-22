@@ -42,6 +42,13 @@ const SEEN_PRODUCTS = 3;
 /** The body already carries the disclaimer when an author wrote it into a callout. */
 const DISCLAIMER_TEXT = "جایگزین مشاورهٔ پزشک نیست";
 
+/*
+ * `params` is awaited before any Suspense so an unknown article is a real 404 (TECH.md §2.5). Every
+ * one is prerendered by generateStaticParams, so navigations land on a complete static page;
+ * the dev-only instant-shell validation (which assumes an unlisted param) is off here.
+ */
+export const instant = false;
+
 export async function generateStaticParams() {
   return (await listPostSlugs()).map((slug) => ({ slug }));
 }
