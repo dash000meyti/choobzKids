@@ -219,7 +219,12 @@ export function ProductViewer({
           style={{ opacity: live ? 1 : 0 }}
         />
       </div>
-      <div className="mt-6 flex flex-wrap items-center justify-center gap-3" hidden={!live}>
+      {/* Always laid out, invisible until live: appearing later grew the section by ~68px, a layout
+          shift that also threw off in-page links (#specs) scrolling past it. */}
+      <div
+        className={`mt-6 flex flex-wrap items-center justify-center gap-3 transition-opacity duration-500 ${live ? "opacity-100" : "invisible opacity-0"}`}
+        inert={!live}
+      >
         <div role="group" aria-label="نما" className="flex rounded-full bg-surface p-1">
           {[
             { v: false, label: "مونتاژشده" },

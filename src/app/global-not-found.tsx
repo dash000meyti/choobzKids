@@ -26,7 +26,7 @@ export const viewport: Viewport = {
 
 export default function GlobalNotFound() {
   return (
-    <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
+    <html lang="fa-IR" dir="rtl" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <FontPreloads />
         <ThemeScript />

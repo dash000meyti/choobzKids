@@ -2,11 +2,13 @@ import { pill } from "./Actions";
 
 /*
  * Apple's product sub-navigation: the product name at the start, section links, and a «خرید»
- * pill at the end. Sticks under the global nav; glass background.
+ * pill at the end. Sticks under the global nav; glass background. `data-local-nav` tells
+ * globals.css to land in-page links below both bars.
  */
 export function LocalNav({ title, links, buyHref }: { title: string; links: { href: string; label: string }[]; buyHref: string }) {
   return (
     <nav
+      data-local-nav
       aria-label={`بخش‌های ${title}`}
       className="glass sticky top-[var(--spacing-header)] z-[25] border-b border-line/60 lg:top-[var(--spacing-header-lg)]"
     >

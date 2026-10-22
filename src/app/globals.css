@@ -341,6 +341,15 @@
     text-size-adjust: 100%;
     -webkit-tap-highlight-color: transparent;
     scroll-padding-block-start: calc(var(--spacing-header) + 1rem);
+    /* In-page links (#buy, #specs…) glide instead of jumping. Route changes stay instant:
+       data-scroll-behavior="smooth" on <html> tells Next to switch this off while navigating.
+       Reduced motion turns it off below. */
+    scroll-behavior: smooth;
+  }
+  /* Pages with the sticky product bar (LocalNav, 3.25rem) under the global nav: land below both. */
+  html:has([data-local-nav]) { scroll-padding-block-start: calc(var(--spacing-header) + 3.25rem + 1rem); }
+  @media (min-width: 64rem) {
+    html:has([data-local-nav]) { scroll-padding-block-start: calc(var(--spacing-header-lg) + 3.25rem + 1rem); }
   }
   :where(:lang(fa), [dir="rtl"]) { letter-spacing: 0; }
   body {

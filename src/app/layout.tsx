@@ -34,7 +34,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   // reference these @ids. A cached query, so it is part of every prerendered shell.
   const settings = await getSettings();
   return (
-    <html lang="fa-IR" dir="rtl" suppressHydrationWarning>
+    <html lang="fa-IR" dir="rtl" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <FontPreloads />
         <ThemeScript />

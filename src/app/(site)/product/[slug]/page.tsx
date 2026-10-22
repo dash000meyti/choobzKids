@@ -283,7 +283,7 @@ function BuySection({ data, offers, settings, age }: { data: ProductPageData; of
     : settings.socials.instagram;
   const shipping = settings.shippingPolicy;
   return (
-    <section id="buy" aria-labelledby="buy-title" className="scroll-mt-24">
+    <section id="buy" aria-labelledby="buy-title">
       <div className="mx-auto grid max-w-[75rem] gap-10 px-gutter py-section lg:grid-cols-[1.15fr_1fr]">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <div className="rounded-[2rem] bg-surface p-8">
