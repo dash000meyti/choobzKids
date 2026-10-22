@@ -4,8 +4,8 @@ Built by `scripts/fonts/build.sh` (fontTools 4.60.2 subset: Persian core + basic
 
 | File | Upstream | Version | License |
 |---|---|---|---|
-| `estedad/estedad-fa-wght.woff2` | github.com/aminabedi68/Estedad — `Estedad[wght].ttf` | 8.5 | OFL-1.1 |
-| `ario/ario-dots1-fa.woff2` | github.com/MohamadDarvishi/Ario — `Main_Fonts/Ario-Dots1.ttf` | 2.0.1 | OFL-1.1 |
-| `mikhak/mikhak-fa-600-kshd.woff2` | github.com/aminabedi68/Mikhak — `Mikhak[DSTY,KSHD,wght].ttf` instanced wght=600 DSTY=1 | 3.4 | OFL-1.1 |
+| `vazirmatn/vazirmatn-fa-wght.woff2` | npm `vazirmatn` (github.com/rastikerdar/vazirmatn) — `fonts/variable/Vazirmatn[wght].ttf`, sha256 `696249a2…2fd49dca` | 33.0.3 | OFL-1.1 |
+| `assets/og/Vazirmatn-Bold.ttf` (share cards, plain TTF) | same package — `fonts/ttf/Vazirmatn-Bold.ttf`, sha256 `f635fdbe…2b2ae723` | 33.0.3 | OFL-1.1 |
 
-License texts are in `LICENSES/`. Subsets are Modified Versions under the OFL; none of these families has a Reserved Font Name that applies.
+License text is in `LICENSES/`. Subsets are Modified Versions under the OFL; Vazirmatn has no Reserved Font Name.
+Earlier builds used Estedad, Ario and Mikhak (see git history); the Studio redesign sets everything in Vazirmatn.

@@ -28,7 +28,7 @@ export function Sources({ sources, className }: SourcesProps) {
   if (!sources.length) return null;
   return (
     <section id={SOURCES_SECTION_ID} aria-labelledby="sources-h" className={cn("flex flex-col gap-4", className)}>
-      <h2 id="sources-h" className="text-xl font-extrabold text-ink">
+      <h2 id="sources-h" className="text-xl font-bold text-ink">
         {SOURCES_TITLE}
       </h2>
       <ol className="flex flex-col gap-3 text-sm text-muted">

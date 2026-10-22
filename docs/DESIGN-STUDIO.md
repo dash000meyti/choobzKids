@@ -16,10 +16,26 @@ black tiles. Big, heavy, tight Persian headlines; one line of copy; two actions.
 - Neutrals: page `#FFFFFF`, tiles `#F5F5F7`, ink `#1D1D1F`, secondary `#6E6E73`, hairline `#D2D2D7`.
 - Night tiles/sections: `.theme-night` (black, `#F5F5F7` text, `#86868B` secondary).
 - Links `--link` walnut `#8A5A2B`; eyebrow «جدید/محبوب» `--eyebrow` `#B64400`; installments `--success`.
-- Type: **Estedad only** — 400–500 text, 800–900 headlines (`headline` utility), never tracked.
-- Pills: primary = ink fill / white text; ghost = link-colour ring. `pill()` in `components/studio/Actions`.
+- Type: **Vazirmatn only** (self-hosted variable, OFL) — 400 text, 500–600 UI, **700 headlines**
+  (`headline` utility). Never 800/900: heavy Persian reads loud, not luxurious. Never tracked.
+- Pills (44px, weight 500): primary = ink fill; ghost = a hairline ring in the text colour, so it
+  reads on white, grey and black alike. `pill()` in `components/studio/Actions`.
 - Radii: tiles 1.75rem, cards 1.5rem, buttons full pills. Shadows: none (renders carry their own).
-- Dark mode follows the OS (or `html[data-theme]`); the old token names still exist and map here.
+- **Light is the default.** Dark only when the visitor picks it with the sun/moon switch in the global
+  nav (`ThemeToggle` → `html[data-theme="dark"]`, kept in localStorage `cz.theme`, applied pre-paint
+  by `ThemeScript`; the switch cross-fades with a view transition). The site never follows the OS
+  on its own; `dark:` utilities match only `[data-theme="dark"]`. Old token names still map here.
+
+## Motion and light
+
+- `spotlight`: soft studio light behind a hero product (bright centre, studio-grey edges; a faint
+  glow in dark mode). Home hero and product hero.
+- `rise` / `rise-product` (+ `--rise-delay`): the on-load entrance of a hero, text first, product
+  last. First hero only.
+- `reveal` / `reveal-zoom`: scroll-driven (CSS `animation-timeline: view()`), no JS; sections,
+  cards and feature renders. Off for reduced motion and the lite tier.
+- `text-wood`: birch-to-walnut gradient text for one headline per page at most (assembly story).
+- Cards lift 4px with a soft long shadow on hover; renders zoom ~3–4% over 900ms.
 
 ## Imagery pipeline
 

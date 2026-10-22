@@ -20,9 +20,9 @@ const NUMBERS = ["۰۱", "۰۲", "۰۳", "۰۴"];
 export function AssemblyStory() {
   return (
     <section aria-labelledby="assembly-title" className="theme-night">
-      <div className="mx-auto max-w-[61.25rem] px-gutter pt-section text-center">
+      <div className="reveal mx-auto max-w-[61.25rem] px-gutter pt-section text-center">
         <p className="eyebrow">ساخت کارگاه چوبز</p>
-        <h2 id="assembly-title" className="headline mt-2 text-3xl lg:text-[4rem]">
+        <h2 id="assembly-title" className="headline text-wood mt-2 text-[2.5rem] lg:text-[4.5rem]">
           از ورق تخته، تا اتاق کودک.
         </h2>
         <p className="mx-auto mt-4 max-w-[40rem] text-lead text-muted">
@@ -49,7 +49,7 @@ export function AssemblyStory() {
             <li key={s.title} className={styles.step}>
               <p className="text-lead lg:text-[1.75rem] lg:leading-normal">
                 <span className="text-muted">{NUMBERS[i]} — </span>
-                <strong className="font-extrabold text-ink">{s.title}</strong> <span className="text-muted">{s.body}</span>
+                <strong className="font-bold text-ink">{s.title}</strong> <span className="text-muted">{s.body}</span>
               </p>
             </li>
           ))}

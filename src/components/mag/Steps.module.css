@@ -43,7 +43,7 @@ div.steps > ol {
     inset 0 -3px 0 color-mix(in oklab, var(--ply-3) 35%, transparent);
   color: var(--ink);
   font-size: var(--text-base);
-  font-weight: 800;
+  font-weight: 700;
   line-height: 1;
 }
 

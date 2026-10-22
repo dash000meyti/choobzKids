@@ -122,7 +122,7 @@ export default async function WorkshopPage() {
                   <StepPicture index={index} />
                   <div className="mt-4">
                     <p className="text-sm font-bold text-muted tabular-nums">{toFaDigits(String(index + 1).padStart(2, "0"))}</p>
-                    <h3 className="mt-1 text-lg leading-snug font-extrabold text-ink">{step.title}</h3>
+                    <h3 className="mt-1 text-lg leading-snug font-bold text-ink">{step.title}</h3>
                     <p className="text-sm text-muted">{step.body}</p>
                   </div>
                 </li>

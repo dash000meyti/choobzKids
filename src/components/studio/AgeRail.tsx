@@ -13,19 +13,22 @@ export function AgeRail() {
   return (
     <section aria-labelledby="age-title" className="bg-surface py-section">
       <div className="mx-auto max-w-[75rem] px-gutter">
-        <h2 id="age-title" className="headline text-center text-2xl lg:text-[3.25rem]">
-          برای هر سن، وسیلهٔ خودش.
-        </h2>
-        <ul className="mt-10 grid gap-3 md:grid-cols-3">
+        <div className="reveal text-center">
+          <p className="eyebrow">مونته‌سوری، قدم‌به‌قدم</p>
+          <h2 id="age-title" className="headline mt-2 text-[2.25rem] lg:text-[3.5rem]">
+            برای هر سن، وسیلهٔ خودش.
+          </h2>
+        </div>
+        <ul className="mt-12 grid gap-4 md:grid-cols-3">
           {AGE_HUBS.map((hub) => {
             const piece = PIECES[hub.slug];
             return (
               <li key={hub.slug} className="reveal">
                 <Link
                   href={`/age/${hub.slug}`}
-                  className="group flex h-full flex-col items-center rounded-[1.75rem] bg-bg px-6 pt-9 text-center transition-transform duration-300 hover:scale-[1.01]"
+                  className="group flex h-full flex-col items-center rounded-[1.75rem] bg-bg px-6 pt-10 text-center transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:shadow-[0_24px_48px_-28px_rgb(0_0_0/0.25)]"
                 >
-                  <h3 className="text-xl font-extrabold">{hub.label}</h3>
+                  <h3 className="text-[1.75rem] font-bold">{hub.label}</h3>
                   <p className="mt-2 max-w-[18rem] text-sm text-muted">{piece.line}</p>
                   <span className="link-arrow mt-4 text-sm">وسایل این سن</span>
                   <div className="mt-2 w-full max-w-[15rem] transition-transform duration-500 group-hover:-translate-y-1">

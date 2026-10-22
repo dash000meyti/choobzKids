@@ -27,7 +27,7 @@
 .letter {
   display: block;
   color: var(--ink);
-  font-weight: 900;
+  font-weight: 700;
   font-size: clamp(2.25rem, 1.8rem + 2vw, 3.25rem);
   line-height: 1.1;
 }

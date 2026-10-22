@@ -31,7 +31,7 @@ export async function RoomCard({ room, className }: RoomCardProps) {
         ))}
       </div>
       <div className="flex flex-1 flex-col gap-1 p-6 pt-4">
-        <h3 className="text-xl font-extrabold">
+        <h3 className="text-xl font-bold">
           <Link href={`/rooms/${room.slug}`} className="after:absolute after:inset-0 after:content-['']">
             {room.name}
           </Link>

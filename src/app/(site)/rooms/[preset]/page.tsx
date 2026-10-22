@@ -197,7 +197,7 @@ export default async function RoomPresetPage({ params }: PageProps<"/rooms/[pres
 function RoomFaqList({ faqs }: { faqs: RoomFaq[] }) {
   return (
     <section aria-labelledby="room-faq" className="flex max-w-prose flex-col gap-4">
-      <h2 id="room-faq" className="text-xl font-extrabold text-ink">
+      <h2 id="room-faq" className="text-xl font-bold text-ink">
         سؤال‌های این اتاق
       </h2>
       <div className="flex flex-col gap-3">

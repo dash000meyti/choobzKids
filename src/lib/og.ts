@@ -13,7 +13,7 @@ import { tag } from "@/lib/cache-tags";
  */
 
 const OG_DIR = path.join(process.cwd(), "assets", "og");
-const ESTEDAD = path.join(OG_DIR, "Estedad-Bold.ttf");
+const VAZIRMATN = path.join(OG_DIR, "Vazirmatn-Bold.ttf");
 const RENDERS = path.join(process.cwd(), "public", "renders");
 
 // Fontconfig should only ever see our files (no silent fallback to a system face). Both
@@ -53,7 +53,7 @@ const TEXT_AREA_BOTTOM = 566;
 export const OG_DEFAULT_RENDER = "learning-tower";
 
 /**
- * Renders a 1200×630 PNG card: kicker (eyebrow colour) over the title (Estedad Bold, ink) on
+ * Renders a 1200×630 PNG card: kicker (eyebrow colour) over the title (Vazirmatn Bold, ink) on
  * white, the product's studio render on a grey tile, and the «چوبز کیدز · choobz.kids» masthead.
  * Cached like content: `tags` should name the collections the title comes from, e.g.
  * `['products', 'product:12']`, so a CMS edit refreshes the card with the page.
@@ -99,7 +99,7 @@ export async function composeOgPng(title: string, kicker: string, render: string
   const [brand, kickerText, titleText, product] = await Promise.all([
     renderText(
       `<span foreground="${C.ink}">چوبز کیدز</span><span foreground="${C.muted}">  ·  choobz.kids</span>`,
-      { font: "Estedad Bold 24", fontfile: ESTEDAD, width: TEXT_WIDTH },
+      { font: "Vazirmatn Bold 24", fontfile: VAZIRMATN, width: TEXT_WIDTH },
     ),
     kicker.trim() ? fitKicker(kicker.trim()) : null,
     fitTitle(title),
@@ -154,7 +154,7 @@ async function fitKicker(kicker: string): Promise<TextImage> {
   const markup = `<span foreground="${C.eyebrow}">${escapeMarkup(kicker)}</span>`;
   let image: TextImage | null = null;
   for (const size of KICKER_SIZES) {
-    image = await renderText(markup, { font: `Estedad Bold ${size}`, fontfile: ESTEDAD, width: TEXT_WIDTH });
+    image = await renderText(markup, { font: `Vazirmatn Bold ${size}`, fontfile: VAZIRMATN, width: TEXT_WIDTH });
     if (image.height < size * 2) break;
   }
   return image!;
@@ -169,11 +169,11 @@ async function fitTitle(title: string): Promise<TextImage> {
   const text = keepLatinTogether(truncateWords(title.trim(), TITLE_MAX_CHARS));
   const markup = `<span foreground="${C.ink}">${escapeMarkup(text)}</span>`;
   for (const size of TITLE_SIZES) {
-    const image = await renderText(markup, { font: `Estedad Bold ${size}`, fontfile: ESTEDAD, width: TEXT_WIDTH });
+    const image = await renderText(markup, { font: `Vazirmatn Bold ${size}`, fontfile: VAZIRMATN, width: TEXT_WIDTH });
     if (image.height <= TITLE_MAX_HEIGHT && image.width <= TEXT_WIDTH) return image;
   }
   const smallest = TITLE_SIZES[TITLE_SIZES.length - 1];
-  return renderText(markup, { font: `Estedad Bold ${smallest}`, fontfile: ESTEDAD, width: TEXT_WIDTH, wrap: "word-char" });
+  return renderText(markup, { font: `Vazirmatn Bold ${smallest}`, fontfile: VAZIRMATN, width: TEXT_WIDTH, wrap: "word-char" });
 }
 
 function truncateWords(text: string, max: number): string {

@@ -128,24 +128,38 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
         />
 
         {/* Hero */}
-        <section id="overview" aria-labelledby="product-title" className="bg-surface">
+        <section id="overview" aria-labelledby="product-title" className="spotlight">
           <div className="mx-auto max-w-[75rem] px-gutter pt-6">
             <Breadcrumbs items={trail} />
           </div>
           <div className="mx-auto flex max-w-[61.25rem] flex-col items-center px-gutter pb-6 pt-8 text-center lg:pt-12">
-            <p className="eyebrow">{data.category.name}</p>
-            <h1 id="product-title" className="headline mt-1 text-3xl lg:text-display">
+            <p className="eyebrow rise">{data.category.name}</p>
+            <h1
+              id="product-title"
+              style={{ "--rise-delay": "80ms" } as React.CSSProperties}
+              className={`headline rise mt-2 ${product.name.length > 16 ? "text-[2.5rem] sm:text-[3.5rem] lg:text-[4.75rem]" : "text-[2.75rem] sm:text-display"}`}
+            >
               {product.name}
             </h1>
-            {product.subtitle && <p className="mt-3 text-lead text-muted lg:text-[1.75rem] lg:leading-snug">{product.subtitle}</p>}
-            <PriceLine price={base.price} from={pricesDiffer(offers)} snapppay={settings.snapppay} className="mt-3 text-sm" />
-            <div className="mt-5 flex gap-4">
-              <a href="#buy" className={pill("primary")}>
-                خرید
-              </a>
+            {product.subtitle && (
+              <p style={{ "--rise-delay": "160ms" } as React.CSSProperties} className="rise mt-4 max-w-[44rem] text-lead text-muted lg:text-[1.625rem] lg:leading-snug">
+                {product.subtitle}
+              </p>
+            )}
+            <div style={{ "--rise-delay": "240ms" } as React.CSSProperties} className="rise flex flex-col items-center">
+              <PriceLine price={base.price} from={pricesDiffer(offers)} snapppay={settings.snapppay} className="mt-4 text-sm" />
+              <div className="mt-6 flex gap-4">
+                <a href="#buy" className={pill("primary")}>
+                  خرید
+                </a>
+              </div>
             </div>
           </div>
-          <div className="mx-auto max-w-[52rem] px-gutter pb-12">
+          {/* Sized from the screen height on desktop so name, price and product share the first view. */}
+          <div
+            style={{ "--rise-delay": "320ms" } as React.CSSProperties}
+            className="rise-product mx-auto max-w-[52rem] px-gutter pb-12 lg:max-w-[clamp(30rem,calc((100svh_-_28rem)*1.45),52rem)]"
+          >
             <Render
               productKey={key}
               alt={`${product.name}، تصویر سه‌بعدی از روی ابعاد واقعی`}
@@ -159,7 +173,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
         {/* Summary statement */}
         {product.summary && (
           <section aria-label="خلاصه" className="mx-auto max-w-[61.25rem] px-gutter py-section text-center">
-            <p className="headline reveal text-2xl leading-[1.35] lg:text-[3rem]">{product.summary}</p>
+            <p className="headline reveal text-[1.75rem] leading-[1.45] lg:text-[2.75rem] lg:leading-[1.4]">{product.summary}</p>
           </section>
         )}
 
@@ -170,8 +184,8 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
           return (
             <section key={h} aria-label={h} className={night ? "theme-night" : i % 2 ? "bg-bg" : "bg-surface"}>
               <div className="mx-auto grid max-w-[75rem] items-center gap-10 px-gutter py-section lg:grid-cols-2">
-                <p className={`headline reveal text-2xl lg:text-[2.75rem] ${i % 2 ? "lg:order-2" : ""}`}>{h}</p>
-                <div className="reveal mx-auto w-full max-w-[32rem]">
+                <p className={`headline reveal text-[2rem] lg:text-[3rem] ${i % 2 ? "lg:order-2" : ""}`}>{h}</p>
+                <div className="reveal-zoom mx-auto w-full max-w-[34rem]">
                   <Render productKey={key} angle={hasRender(key, angle) ? angle : "hero"} alt="" sizes="(min-width: 1024px) 512px, 88vw" box="1 / 1" />
                 </div>
               </div>
@@ -181,7 +195,7 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
 
         {/* Live 3D */}
         <section aria-labelledby="viewer-title" className="mx-auto max-w-[75rem] px-gutter py-section text-center">
-          <h2 id="viewer-title" className="headline text-2xl lg:text-[3.25rem]">
+          <h2 id="viewer-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
             از هر زاویه ببینید.
           </h2>
           <p className="mt-3 text-lead text-muted">بکشید تا بچرخد؛ نمای انفجاری قطعه‌ها را جدا نشان می‌دهد.</p>
@@ -218,7 +232,7 @@ function Dimensions({ data }: { data: ProductPageData }) {
   return (
     <section id="dimensions" aria-labelledby="dimensions-title" className="bg-surface">
       <div className="mx-auto max-w-[61.25rem] px-gutter py-section text-center">
-        <h2 id="dimensions-title" className="headline text-2xl lg:text-[3.25rem]">
+        <h2 id="dimensions-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
           ابعاد دقیق.
         </h2>
         {d && (
@@ -283,7 +297,7 @@ function BuySection({ data, offers, settings, age }: { data: ProductPageData; of
             <VariantSwap offers={offers} differsBy={(o) => `${o.price}:${o.compareAt}`}>
               {(offer) => (
                 <div>
-                  <p className="text-xl font-extrabold">
+                  <p className="text-xl font-bold">
                     <data value={offer.price}>{formatToman(offer.price)}</data>
                     {offer.compareAt ? (
                       <s className="ms-3 text-base font-medium text-muted">
@@ -399,7 +413,7 @@ function Specs({ data, age }: { data: ProductPageData; age: string | null }) {
   return (
     <section id="specs" aria-labelledby="specs-title" className="bg-surface">
       <div className="mx-auto max-w-[61.25rem] px-gutter py-section">
-        <h2 id="specs-title" className="headline text-2xl lg:text-[3.25rem]">
+        <h2 id="specs-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
           مشخصات فنی
         </h2>
         <dl className="mt-10 divide-y divide-line border-y border-line">
@@ -422,7 +436,7 @@ function InTheBox({ data }: { data: ProductPageData }) {
     <section aria-label="جعبه، ایمنی و نگهداری" className="mx-auto grid max-w-[75rem] gap-3 px-gutter py-section md:grid-cols-3">
       {product.inTheBox.length > 0 && (
         <div className="rounded-[1.75rem] bg-surface p-8">
-          <h2 className="text-xl font-extrabold">توی جعبه چی هست؟</h2>
+          <h2 className="text-xl font-bold">توی جعبه چی هست؟</h2>
           <ul className="mt-4 space-y-2 text-sm text-muted">
             {product.inTheBox.map((x) => (
               <li key={x}>{x}</li>
@@ -432,7 +446,7 @@ function InTheBox({ data }: { data: ProductPageData }) {
       )}
       {product.safetyNotes && (
         <div className="rounded-[1.75rem] bg-surface p-8">
-          <h2 className="text-xl font-extrabold">ایمنی</h2>
+          <h2 className="text-xl font-bold">ایمنی</h2>
           <p className="mt-4 text-sm text-muted">{product.safetyNotes}</p>
           <Link href="/safety" className="link-arrow mt-4 inline-block text-sm">
             جنس و ایمنی
@@ -441,7 +455,7 @@ function InTheBox({ data }: { data: ProductPageData }) {
       )}
       {product.careNotes && (
         <div className="rounded-[1.75rem] bg-surface p-8">
-          <h2 className="text-xl font-extrabold">نگهداری</h2>
+          <h2 className="text-xl font-bold">نگهداری</h2>
           <p className="mt-4 text-sm text-muted">{product.careNotes}</p>
         </div>
       )}
@@ -453,7 +467,7 @@ function Faq({ data }: { data: ProductPageData }) {
   if (!data.faqs.length) return null;
   return (
     <section id="faq" aria-labelledby="faq-title" className="mx-auto max-w-[61.25rem] px-gutter pb-section">
-      <h2 id="faq-title" className="headline text-2xl lg:text-[3.25rem]">
+      <h2 id="faq-title" className="headline reveal text-[2.25rem] lg:text-[3.5rem]">
         پرسش‌های پرتکرار
       </h2>
       <div className="mt-8 divide-y divide-line border-y border-line">
@@ -480,7 +494,7 @@ function Related({ data, snapppay }: { data: ProductPageData; snapppay: SiteSett
       {data.guides.length > 0 && (
         <section aria-labelledby="guides-title" className="bg-surface">
           <div className="mx-auto max-w-[75rem] px-gutter py-section">
-            <h2 id="guides-title" className="headline text-2xl lg:text-[2.75rem]">
+            <h2 id="guides-title" className="headline reveal text-[2rem] lg:text-[3rem]">
               قبل از خرید بخوانید.
             </h2>
             <ul className="mt-8 grid gap-3 md:grid-cols-3">
@@ -490,7 +504,7 @@ function Related({ data, snapppay }: { data: ProductPageData; snapppay: SiteSett
                     <p className="text-xs font-semibold text-muted">
                       {g.topic?.name} · {toFaDigits(g.readingMinutes)} دقیقه
                     </p>
-                    <h3 className="mt-2 text-lg font-extrabold leading-snug">{g.title}</h3>
+                    <h3 className="mt-2 text-lg font-bold leading-snug">{g.title}</h3>
                     {g.tldr && <p className="mt-2 line-clamp-3 text-sm text-muted">{g.tldr}</p>}
                     <span className="link-arrow mt-auto pt-4 text-sm">خواندن</span>
                   </Link>
@@ -502,7 +516,7 @@ function Related({ data, snapppay }: { data: ProductPageData; snapppay: SiteSett
       )}
       {related.length > 0 && (
         <section aria-labelledby="related-title" className="mx-auto max-w-[75rem] px-gutter py-section">
-          <h2 id="related-title" className="headline text-2xl lg:text-[2.75rem]">
+          <h2 id="related-title" className="headline reveal text-[2rem] lg:text-[3rem]">
             کنارش خوب می‌نشیند.
           </h2>
           <ul className="mt-8 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -512,7 +526,7 @@ function Related({ data, snapppay }: { data: ProductPageData; snapppay: SiteSett
                   <div className="w-full transition-transform duration-500 group-hover:scale-[1.03]">
                     <Render productKey={p.illustration ?? p.slug} alt="" sizes="(min-width: 1024px) 260px, 44vw" box="1 / 1" />
                   </div>
-                  <h3 className="mt-4 font-extrabold">{p.name}</h3>
+                  <h3 className="mt-4 font-bold">{p.name}</h3>
                   <PriceLine price={p.price} from={p.variantCount > 1} snapppay={snapppay} className="mt-1 text-xs text-muted" />
                 </Link>
               </li>

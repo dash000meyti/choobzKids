@@ -11,7 +11,7 @@ export function LocalNav({ title, links, buyHref }: { title: string; links: { hr
       className="glass sticky top-[var(--spacing-header)] z-[25] border-b border-line/60 lg:top-[var(--spacing-header-lg)]"
     >
       <div className="mx-auto flex h-13 max-w-[61.25rem] items-center justify-between gap-4 px-gutter">
-        <p className="truncate text-lg font-extrabold">{title}</p>
+        <p className="truncate text-lg font-bold">{title}</p>
         <div className="flex items-center gap-5">
           <ul className="hidden items-center gap-5 text-xs text-muted md:flex">
             {links.map((l) => (

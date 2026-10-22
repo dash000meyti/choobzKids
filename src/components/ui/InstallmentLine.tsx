@@ -39,7 +39,7 @@ export function InstallmentLine({
       <data value={plan.amount}>{formatNumber(plan.amount)}</data> تومانی با اسنپ‌پی
     </>
   );
-  const classes = cn("text-sm text-success", className);
+  const classes = cn("text-sm text-muted", className);
 
   if (variant === "pdp") {
     return (

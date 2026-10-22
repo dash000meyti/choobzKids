@@ -4,6 +4,7 @@ import { SEARCH_DIALOG_ID } from "@/components/layout/SearchDialog";
 import { sheetInvokerProps } from "@/components/ui/Sheet";
 import type { NavData } from "@/db/queries/nav";
 import { BagButton } from "./BagButton";
+import { ThemeToggle } from "./ThemeToggle";
 import styles from "./GlobalNav.module.css";
 
 /*
@@ -63,6 +64,7 @@ export function GlobalNav({ nav }: { nav: NavData }) {
               <path d="m15.5 15.5 4.5 4.5" strokeLinecap="round" />
             </svg>
           </button>
+          <ThemeToggle className="grid size-11 place-items-center rounded-full text-ink/80 transition-colors hover:text-ink" />
           <BagButton />
           <button
             type="button"

@@ -19,11 +19,9 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#FFFFFF" },
-    { media: "(prefers-color-scheme: dark)", color: "#000000" },
-  ],
-  colorScheme: "light dark",
+  // Light by default; ThemeToggle/ThemeScript switch this to black when the visitor picks dark.
+  themeColor: "#FFFFFF",
+  colorScheme: "light",
 };
 
 export default function GlobalNotFound() {

@@ -20,7 +20,7 @@ export function TermCard({ term, className }: TermCardProps) {
     <article className={cn("relative flex h-full items-start gap-3 p-5", styles.card, className)}>
       {term.illustration ? <TermDrawing illustration={term.illustration} /> : null}
       <div className="flex min-w-0 flex-1 flex-col gap-0.5">
-        <h3 className="text-lg font-extrabold text-ink">
+        <h3 className="text-lg font-bold text-ink">
           <Link href={`/glossary/${term.slug}`} className={styles.link}>
             {term.term}
           </Link>

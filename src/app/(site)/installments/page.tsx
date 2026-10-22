@@ -74,7 +74,7 @@ function Steps({ count }: { count: number }) {
             <span aria-hidden="true" className="text-sm font-bold tabular-nums text-muted">
               {toFaDigits(String(index + 1).padStart(2, "0"))}
             </span>
-            <h3 className="mt-6 text-lg leading-snug font-extrabold text-ink">{step.title}</h3>
+            <h3 className="mt-6 text-lg leading-snug font-bold text-ink">{step.title}</h3>
             <p className="mt-1.5 text-sm text-muted">{step.body}</p>
           </li>
         ))}

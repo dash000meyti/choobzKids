@@ -94,7 +94,7 @@ export default async function TopicHubPage({ params }: PageProps<"/mag/topic/[to
                 className="mt-7 flex max-w-xl flex-col rounded-[1.5rem] bg-surface p-6 transition-transform duration-300 hover:scale-[1.01]"
               >
                 <span className="text-xs font-semibold text-eyebrow">از این‌جا شروع کنید · راهنمای کامل</span>
-                <span className="mt-1.5 text-lg leading-snug font-extrabold text-ink">{pillar.title}</span>
+                <span className="mt-1.5 text-lg leading-snug font-bold text-ink">{pillar.title}</span>
                 <span className="link-arrow mt-3 text-sm">خواندن راهنما</span>
               </Link>
             ) : null}

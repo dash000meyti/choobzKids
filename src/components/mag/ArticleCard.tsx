@@ -58,7 +58,7 @@ export function ArticleCard({ post, size = "md", prefetch, className }: ArticleC
             {post.isPillar ? <span className="text-eyebrow">راهنمای کامل ·</span> : null}
             {format.label}
           </p>
-          <h3 className={cn("leading-snug font-extrabold text-ink", large ? "text-2xl" : "text-lg", "line-clamp-3")}>
+          <h3 className={cn("leading-snug font-bold text-ink", large ? "text-2xl" : "text-lg", "line-clamp-3")}>
             <CardLink href={`/mag/${post.slug}`} prefetch={prefetch} className={styles.link}>
               {post.title}
             </CardLink>

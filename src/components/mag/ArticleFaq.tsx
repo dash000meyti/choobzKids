@@ -21,7 +21,7 @@ export function ArticleFaq({ faqs, className }: ArticleFaqProps) {
   if (!faqs.length) return null;
   return (
     <section id={FAQ_SECTION_ID} aria-labelledby="faq-h" className={cn("flex flex-col gap-4", className)}>
-      <h2 id="faq-h" className="text-xl font-extrabold text-ink">
+      <h2 id="faq-h" className="text-xl font-bold text-ink">
         {FAQ_TITLE}
       </h2>
       <div className="flex flex-col gap-3">

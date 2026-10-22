@@ -30,7 +30,7 @@ function Note({ review }: { review: ReviewNote }) {
   return (
     <figure className={styles.note}>
       {review.isSample ? <SampleBadge className={styles.sample} /> : null}
-      {review.title ? <p className="pe-14 text-base leading-snug font-extrabold text-ink">{review.title}</p> : null}
+      {review.title ? <p className="pe-14 text-base leading-snug font-bold text-ink">{review.title}</p> : null}
       <blockquote className="text-lead leading-relaxed text-ink">«{review.body}»</blockquote>
       <figcaption className="flex flex-col gap-0.5 pt-1 text-sm text-ink">
         <span className="font-semibold">{signature}</span>

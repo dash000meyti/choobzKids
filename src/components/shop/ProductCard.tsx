@@ -98,7 +98,10 @@ function ProductCardView({
   return (
     <>
       <article
-        className={cn("group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] bg-surface text-center", className)}
+        className={cn(
+          "group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] bg-surface text-center transition-[transform,box-shadow] duration-500 ease-[var(--ease-out-expo)] hover:-translate-y-1 hover:shadow-[0_28px_56px_-32px_rgb(0_0_0/0.3)]",
+          className,
+        )}
         data-product={product.id}
         data-age-min={product.ageMinMonths ?? undefined}
         data-age-max={product.ageMaxMonths ?? undefined}
@@ -108,7 +111,7 @@ function ProductCardView({
         data-order={product.sortOrder}
         data-published={product.publishedAt ?? undefined}
       >
-        <div className="relative px-5 pt-6 transition-transform duration-500 ease-out group-hover:scale-[1.03]">
+        <div className="relative px-6 pt-8 transition-transform duration-[900ms] ease-[var(--ease-out-expo)] group-hover:scale-[1.04]">
           {stage && stage.media.kind !== "illustration" ? (
             <Stage {...stage.media} alt={stage.alt} slug={product.slug} priority={priority} vtName={`product-${product.id}`} />
           ) : (
@@ -122,22 +125,22 @@ function ProductCardView({
           )}
         </div>
 
-        <div className="flex flex-1 flex-col items-center gap-1 px-4 pb-5 pt-3">
+        <div className="flex flex-1 flex-col items-center gap-1 px-5 pb-6 pt-4">
           {stamp ? <p className="eyebrow text-xs">{stamp.label}</p> : null}
           {showCategory ? <p className="text-xs text-muted">{product.category.name}</p> : null}
-          <h3 className="line-clamp-2 text-base font-extrabold leading-snug text-ink">
+          <h3 className="line-clamp-2 text-[1.0625rem] font-bold leading-snug text-ink">
             <CardLink href={href} prefetch={prefetch} className={styles.link}>
               {product.name}
             </CardLink>
           </h3>
-          {product.subtitle ? <p className="line-clamp-2 text-xs text-muted">{product.subtitle}</p> : null}
-          <p className="mt-auto pt-2 text-sm">
+          {product.subtitle ? <p className="line-clamp-2 text-[0.8125rem] leading-6 text-muted">{product.subtitle}</p> : null}
+          <p className="mt-auto pt-3 text-[0.9375rem] font-semibold">
             <data value={product.price}>
               {pricesDiffer ? "از " : ""}
               {formatToman(product.price)}
             </data>
           </p>
-          <InstallmentLine price={product.price} snapppay={snapppay} link={false} />
+          <InstallmentLine price={product.price} snapppay={snapppay} link={false} className="text-xs" />
 
           <div className="mt-3 flex items-center justify-center">
             {product.availability === "out_of_stock" ? (
@@ -145,7 +148,7 @@ function ProductCardView({
             ) : needsChoice ? (
               <button
                 type="button"
-                className={cn(styles.above, "relative h-9 rounded-full bg-accent px-4 text-xs font-semibold text-on-accent")}
+                className={cn(styles.above, "relative h-10 rounded-full bg-accent px-5 text-[0.8125rem] font-medium text-on-accent transition-colors hover:bg-accent-press")}
                 {...sheetInvokerProps(sheetId)}
               >
                 انتخاب و خرید

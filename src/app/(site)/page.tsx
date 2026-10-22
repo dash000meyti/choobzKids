@@ -55,6 +55,7 @@ export default async function HomePage() {
             tagline="کنار شما، در قلب آشپزخانه."
             snapppay={settings.snapppay}
             priority
+            entrance
           />
         )}
         {triangle && (

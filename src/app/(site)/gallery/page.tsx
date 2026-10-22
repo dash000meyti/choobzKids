@@ -150,7 +150,7 @@ export default async function GalleryPage() {
           ))}
           <li>
             <div className="flex h-full min-h-72 flex-col items-center justify-center gap-4 rounded-[1.75rem] p-8 text-center ring-1 ring-line ring-inset">
-              <p className="text-xl font-extrabold text-ink">این قاب، منتظر شماست.</p>
+              <p className="text-xl font-bold text-ink">این قاب، منتظر شماست.</p>
               <p className="text-sm text-muted">با اجازهٔ خودتون و فقط با نام کوچک بچه و شهر منتشرش می‌کنیم.</p>
               {send ? (
                 <a href={send} target="_blank" rel="noopener" className={pill("primary")}>

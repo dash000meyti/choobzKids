@@ -9,9 +9,9 @@ export function RoomBanner({ fromToman, snapppay }: { fromToman: number | null; 
   return (
     <section aria-labelledby="room-title" className="mx-auto max-w-[75rem] px-gutter py-section">
       <div className="overflow-hidden rounded-[2rem] bg-surface">
-        <div className="px-6 pt-14 text-center">
+        <div className="reveal px-6 pt-16 text-center">
           <p className="eyebrow">چیدمان کامل اتاق</p>
-          <h2 id="room-title" className="headline mt-1 text-2xl lg:text-[3.25rem]">
+          <h2 id="room-title" className="headline mt-2 text-[2.25rem] lg:text-[3.5rem]">
             اتاق مونته‌سوری، یک‌جا.
           </h2>
           <p className="mx-auto mt-3 max-w-[36rem] text-lead text-muted">
@@ -34,7 +34,7 @@ export function RoomBanner({ fromToman, snapppay }: { fromToman: number | null; 
             </Link>
           </div>
         </div>
-        <div className="mx-auto mt-10 max-w-[60rem] px-6 pb-10">
+        <div className="reveal-zoom mx-auto mt-10 max-w-[60rem] px-6 pb-12">
           <Render productKey="room-set" alt="چیدمان کامل اتاق مونته‌سوری چوبز" sizes="(min-width: 1024px) 960px, 100vw" />
         </div>
       </div>
