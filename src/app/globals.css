@@ -427,7 +427,7 @@
   text-wrap: balance;
 }
 /* A warm birch-to-walnut gradient for the few headlines that deserve a moment. */
-@utility text-wood {
+@utility text-gradient-wood {
   background: linear-gradient(100deg, #f3dcb4 0%, #d9a86c 45%, #a8682f 100%);
   -webkit-background-clip: text;
   background-clip: text;

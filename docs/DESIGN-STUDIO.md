@@ -54,7 +54,7 @@ Large type is for short lines. Longer copy from the database is shaped, never sh
   last. First hero only.
 - `reveal` / `reveal-zoom`: scroll-driven (CSS `animation-timeline: view()`), no JS; sections,
   cards and feature renders. Off for reduced motion and the lite tier.
-- `text-wood`: birch-to-walnut gradient text for one headline per page at most (assembly story).
+- `text-gradient-wood`: birch-to-walnut gradient text (not `text-wood`: that name is the theme colour utility) for one headline per page at most (assembly story).
 - Cards lift 4px with a soft long shadow on hover; renders zoom ~3–4% over 900ms.
 
 ## Imagery pipeline

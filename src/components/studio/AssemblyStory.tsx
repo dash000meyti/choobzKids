@@ -22,7 +22,7 @@ export function AssemblyStory() {
     <section aria-labelledby="assembly-title" className="theme-night">
       <div className="reveal mx-auto max-w-[61.25rem] px-gutter pt-section text-center">
         <p className="eyebrow">ساخت کارگاه چوبز</p>
-        <h2 id="assembly-title" className="headline text-wood mt-2 text-[2.5rem] lg:text-[4.5rem]">
+        <h2 id="assembly-title" className="headline text-gradient-wood mt-2 text-[2.5rem] lg:text-[4.5rem]">
           از ورق تخته، تا اتاق کودک.
         </h2>
         <p className="mx-auto mt-4 max-w-[40rem] text-lead text-muted">
