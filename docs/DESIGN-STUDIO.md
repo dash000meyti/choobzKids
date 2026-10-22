@@ -31,6 +31,21 @@ black tiles. Big, heavy, tight Persian headlines; one line of copy; two actions.
   by `ThemeScript`; the switch cross-fades with a view transition). The site never follows the OS
   on its own; `dark:` utilities match only `[data-theme="dark"]`. Old token names still map here.
 
+## Text without walls
+
+Large type is for short lines. Longer copy from the database is shaped, never shown as a block:
+
+- **Highlight** (`components/studio/Highlight`): the phrase that carries the meaning in bold ink,
+  the rest in quiet grey (`splitLead` for summaries, `splitClause` for one instruction). The text
+  itself is untouched — it also feeds SEO. Product «در یک نگاه», care notes, age-hub openings.
+- **Key figures**: real numbers from the product (age, max load, height, warranty, weight) as
+  big Kalameh numerals with a small label, never invented marketing numbers.
+- **Checklists**: multi-sentence instructions become numbered rows (product safety band).
+- **One-sentence intros** (`LeadText`, category `splitIntro`): hub intros show their first
+  sentence; the rest folds behind «بیشتر بخوانید» and stays in the HTML.
+- Index numbers («۰۱») are IRANSansX semibold in the eyebrow colour (Kalameh digits are too
+  thin at that size).
+
 ## Motion and light
 
 - `spotlight`: soft studio light behind a hero product (bright centre, studio-grey edges; a faint

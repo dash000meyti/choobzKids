@@ -10,6 +10,7 @@ import type { AgeSectionData } from "@/db/queries/age";
 import type { FaqEntry } from "@/db/queries/faq";
 import type { AgeStageKey } from "@/lib/ages";
 import { grainStyle } from "@/lib/grain";
+import { sentences } from "@/components/studio/Highlight";
 import { cn } from "@/lib/utils";
 import styles from "./AgeSection.module.css";
 
@@ -48,7 +49,7 @@ export function AgeSection({ section, noun, fallbackTint, className }: AgeSectio
 
       {section.milestone || section.tips.length ? (
         <div className="mt-5 grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] lg:items-start lg:gap-10">
-          {section.milestone ? <p className="max-w-prose text-lead text-ink">{section.milestone}</p> : null}
+          {section.milestone ? <Milestone text={section.milestone} /> : null}
           {section.tips.length ? (
             <Callout kind="tip" title="بازی‌های پیشنهادی برای این سن">
               <ul className={styles.tips}>
@@ -140,6 +141,17 @@ export function FaqDrawers({ faqs, openFirst = true, seed, className }: FaqDrawe
           </div>
         </details>
       ))}
+    </div>
+  );
+}
+
+/** The sub-range's milestone summary: its first sentence as a bold lead, the facts after it quieter. */
+function Milestone({ text }: { text: string }) {
+  const [first, ...rest] = sentences(text);
+  return (
+    <div className="max-w-prose">
+      <p className="text-[1.1875rem] leading-[1.9] font-bold text-ink lg:text-[1.375rem]">{first}</p>
+      {rest.length ? <p className="mt-3 text-base leading-8 text-muted">{rest.join(" ")}</p> : null}
     </div>
   );
 }

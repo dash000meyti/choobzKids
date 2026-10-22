@@ -1,21 +1,14 @@
-import type { CSSProperties, ReactNode } from "react";
-import { Bubble } from "@/components/ui/Bubble";
-import { Doodle } from "@/components/ui/Doodle";
+import type { ReactNode } from "react";
 import { Icon, type IconName } from "@/components/ui/Icon";
-import { StampBadge } from "@/components/ui/StampBadge";
-import { grainStyle } from "@/lib/grain";
 import { CALLOUT_LABELS, type CalloutKind } from "@/lib/markdown";
 import { cn } from "@/lib/utils";
 
 /*
- * Article callouts (DESIGN.md §7.3, docs/CONTENT-FORMAT.md «Callouts»). Each prints its plain
- * label, then the author's title when it says more than the label:
- *   TIP      «نکته»            mint bubble + a pencil sprout
- *   NOTE     «توضیح»           raised paper + info icon
- *   WARNING  «نکتهٔ ایمنی»      raised paper with a 4px accent rule at inline-start (never an anar fill)
- *   WORKSHOP «از کارگاه چوبز»  a grained wood face with the stamp «تجربهٔ دست‌اول»
- *   EXPERT   «نگاه متخصص»      raised paper + book icon. The expert's avatar and name appear only
- *                               once real reviewer data exists (honesty rule): never invented here.
+ * Article callouts (DESIGN.md §7.3, docs/CONTENT-FORMAT.md «Callouts»), Studio style: a quiet
+ * grey card, a small line icon and the plain label, then the author's title when it says more:
+ *   TIP «نکته» (sprout) · NOTE «توضیح» (info) · WARNING «نکتهٔ ایمنی» (warning, eyebrow colour)
+ *   WORKSHOP «از کارگاه چوبز» (saw, with «تجربهٔ دست‌اول») · EXPERT «نگاه متخصص» (book). The
+ *   expert's avatar and name appear only once real reviewer data exists (honesty rule).
  * MYTH has its own component (MythFact).
  */
 
@@ -25,24 +18,18 @@ type CalloutProps = {
   children?: ReactNode;
 };
 
-const ICON: Record<Exclude<CalloutKind, "tip">, IconName> = {
+const ICON: Record<CalloutKind, IconName> = {
+  tip: "sprout",
   note: "info",
   warning: "warning",
   workshop: "saw",
   expert: "book",
 };
 
-const FACE: Record<Exclude<CalloutKind, "tip">, string> = {
-  note: "bg-raised shadow-paper",
-  warning: "bg-raised shadow-paper border-s-4 border-accent",
-  workshop: "grain bg-wood",
-  expert: "bg-raised shadow-paper",
-};
-
 const LABEL_TONE: Record<CalloutKind, string> = {
-  tip: "text-success",
+  tip: "text-ink",
   note: "text-muted",
-  warning: "text-accent",
+  warning: "text-eyebrow",
   workshop: "text-ink",
   expert: "text-muted",
 };
@@ -62,43 +49,22 @@ function headline(kind: CalloutKind, title: string | undefined): { label: string
 function Heading({ kind, label, title }: { kind: CalloutKind; label: string; title: string | null }) {
   return (
     <>
-      <p className={cn("flex items-center gap-2 text-sm font-bold", LABEL_TONE[kind])}>
-        {kind === "tip" ? (
-          <Doodle name="sprout" tone="inherit" className="h-[1.35em] w-auto" />
-        ) : (
-          <Icon name={ICON[kind]} className="size-[1.15em]" />
-        )}
-        <span>{label}</span>
+      <p className={cn("flex items-center gap-2 text-sm font-semibold", LABEL_TONE[kind])}>
+        <Icon name={ICON[kind]} className="size-[1.15em]" />
+        {label}
+        {kind === "workshop" ? <span className="font-normal text-muted">· تجربهٔ دست‌اول</span> : null}
       </p>
-      {title ? <p className="mt-1 text-base leading-relaxed font-bold text-ink">{title}</p> : null}
+      {title ? <p className="mt-1.5 text-base leading-snug font-bold text-ink">{title}</p> : null}
     </>
   );
 }
 
-const BODY = "mt-2 text-base leading-[1.85] [&>*+*]:mt-3";
+const BODY = "mt-2 text-base leading-[1.85] text-muted [&>*+*]:mt-3 [&_strong]:text-ink";
 
 export function Callout({ kind, title, children }: CalloutProps) {
   const head = headline(kind, title);
-
-  if (kind === "tip") {
-    return (
-      <Bubble role="note" data-block="" size="lg">
-        <Heading kind={kind} {...head} />
-        <div className={BODY}>{children}</div>
-      </Bubble>
-    );
-  }
-
   return (
-    <div
-      role="note"
-      data-block=""
-      className={cn("relative rounded-bit px-5 py-4 sm:px-6 sm:py-5", FACE[kind])}
-      style={kind === "workshop" ? (grainStyle(`workshop-${head.title ?? head.label}`) as CSSProperties) : undefined}
-    >
-      {kind === "workshop" ? (
-        <StampBadge className="absolute -top-3 end-4">تجربهٔ دست‌اول</StampBadge>
-      ) : null}
+    <div role="note" data-block="" className="rounded-[1.5rem] bg-surface px-6 py-5 sm:px-7 sm:py-6">
       <Heading kind={kind} {...head} />
       <div className={BODY}>{children}</div>
     </div>

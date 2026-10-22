@@ -84,11 +84,20 @@ export async function generateMetadata({ params }: PageProps<"/shop/[category]">
 }
 
 /** The intro up to and including its first paragraph, and the rest. */
+/**
+ * The intro's lead is one sentence — the first of its first plain paragraph; everything else
+ * (the rest of that paragraph and later blocks) folds behind «بیشتر بخوانید», still in the HTML.
+ */
 function splitIntro(markdown: string): [string, string] {
   const blocks = markdown.trim().split(/\n{2,}/);
   const first = blocks.findIndex((b) => !/^\s*(#|>|[-*+] |\d+\. |:::|\|)/.test(b));
-  const cut = first === -1 ? blocks.length : first + 1;
-  return [blocks.slice(0, cut).join("\n\n"), blocks.slice(cut).join("\n\n")];
+  if (first === -1) return ["", blocks.join("\n\n")];
+  const para = blocks[first];
+  const m = para.match(/^(.+?[.!؟])\s+(.+)$/s);
+  const lead = m ? m[1] : para;
+  const restOfPara = m ? m[2] : "";
+  const more = [...blocks.slice(0, first), restOfPara, ...blocks.slice(first + 1)].filter(Boolean).join("\n\n");
+  return [lead, more];
 }
 
 export default async function CategoryShopPage({ params }: PageProps<"/shop/[category]">) {
@@ -127,20 +136,15 @@ export default async function CategoryShopPage({ params }: PageProps<"/shop/[cat
       <div className="mx-auto max-w-page px-gutter pt-5 pb-section lg:pt-8">
         <header className="pb-8 pt-4 lg:pb-10 lg:pt-10">
           <Breadcrumbs items={trail} />
-          <h1 className="headline mt-6 text-3xl lg:text-[4.5rem]">
-            {heading(category)}
-            {category.tagline ? (
-              <>
-                {" "}
-                <span className="block text-xl text-muted lg:text-[2rem] lg:leading-snug">{category.tagline}</span>
-              </>
-            ) : null}
-          </h1>
+          {/* The H1 is the plain category name; the tagline sits under it as a quieter line, not as
+              72px heading text. */}
+          <h1 className="headline mt-6 text-[2.5rem] lg:text-[4.5rem]">{heading(category)}</h1>
+          {category.tagline ? <p className="mt-3 text-lead text-muted lg:text-[1.625rem] lg:leading-snug">{category.tagline}</p> : null}
           <p className="mt-4 text-sm text-muted">
             {toFaDigits(products.length)} محصول{formatAgeRange(ageRange.min, ageRange.max) ? ` · مناسب ${formatAgeRange(ageRange.min, ageRange.max)}` : ""}
           </p>
           <div className="mt-5 max-w-[46rem]">
-            {lead ? <Prose markdown={lead} variant="page" className="text-muted" /> : null}
+            {lead ? <Prose markdown={lead} variant="page" className="text-[1.0625rem] text-muted [&_p]:text-muted" /> : null}
             {more ? <MoreIntro markdown={more} /> : null}
           </div>
         </header>

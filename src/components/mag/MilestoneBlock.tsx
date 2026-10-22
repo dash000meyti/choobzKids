@@ -4,6 +4,7 @@ import { Icon } from "@/components/ui/Icon";
 import type { AgeReviewer } from "@/db/queries/age";
 import type { Source } from "@/db/schema";
 import { formatNumber, toFaDigits } from "@/lib/format";
+import { splitLead } from "@/components/studio/Highlight";
 import { cn } from "@/lib/utils";
 
 /*
@@ -22,34 +23,49 @@ type MilestoneBlockProps = {
   className?: string;
 };
 
+/** Bold the opening phrase of the first paragraph («سال اول، سال حرکت روی زمین است:») — the rest reads quieter. */
+function emphasizeOpening(markdown: string): string {
+  const [first, ...rest] = markdown.split(/\n{2,}/);
+  if (!first || first.includes("**")) return markdown;
+  const { lead, rest: tail } = splitLead(first);
+  if (!lead || lead.includes("](")) return markdown;
+  return [`**${lead}** ${tail}`, ...rest].join("\n\n");
+}
+
 export function MilestoneBlock({ title, intro, reviewer, sourceCount, className }: MilestoneBlockProps) {
   return (
-    <section aria-labelledby="milestones-title" className={cn("max-w-prose", className)}>
-      <h2 id="milestones-title" className="font-display text-xl text-ink">
-        {title}
-      </h2>
-      <Prose markdown={intro} variant="article" glossaryLinks className="mt-4" />
-
-      {reviewer || sourceCount ? (
-        <p className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted">
-          {reviewer ? (
-            <span>
-              بازبینی علمی:{" "}
-              <Link href={`/team/${reviewer.slug}`} className="link-mark font-semibold text-ink">
-                {reviewer.name}
-              </Link>
-              {reviewer.role ? `، ${reviewer.role}` : null}
-            </span>
-          ) : null}
-          {sourceCount ? (
-            <a href="#sources" className="link-mark text-ink">
-              {formatNumber(sourceCount)} منبع در پایان صفحه
-            </a>
-          ) : null}
-        </p>
-      ) : null}
-
-      <MedicalNote className="mt-6" />
+    <section
+      aria-labelledby="milestones-title"
+      className={cn("grid gap-10 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)] lg:gap-20", className)}
+    >
+      <div className="reveal lg:sticky lg:top-28 lg:self-start">
+        <p className="eyebrow">رشد کودک</p>
+        <h2 id="milestones-title" className="headline mt-2 text-[2rem] lg:text-[2.75rem]">
+          {title}
+        </h2>
+        {reviewer || sourceCount ? (
+          <p className="mt-5 flex flex-col gap-1 text-sm text-muted">
+            {reviewer ? (
+              <span>
+                بازبینی علمی:{" "}
+                <Link href={`/team/${reviewer.slug}`} className="link-mark font-semibold text-ink">
+                  {reviewer.name}
+                </Link>
+                {reviewer.role ? `، ${reviewer.role}` : null}
+              </span>
+            ) : null}
+            {sourceCount ? (
+              <a href="#sources" className="link-arrow">
+                {formatNumber(sourceCount)} منبع در پایان صفحه
+              </a>
+            ) : null}
+          </p>
+        ) : null}
+        <MedicalNote className="mt-6" />
+      </div>
+      <div className="max-w-prose text-muted [&_strong]:text-ink">
+        <Prose markdown={emphasizeOpening(intro)} variant="page" glossaryLinks />
+      </div>
     </section>
   );
 }
@@ -59,10 +75,10 @@ function MedicalNote({ className }: { className?: string }) {
   return (
     <aside
       aria-label="یادداشت پزشکی"
-      className={cn("flex gap-3 rounded-bit border-s-4 border-line-strong bg-raised px-4 py-3 shadow-paper", className)}
+      className={cn("flex gap-3 rounded-[1.25rem] bg-surface px-4 py-3.5", className)}
     >
       <Icon name="info" className="mt-1 size-5 shrink-0 text-muted" />
-      <p className="text-sm text-ink">
+      <p className="text-sm leading-7 text-muted">
         این مطلب جایگزین مشاورهٔ پزشک نیست. سن‌ها پنجره‌اند، نه مهلت؛ هر کودک با سرعت خودش رشد می‌کند.
       </p>
     </aside>

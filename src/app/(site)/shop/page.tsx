@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Breadcrumbs, crumbTrail } from "@/components/layout/Breadcrumbs";
 import { CategoryStrip } from "@/components/studio/CategoryStrip";
+import { LeadText } from "@/components/studio/LeadText";
 import { PageTurn } from "@/components/layout/PageTurn";
 import { Prose } from "@/components/mag/Prose";
 import { FilterBar } from "@/components/shop/FilterBar";
@@ -68,7 +69,7 @@ export default async function ShopPage() {
               <span className="text-muted">بهترین راه برای خرید وسایل چوبز.</span>
             </h1>
           </div>
-          {shop.intro ? <p className="mt-5 max-w-[46rem] text-muted">{shop.intro.replace(/[*_#>]/g, "")}</p> : null}
+          {shop.intro ? <LeadText text={shop.intro} className="mt-5 max-w-[46rem]" /> : null}
         </header>
 
         <CategoryStrip categories={shop.categories} />

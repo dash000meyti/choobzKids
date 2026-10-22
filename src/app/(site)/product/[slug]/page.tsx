@@ -12,6 +12,7 @@ import { pill } from "@/components/studio/Actions";
 import { LocalNav } from "@/components/studio/LocalNav";
 import { PriceLine } from "@/components/studio/PriceLine";
 import { ProductViewer } from "@/components/studio/ProductViewer";
+import { Highlight, sentences, splitClause, splitLead } from "@/components/studio/Highlight";
 import { hasRender, Render } from "@/components/studio/Render";
 import { getProductPage, listProductSlugs, type ProductPageData } from "@/db/queries/product";
 import { getPriceValidUntil } from "@/db/queries/seo";
@@ -177,12 +178,8 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
           </div>
         </section>
 
-        {/* Summary statement */}
-        {product.summary && (
-          <section aria-label="خلاصه" className="mx-auto max-w-[61.25rem] px-gutter py-section text-center">
-            <p className="headline reveal text-[1.75rem] leading-[1.45] lg:text-[2.75rem] lg:leading-[1.4]">{product.summary}</p>
-          </section>
-        )}
+        {/* At a glance: the summary as a highlight + the product's own figures */}
+        <Overview data={data} />
 
         {/* Feature statements */}
         {highlights.map((h, i) => {
@@ -191,7 +188,12 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
           return (
             <section key={h} aria-label={h} className={night ? "theme-night" : i % 2 ? "bg-bg" : "bg-surface"}>
               <div className="mx-auto grid max-w-[75rem] items-center gap-10 px-gutter py-section lg:grid-cols-2">
-                <p className={`headline reveal text-[2rem] lg:text-[3rem] ${i % 2 ? "lg:order-2" : ""}`}>{h}</p>
+                <div className={`reveal ${i % 2 ? "lg:order-2" : ""}`}>
+                  <p className="text-eyebrow text-[1.0625rem] font-semibold tabular-nums" aria-hidden="true">
+                    {toFaDigits(String(i + 1).padStart(2, "0"))}
+                  </p>
+                  <p className="headline mt-3 text-[2rem] lg:text-[3rem]">{h}</p>
+                </div>
                 <div className="reveal-zoom mx-auto w-full max-w-[34rem]">
                   <Render productKey={key} angle={hasRender(key, angle) ? angle : "hero"} alt="" sizes="(min-width: 1024px) 512px, 88vw" box="1 / 1" />
                 </div>
@@ -229,6 +231,71 @@ export default async function ProductPage({ params }: PageProps<"/product/[slug]
 /* ------------------------------------------------------------------ */
 /* Sections                                                            */
 /* ------------------------------------------------------------------ */
+
+type Fact = { label: string; value: string; unit?: string };
+
+/** «۱۸ ماه تا ۵ سال»: whole years as years, anything else (18 months) in months, never «۱٫۵ سال». */
+function ageSpan(min: number | null, max: number | null): string | null {
+  const part = (m: number) => (m % 12 === 0 ? `${toFaDigits(m / 12)} سال` : `${toFaDigits(m)} ماه`);
+  if (min == null && max == null) return null;
+  if (max == null) return `از ${part(min!)}`;
+  if (min == null) return `تا ${part(max)}`;
+  const a = part(min);
+  const b = part(max);
+  return a.endsWith(" سال") && b.endsWith(" سال") ? `${a.replace(" سال", "")} تا ${b}` : `${a} تا ${b}`;
+}
+
+/** Up to four figures the product actually has, most useful first. */
+function factsOf(p: ProductPageData["product"]): Fact[] {
+  const n = (x: number) => formatNumber(Math.round(x * 10) / 10);
+  const age = ageSpan(p.ageMinMonths, p.ageMaxMonths);
+  const facts: (Fact | null)[] = [
+    age ? { label: "مناسب برای", value: age } : null,
+    p.maxLoadKg ? { label: "تحمل وزن تا", value: n(p.maxLoadKg), unit: "کیلوگرم" } : null,
+    p.dimensions ? { label: "ارتفاع", value: n(p.dimensions.heightCm), unit: "سانتی‌متر" } : null,
+    p.warrantyMonths ? { label: "ضمانت کارگاه", value: n(p.warrantyMonths), unit: "ماه" } : null,
+    p.weightKg ? { label: "وزن", value: n(p.weightKg), unit: "کیلوگرم" } : null,
+  ];
+  return facts.filter((f): f is Fact => !!f).slice(0, 4);
+}
+
+/** «در یک نگاه»: the summary as a highlight (what it is, in bold) beside the product's figures. */
+function Overview({ data }: { data: ProductPageData }) {
+  const { product } = data;
+  const facts = factsOf(product);
+  if (!product.summary && !facts.length) return null;
+  return (
+    <section aria-labelledby="glance-title" className="mx-auto max-w-[75rem] px-gutter py-section">
+      <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1fr)] lg:gap-20">
+        {product.summary ? (
+          <div className="reveal">
+            <h2 id="glance-title" className="eyebrow">
+              در یک نگاه
+            </h2>
+            <p className="mt-5 text-[1.25rem] leading-[1.95] font-medium lg:text-[1.875rem] lg:leading-[1.8]">
+              <Highlight split={splitLead(product.summary)} />
+            </p>
+          </div>
+        ) : null}
+        {facts.length ? (
+          <dl className="grid grid-cols-2 gap-3">
+            {facts.map((f) => (
+              <div key={f.label} className="reveal flex flex-col justify-between gap-6 rounded-[1.5rem] bg-surface p-6 lg:p-7">
+                <dt className="text-sm text-muted">{f.label}</dt>
+                <dd className="flex flex-wrap items-baseline gap-x-1.5">
+                  <span className={`font-display leading-tight ${f.unit ? "text-[2.5rem] lg:text-[3rem]" : "text-[1.5rem] lg:text-[1.75rem]"}`}>
+                    {f.value}
+                  </span>
+                  {f.unit ? <span className="text-sm text-muted">{f.unit}</span> : null}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        ) : null}
+      </div>
+    </section>
+  );
+}
 
 function Dimensions({ data }: { data: ProductPageData }) {
   const { product } = data;
@@ -439,34 +506,67 @@ function Specs({ data, age }: { data: ProductPageData; age: string | null }) {
 function InTheBox({ data }: { data: ProductPageData }) {
   const { product } = data;
   if (!product.inTheBox.length && !product.safetyNotes && !product.careNotes) return null;
+  const rules = product.safetyNotes ? sentences(product.safetyNotes) : [];
   return (
-    <section aria-label="جعبه، ایمنی و نگهداری" className="mx-auto grid max-w-[75rem] gap-3 px-gutter py-section md:grid-cols-3">
-      {product.inTheBox.length > 0 && (
-        <div className="rounded-[1.75rem] bg-surface p-8">
-          <h2 className="text-xl font-bold">توی جعبه چی هست؟</h2>
-          <ul className="mt-4 space-y-2 text-sm text-muted">
-            {product.inTheBox.map((x) => (
-              <li key={x}>{x}</li>
-            ))}
-          </ul>
-        </div>
+    <>
+      {/* Safety: one rule per line, its key phrase in bold — not a paragraph to wade through. */}
+      {rules.length > 0 && (
+        <section aria-labelledby="safety-title" className="theme-night">
+          <div className="mx-auto max-w-[75rem] px-gutter py-section">
+            <div className="reveal max-w-[40rem]">
+              <p className="eyebrow">پیش از اولین بازی</p>
+              <h2 id="safety-title" className="headline mt-2 text-[2.25rem] lg:text-[3.5rem]">
+                ایمنی، با جزئیات.
+              </h2>
+            </div>
+            <ol className="mt-12 grid gap-x-14 md:grid-cols-2">
+              {rules.map((rule, i) => (
+                <li key={rule} className="reveal flex gap-5 border-t border-line py-6">
+                  <span aria-hidden="true" className="text-eyebrow text-[1.0625rem] leading-8 font-semibold tabular-nums">
+                    {toFaDigits(String(i + 1).padStart(2, "0"))}
+                  </span>
+                  <p className="text-[1.0625rem] leading-8">
+                    <Highlight split={splitClause(rule)} />
+                  </p>
+                </li>
+              ))}
+            </ol>
+            <Link href="/safety" className="link-arrow mt-8 inline-block">
+              جنس و ایمنی وسایل چوبز
+            </Link>
+          </div>
+        </section>
       )}
-      {product.safetyNotes && (
-        <div className="rounded-[1.75rem] bg-surface p-8">
-          <h2 className="text-xl font-bold">ایمنی</h2>
-          <p className="mt-4 text-sm text-muted">{product.safetyNotes}</p>
-          <Link href="/safety" className="link-arrow mt-4 inline-block text-sm">
-            جنس و ایمنی
-          </Link>
-        </div>
+      {(product.inTheBox.length > 0 || product.careNotes) && (
+        <section aria-label="جعبه و نگهداری" className="mx-auto grid max-w-[75rem] gap-4 px-gutter py-section md:grid-cols-2">
+          {product.inTheBox.length > 0 && (
+            <div className="reveal rounded-[1.75rem] bg-surface p-8 lg:p-10">
+              <h2 className="text-[1.375rem] font-bold">توی جعبه چی هست؟</h2>
+              <ul className="mt-6 divide-y divide-line">
+                {product.inTheBox.map((x) => (
+                  <li key={x} className="flex items-center gap-3 py-3 text-[0.9375rem]">
+                    <span aria-hidden="true" className="size-1.5 shrink-0 rounded-full bg-ink" />
+                    {x}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {product.careNotes && (
+            <div className="reveal rounded-[1.75rem] bg-surface p-8 lg:p-10">
+              <h2 className="text-[1.375rem] font-bold">نگهداری</h2>
+              <ul className="mt-6 space-y-4">
+                {sentences(product.careNotes).map((x) => (
+                  <li key={x} className="text-[0.9375rem] leading-7">
+                    <Highlight split={splitClause(x)} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </section>
       )}
-      {product.careNotes && (
-        <div className="rounded-[1.75rem] bg-surface p-8">
-          <h2 className="text-xl font-bold">نگهداری</h2>
-          <p className="mt-4 text-sm text-muted">{product.careNotes}</p>
-        </div>
-      )}
-    </section>
+    </>
   );
 }
 

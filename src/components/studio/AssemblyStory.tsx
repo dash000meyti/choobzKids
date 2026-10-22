@@ -47,10 +47,13 @@ export function AssemblyStory() {
         <ol className="relative">
           {STEPS.map((s, i) => (
             <li key={s.title} className={styles.step}>
-              <p className="text-lead lg:text-[1.75rem] lg:leading-normal">
-                <span className="text-muted">{NUMBERS[i]} — </span>
-                <strong className="font-bold text-ink">{s.title}</strong> <span className="text-muted">{s.body}</span>
-              </p>
+              <div className="reveal max-w-[30rem]">
+                <p className="text-eyebrow text-[1.0625rem] font-semibold tabular-nums" aria-hidden="true">
+                  {NUMBERS[i]}
+                </p>
+                <h3 className="mt-3 font-display text-[1.875rem] leading-snug text-ink lg:text-[2.75rem]">{s.title}</h3>
+                <p className="mt-4 text-base leading-8 text-muted lg:text-[1.1875rem] lg:leading-9">{s.body}</p>
+              </div>
             </li>
           ))}
         </ol>
