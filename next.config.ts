@@ -39,7 +39,9 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ["image/avif", "image/webp"],
-    deviceSizes: [360, 414, 640, 750, 828, 1080, 1200, 1920],
+    // Few widths on purpose: every width is another AVIF/WebP the server encodes on first view.
+    // Phones (DPR 2–3) land on 828/1080, desktops on 1080/1920.
+    deviceSizes: [640, 828, 1080, 1920],
     imageSizes: [32, 48, 64, 96, 128, 160, 256, 320],
     qualities: [60, 75, 90],
     minimumCacheTTL: 60 * 60 * 24 * 31,

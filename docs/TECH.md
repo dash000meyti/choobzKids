@@ -221,7 +221,7 @@ const nextConfig: NextConfig = {
 
   images: {
     formats: ['image/avif', 'image/webp'],
-    deviceSizes: [360, 414, 640, 750, 828, 1080, 1200, 1920],
+    deviceSizes: [640, 828, 1080, 1920], // few widths: each one is another encode on first view
     imageSizes: [32, 48, 64, 96, 128, 160, 256, 320], // all < smallest deviceSize (docs rule)
     qualities: [60, 75, 90],                            // 16.x: anything else → closest value; direct q=80 → 400
     minimumCacheTTL: 60 * 60 * 24 * 31,                 // floor; /media sends 1y immutable, which wins
