@@ -449,10 +449,13 @@
     radial-gradient(60% 55% at 50% 62%, var(--spot) 0%, transparent 70%),
     var(--surface);
 }
+/* The blur goes through a variable on purpose: with literal values the CSS minifier merges the
+   pair into `-webkit-backdrop-filter` alone, which current Chrome ignores (no blur at all). */
 @utility glass {
+  --glass-filter: saturate(180%) blur(24px);
   background: var(--header-bg);
-  backdrop-filter: saturate(180%) blur(20px);
-  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: var(--glass-filter);
+  backdrop-filter: var(--glass-filter);
 }
 @utility link-arrow {
   color: var(--link);
