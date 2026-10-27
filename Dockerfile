@@ -6,8 +6,14 @@ FROM ${NODE_IMAGE} AS base
 ENV NEXT_TELEMETRY_DISABLED=1
 WORKDIR /app
 
-# ---- dependencies: better-sqlite3 and sharp ship prebuilt binaries, nothing compiles ----
+# ---- dependencies ----
+# better-sqlite3 downloads a prebuilt binary from GitHub; where that is blocked or times out
+# (Iranian build hosts) it compiles from source, which needs python3, make and g++. They stay in
+# this stage only: the runtime image gets the finished .node file, not the toolchain.
 FROM base AS deps
+RUN apt-get update \
+ && apt-get install -y --no-install-recommends python3 make g++ \
+ && rm -rf /var/lib/apt/lists/*
 COPY package.json package-lock.json ./
 RUN --mount=type=cache,target=/root/.npm npm ci --no-audit --no-fund
 
@@ -25,7 +31,10 @@ RUN --mount=type=cache,target=/app/.next/cache npm run build && npm run build:sc
 
 # ---- runtime ----
 FROM base AS runner
-ENV NODE_ENV=production \
+# Also needed at run time: pages re-rendered after a content edit build canonicals from it.
+ARG SITE_URL=https://choobz.kids
+ENV SITE_URL=${SITE_URL} \
+    NODE_ENV=production \
     CHOOBZ_ENV=production \
     PORT=3000 \
     HOSTNAME=0.0.0.0 \
